@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+project(one)
+find_package(PCL 1.3 REQUIRED COMPONENTS common io)
+
+# Output folder
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(INCLUDE_DIR .)
+
+include_directories("${PROJECT_SOURCE_DIR}")
+include_directories(${PCL_INCLUDE_DIRS})
+include_directories(${INCLUDE_DIR})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+add_executable(testing ${PROJECT_SOURCE_DIR}/test.cpp)
+target_link_libraries(testing ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
