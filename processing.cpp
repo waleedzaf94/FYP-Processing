@@ -3,6 +3,7 @@
 #include <string>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/obj_io.h>
+#include <pcl/io/ply_io.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/common/common_headers.h>
@@ -10,19 +11,19 @@
 
 using namespace std;
 
-void importOBJModel(string);
-void viewModel(pcl::PointCloud<pcl::PointXYZ>);
-
 class ProcessXYZ {
     pcl::PointCloud<pcl::PointXYZ> cloud;
     const pcl::PointCloud<pcl::PointXYZ> *cloudPtr = &cloud;
     pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloudCPtr;
+    string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
 private:
     void importOBJModel(string);
+    void saveModelAsPLY(string);
 public:
     void viewModel();
     void viewModel(pcl::PointCloud<pcl::PointXYZ>);
     void processModel(string);
+    void saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ>, string);
 };
 
 int main() {
@@ -36,7 +37,9 @@ int main() {
 
 void ProcessXYZ::processModel(string filename) {
     this->importOBJModel(filename);
-    this->viewModel();
+//    this->viewModel();
+    this->saveModelAsPLY(this->plyFolder + "orig.ply");
+    cout << "Saved Model\n";
 }
 
 void ProcessXYZ::importOBJModel(string filename) {
@@ -58,3 +61,30 @@ void ProcessXYZ::viewModel(pcl::PointCloud<pcl::PointXYZ> cloud) {
 void ProcessXYZ::viewModel() {
     this->viewModel(this->cloud);
 }
+
+void ProcessXYZ::saveModelAsPLY(string filepath) {
+    this->saveModelAsPLY(this->cloud, filepath);
+}
+
+void ProcessXYZ::saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ> cloud, string filepath) {
+    pcl::PLYWriter w;
+    w.write(filepath, cloud);
+    cout << "Saved model at " << filepath << endl;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
