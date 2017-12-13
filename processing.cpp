@@ -40,14 +40,14 @@ void ProcessXYZ::processModel(string filename) {
     this->importOBJModel(filename);
 //    this->viewModel();
     this->saveModelAsPLY(this->plyFolder + "orig.ply");
-    this->statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr (&this->cloud));
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
+    this->statisticalOutlierRemoval(cloudPtr);
     cout << "Processed outlier removal" << endl;
 }
 
 void ProcessXYZ::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
     
     pcl::PointCloud<pcl::PointXYZ>::Ptr filtered (new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloudCPtr (&cloud);
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor (false);
     sor.setInputCloud(cloud);
     sor.setMeanK(50);
