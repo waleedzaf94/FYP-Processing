@@ -1,0 +1,281 @@
+\hypertarget{class_mesh_filter_interface}{}\section{Mesh\+Filter\+Interface Class Reference}
+\label{class_mesh_filter_interface}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+
+
+The \hyperlink{class_mesh_filter_interface}{Mesh\+Filter\+Interface} class provide the interface of the filter plugins.  
+
+
+
+
+{\ttfamily \#include $<$interfaces.\+h$>$}
+
+
+
+Inherits Mesh\+Common\+Interface.
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20f}{Filter\+Class} \{ \newline
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fad79ebd3a4751eae3b2fe1bef6f921b2b}{Generic} = 0x00000, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa68a033f020965c66ee06ab404fb2399e}{Selection} = 0x00001, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20faeaffaf7e0533b5c6b74a5839397784e0}{Cleaning} = 0x00002, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa3077153b1959f06f04f0cb978f611cb6}{Remeshing} = 0x00004, 
+\newline
+{\bfseries Face\+Coloring} = 0x00008, 
+{\bfseries Vertex\+Coloring} = 0x00010, 
+{\bfseries Mesh\+Coloring} = 0x00020, 
+{\bfseries Mesh\+Creation} = 0x00040, 
+\newline
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa148d75261f017afd66ee97ad988183c8}{Smoothing} = 0x00080, 
+{\bfseries Quality} = 0x00100, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20faf299aefc22e785ff15488cbec3bdee56}{Layer} = 0x00200, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa7f5f6bd116755aea3125c525f1e5cbb6}{Raster\+Layer} = 0x00400, 
+\newline
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa79abd4acb0734e9038e8fb59adf5aaaa}{Normal} = 0x00800, 
+{\bfseries Sampling} = 0x01000, 
+{\bfseries Texture} = 0x02000, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa8be79c5b79a0724bf84d1614c333f0d5}{Range\+Map} = 0x04000, 
+\newline
+{\bfseries Point\+Set} = 0x08000, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fae2ec5352583d59e6a30721908eaf2d73}{Measure} = 0x10000, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa040aef88abac2572de49362fb492c246}{Polygonal} = 0x20000, 
+\hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa28d988b002db238dd45731edd3ce2a7e}{Camera} = 0x40000
+ \}
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_af47c4665e3bc4e386b393ceb186f3735}\label{class_mesh_filter_interface_af47c4665e3bc4e386b393ceb186f3735}} 
+enum {\bfseries F\+I\+L\+T\+E\+R\+\_\+\+A\+R\+I\+TY} \{ {\bfseries N\+O\+NE} = 0, 
+{\bfseries S\+I\+N\+G\+L\+E\+\_\+\+M\+E\+SH} = 1, 
+{\bfseries F\+I\+X\+ED} = 2, 
+{\bfseries V\+A\+R\+I\+A\+B\+LE} = 3
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual Q\+String \hyperlink{class_mesh_filter_interface_ad57edd291a220d0b2384627c2f0657b9}{filter\+Name} (Filter\+I\+D\+Type) const =0
+\item 
+virtual Q\+String \hyperlink{class_mesh_filter_interface_aa75cbc99d9d0b411676b1ae3aa693568}{filter\+Info} (Filter\+I\+D\+Type filter) const =0
+\item 
+virtual \hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20f}{Filter\+Class} \hyperlink{class_mesh_filter_interface_a56925d19f0d24ffb86b3f2e6b777711c}{get\+Class} (Q\+Action $\ast$)
+\item 
+virtual int \hyperlink{class_mesh_filter_interface_aa6bcad28fee2de9526b3f01c8ac158a5}{get\+Requirements} (Q\+Action $\ast$)
+\item 
+virtual int \hyperlink{class_mesh_filter_interface_ab9070bf6b4ad6a205641b4c9fa6afaa4}{get\+Pre\+Conditions} (Q\+Action $\ast$) const
+\item 
+virtual int \hyperlink{class_mesh_filter_interface_a551a07190ee6f9333fdd94f0f38e417a}{post\+Condition} (Q\+Action $\ast$) const
+\item 
+virtual bool \hyperlink{class_mesh_filter_interface_ab97c75416be79ff1fa16333b362955cf}{apply\+Filter} (Q\+Action $\ast$filter, Mesh\+Document \&md, Rich\+Parameter\+Set \&par, vcg\+::\+Call\+Back\+Pos $\ast$cb)=0
+\begin{DoxyCompactList}\small\item\em applies the selected filter with the already stabilished parameters This function is called by the framework after getting values for the parameters specified in the Init\+Parameter\+Set NO G\+UI interaction should be done here. No dialog asking, no messagebox errors. Think that his function will also be called by the commandline framework. If you want report errors, use the \hyperlink{class_mesh_filter_interface_aedd8f6d4430e3327cbddee552d4fbe4f}{error\+Msg()} string. It will displayed in case of filters returning false. When implementing your apply\+Filter, you should use the cb function to report to the framework the current state of the processing. During your (long) processing you should call from time to time cb(perc,descriptive\+String), where perc is an int (0..100) saying what you are doing and at what point of the computation you currently are. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a7fdfdfa72b404d328aec13df3d24a7f4}\label{class_mesh_filter_interface_a7fdfdfa72b404d328aec13df3d24a7f4}} 
+bool \hyperlink{class_mesh_filter_interface_a7fdfdfa72b404d328aec13df3d24a7f4}{is\+Filter\+Applicable} (Q\+Action $\ast$act, const Mesh\+Model \&m, Q\+String\+List \&Missing\+Items) const
+\begin{DoxyCompactList}\small\item\em tests if a filter is applicable to a mesh. This function is a handy wrapper used by the framework for the {\itshape get\+Pre\+Conditions} callback; For istance a colorize by quality filter cannot be applied to a mesh without per-\/vertex-\/quality. On failure (returning false) the function fills the Missing\+Items list with strings describing the missing items. \end{DoxyCompactList}\item 
+virtual F\+I\+L\+T\+E\+R\+\_\+\+A\+R\+I\+TY \hyperlink{class_mesh_filter_interface_af948d1ad148015df1e32d347fd7ca802}{filter\+Arity} (Q\+Action $\ast$act) const =0
+\begin{DoxyCompactList}\small\item\em this function informs the Mesh\+Lab core on how many meshes the filter will work on. Valid value\+: \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_ab56a4f2c048146214df75bdd174edbcb}\label{class_mesh_filter_interface_ab56a4f2c048146214df75bdd174edbcb}} 
+virtual void {\bfseries init\+Parameter\+Set} (Q\+Action $\ast$, Mesh\+Model \&, Rich\+Parameter\+Set \&)
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a59ae60e3b6a1391b0486c50417b0bc6f}\label{class_mesh_filter_interface_a59ae60e3b6a1391b0486c50417b0bc6f}} 
+virtual void {\bfseries init\+Parameter\+Set} (Q\+Action $\ast$filter, Mesh\+Document \&md, Rich\+Parameter\+Set \&par)
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_aedd8f6d4430e3327cbddee552d4fbe4f}\label{class_mesh_filter_interface_aedd8f6d4430e3327cbddee552d4fbe4f}} 
+const Q\+String \& \hyperlink{class_mesh_filter_interface_aedd8f6d4430e3327cbddee552d4fbe4f}{error\+Msg} ()
+\begin{DoxyCompactList}\small\item\em is invoked by the framework when the apply\+Filter fails to give some info to the user about the filter failure Filters {\bfseries must} never use Q\+Message\+Box for reporting errors. Failing filters should put some meaningful information inside the error\+Message string and return false with the \hyperlink{class_mesh_filter_interface_ab97c75416be79ff1fa16333b362955cf}{apply\+Filter} \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_ac32b2d9227bd65ce961bfbbda0958224}\label{class_mesh_filter_interface_ac32b2d9227bd65ce961bfbbda0958224}} 
+virtual Q\+String {\bfseries filter\+Info} (Q\+Action $\ast$a) const
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_ad29fe0e78785523852d49e71f25d65de}\label{class_mesh_filter_interface_ad29fe0e78785523852d49e71f25d65de}} 
+virtual Q\+String {\bfseries filter\+Name} (Q\+Action $\ast$a) const
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a52850624e5aeb816260a7318cc6536b2}\label{class_mesh_filter_interface_a52850624e5aeb816260a7318cc6536b2}} 
+virtual Q\+String {\bfseries filter\+Script\+Function\+Name} (Filter\+I\+D\+Type)
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a65525c14f9ba9a4d904e2dff45f5351c}\label{class_mesh_filter_interface_a65525c14f9ba9a4d904e2dff45f5351c}} 
+virtual Filter\+I\+D\+Type {\bfseries ID} (Q\+Action $\ast$a) const
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_aac0d2b66c6fdd20ea9721d1cbfa43ae1}\label{class_mesh_filter_interface_aac0d2b66c6fdd20ea9721d1cbfa43ae1}} 
+virtual Q\+Action $\ast$ {\bfseries AC} (Filter\+I\+D\+Type filter\+ID)
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a0b5f12b2324d55d9786dfa3578be4f24}\label{class_mesh_filter_interface_a0b5f12b2324d55d9786dfa3578be4f24}} 
+virtual Q\+Action $\ast$ {\bfseries AC} (Q\+String id\+Name)
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_aac9f631d1c5aa296b97e597267fe0bf0}\label{class_mesh_filter_interface_aac9f631d1c5aa296b97e597267fe0bf0}} 
+virtual Q\+List$<$ Q\+Action $\ast$ $>$ {\bfseries actions} () const
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a6afdd9a931c5c71d76b7b0b5b9fbb4ff}\label{class_mesh_filter_interface_a6afdd9a931c5c71d76b7b0b5b9fbb4ff}} 
+virtual Q\+List$<$ Filter\+I\+D\+Type $>$ {\bfseries types} () const
+\item 
+int \hyperlink{class_mesh_filter_interface_acbe7b0e88f3622b0faab5d16ab808148}{preview\+On\+Created\+Attributes} (Q\+Action $\ast$act, const Mesh\+Model \&mm)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_aa6eb72d9d3bce2b0204fd61501af104a}\label{class_mesh_filter_interface_aa6eb72d9d3bce2b0204fd61501af104a}} 
+Q\+String {\bfseries generated\+Script\+Code}
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a3e981bd7643a2e798faf45a191f5e189}\label{class_mesh_filter_interface_a3e981bd7643a2e798faf45a191f5e189}} 
+M\+L\+Plugin\+G\+L\+Context $\ast$ {\bfseries gl\+Context}
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a6be72583d983a34c82d5072ded2bbf8d}\label{class_mesh_filter_interface_a6be72583d983a34c82d5072ded2bbf8d}} 
+Q\+List$<$ Q\+Action $\ast$ $>$ {\bfseries action\+List}
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_ad902bbee202cf558a53f852a3f0fac56}\label{class_mesh_filter_interface_ad902bbee202cf558a53f852a3f0fac56}} 
+Q\+List$<$ Filter\+I\+D\+Type $>$ {\bfseries type\+List}
+\item 
+\mbox{\Hypertarget{class_mesh_filter_interface_a0bbe74d2d346623e3c513548b714254b}\label{class_mesh_filter_interface_a0bbe74d2d346623e3c513548b714254b}} 
+Q\+String {\bfseries error\+Message}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{class_mesh_filter_interface}{Mesh\+Filter\+Interface} class provide the interface of the filter plugins. 
+
+\subsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20f}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20f}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Filter\+Class@{Filter\+Class}}
+\index{Filter\+Class@{Filter\+Class}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{Filter\+Class}{FilterClass}}
+{\footnotesize\ttfamily enum \hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20f}{Mesh\+Filter\+Interface\+::\+Filter\+Class}}
+
+The Filter\+Class enum represents the set of keywords that must be used to categorize a filter. Each filter can belong to one or more filtering class, or-\/ed togheter. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Generic@{Generic}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Generic@{Generic}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fad79ebd3a4751eae3b2fe1bef6f921b2b}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fad79ebd3a4751eae3b2fe1bef6f921b2b}} 
+Generic&Should be avoided if possible. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Selection@{Selection}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Selection@{Selection}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa68a033f020965c66ee06ab404fb2399e}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa68a033f020965c66ee06ab404fb2399e}} 
+Selection&select or de-\/select something, basic operation on selections (like deleting) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Cleaning@{Cleaning}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Cleaning@{Cleaning}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20faeaffaf7e0533b5c6b74a5839397784e0}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20faeaffaf7e0533b5c6b74a5839397784e0}} 
+Cleaning&Filters that can be used to clean meshes (duplicated vertices etc) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Remeshing@{Remeshing}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Remeshing@{Remeshing}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa3077153b1959f06f04f0cb978f611cb6}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa3077153b1959f06f04f0cb978f611cb6}} 
+Remeshing&Simplification, Refinement, Reconstruction and mesh optimization \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Smoothing@{Smoothing}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Smoothing@{Smoothing}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa148d75261f017afd66ee97ad988183c8}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa148d75261f017afd66ee97ad988183c8}} 
+Smoothing&Stuff that does not change the topology, but just the vertex positions \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Layer@{Layer}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Layer@{Layer}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20faf299aefc22e785ff15488cbec3bdee56}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20faf299aefc22e785ff15488cbec3bdee56}} 
+Layer&Layers, attributes \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Raster\+Layer@{Raster\+Layer}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Raster\+Layer@{Raster\+Layer}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa7f5f6bd116755aea3125c525f1e5cbb6}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa7f5f6bd116755aea3125c525f1e5cbb6}} 
+Raster\+Layer&Raster Layers, attributes \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Normal@{Normal}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Normal@{Normal}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa79abd4acb0734e9038e8fb59adf5aaaa}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa79abd4acb0734e9038e8fb59adf5aaaa}} 
+Normal&Normal, Curvature, orientation (rotations and transformations fall here) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Range\+Map@{Range\+Map}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Range\+Map@{Range\+Map}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa8be79c5b79a0724bf84d1614c333f0d5}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa8be79c5b79a0724bf84d1614c333f0d5}} 
+Range\+Map&filters specific for range map processing \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Measure@{Measure}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Measure@{Measure}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fae2ec5352583d59e6a30721908eaf2d73}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fae2ec5352583d59e6a30721908eaf2d73}} 
+Measure&Filters that compute measures and information on meshes. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Polygonal@{Polygonal}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Polygonal@{Polygonal}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa040aef88abac2572de49362fb492c246}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa040aef88abac2572de49362fb492c246}} 
+Polygonal&Filters that works on polygonal and quad meshes. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Camera@{Camera}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!Camera@{Camera}}}\mbox{\Hypertarget{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa28d988b002db238dd45731edd3ce2a7e}\label{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20fa28d988b002db238dd45731edd3ce2a7e}} 
+Camera&Filters that works on shot of mesh and raster. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_mesh_filter_interface_ab97c75416be79ff1fa16333b362955cf}\label{class_mesh_filter_interface_ab97c75416be79ff1fa16333b362955cf}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!apply\+Filter@{apply\+Filter}}
+\index{apply\+Filter@{apply\+Filter}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{apply\+Filter()}{applyFilter()}}
+{\footnotesize\ttfamily virtual bool Mesh\+Filter\+Interface\+::apply\+Filter (\begin{DoxyParamCaption}\item[{Q\+Action $\ast$}]{filter,  }\item[{Mesh\+Document \&}]{md,  }\item[{Rich\+Parameter\+Set \&}]{par,  }\item[{vcg\+::\+Call\+Back\+Pos $\ast$}]{cb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+applies the selected filter with the already stabilished parameters This function is called by the framework after getting values for the parameters specified in the Init\+Parameter\+Set NO G\+UI interaction should be done here. No dialog asking, no messagebox errors. Think that his function will also be called by the commandline framework. If you want report errors, use the \hyperlink{class_mesh_filter_interface_aedd8f6d4430e3327cbddee552d4fbe4f}{error\+Msg()} string. It will displayed in case of filters returning false. When implementing your apply\+Filter, you should use the cb function to report to the framework the current state of the processing. During your (long) processing you should call from time to time cb(perc,descriptive\+String), where perc is an int (0..100) saying what you are doing and at what point of the computation you currently are. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_mesh_filter_interface_aedd8f6d4430e3327cbddee552d4fbe4f}{error\+Msg} 
+
+init\+Parameter\+Set 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_mesh_filter_interface_af948d1ad148015df1e32d347fd7ca802}\label{class_mesh_filter_interface_af948d1ad148015df1e32d347fd7ca802}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!filter\+Arity@{filter\+Arity}}
+\index{filter\+Arity@{filter\+Arity}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{filter\+Arity()}{filterArity()}}
+{\footnotesize\ttfamily virtual F\+I\+L\+T\+E\+R\+\_\+\+A\+R\+I\+TY Mesh\+Filter\+Interface\+::filter\+Arity (\begin{DoxyParamCaption}\item[{Q\+Action $\ast$}]{act }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+this function informs the Mesh\+Lab core on how many meshes the filter will work on. Valid value\+: 
+
+
+\begin{DoxyItemize}
+\item S\+I\+N\+G\+L\+E\+\_\+\+M\+E\+SH\+: the filter works just on the current mesh
+\item F\+I\+X\+ED\+: the number (and the names) of the meshes involved in the filter computation is determined by the parameters selected in the filter\textquotesingle{}s parameters form
+\item V\+A\+R\+I\+A\+B\+LE\+: the filter works on a not predetermined number of meshes. The meshes involved are typically selected by the user checking on the correspondent layer on the layer dialog 
+\end{DoxyItemize}\mbox{\Hypertarget{class_mesh_filter_interface_aa75cbc99d9d0b411676b1ae3aa693568}\label{class_mesh_filter_interface_aa75cbc99d9d0b411676b1ae3aa693568}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!filter\+Info@{filter\+Info}}
+\index{filter\+Info@{filter\+Info}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{filter\+Info()}{filterInfo()}}
+{\footnotesize\ttfamily virtual Q\+String Mesh\+Filter\+Interface\+::filter\+Info (\begin{DoxyParamCaption}\item[{Filter\+I\+D\+Type}]{filter }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+The long, formatted string describing each filtering action. This string is printed in the top of the parameter window so it should be at least one or two paragraphs long. The more the better. you can use simple html formatting tags (like \char`\"{}$<$br$>$\char`\"{} \char`\"{}$<$b$>$\char`\"{} and \char`\"{}$<$i$>$\char`\"{}) to improve readability. This string is used in the \textquotesingle{}About plugin\textquotesingle{} dialog and by meshlabserver to create the filter list wiki page and the doxygen documentation of the filters. Here is the place where you should put you bibliographic references in a form like this\+: ~\newline
+ See\+: ~\newline
+ {\itshape Luiz Velho, Denis Zorin }~\newline
+ {\bfseries \char`\"{}4-\/8 Subdivision\char`\"{}}~\newline
+ C\+A\+GD, volume 18, Issue 5, Pages 397-\/427.~\newline
+ ~\newline
+ e.\+g. italic for authors, bold for title (quoted) and plain for bib ref. \mbox{\Hypertarget{class_mesh_filter_interface_ad57edd291a220d0b2384627c2f0657b9}\label{class_mesh_filter_interface_ad57edd291a220d0b2384627c2f0657b9}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!filter\+Name@{filter\+Name}}
+\index{filter\+Name@{filter\+Name}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{filter\+Name()}{filterName()}}
+{\footnotesize\ttfamily virtual Q\+String Mesh\+Filter\+Interface\+::filter\+Name (\begin{DoxyParamCaption}\item[{Filter\+I\+D\+Type}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+The very short string (a few words) describing each filtering action This string is used also to define the menu entry \mbox{\Hypertarget{class_mesh_filter_interface_a56925d19f0d24ffb86b3f2e6b777711c}\label{class_mesh_filter_interface_a56925d19f0d24ffb86b3f2e6b777711c}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!get\+Class@{get\+Class}}
+\index{get\+Class@{get\+Class}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{get\+Class()}{getClass()}}
+{\footnotesize\ttfamily virtual \hyperlink{class_mesh_filter_interface_a67a90dc6ac04fafd04e7cb8c38d0e20f}{Filter\+Class} Mesh\+Filter\+Interface\+::get\+Class (\begin{DoxyParamCaption}\item[{Q\+Action $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+The Filter\+Class describes in which generic class of filters it fits. This choice affect the submenu in which each filter will be placed For example filters that perform an action only on the selection will be placed in the Selection Class \mbox{\Hypertarget{class_mesh_filter_interface_ab9070bf6b4ad6a205641b4c9fa6afaa4}\label{class_mesh_filter_interface_ab9070bf6b4ad6a205641b4c9fa6afaa4}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!get\+Pre\+Conditions@{get\+Pre\+Conditions}}
+\index{get\+Pre\+Conditions@{get\+Pre\+Conditions}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{get\+Pre\+Conditions()}{getPreConditions()}}
+{\footnotesize\ttfamily virtual int Mesh\+Filter\+Interface\+::get\+Pre\+Conditions (\begin{DoxyParamCaption}\item[{Q\+Action $\ast$}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+The Filter\+Precondition mask is used to explicitate what kind of data a filter really needs to be applied. For example algorithms that compute per face quality have as precondition the existence of faces (but quality per face is not a precondition, because quality per face is created by these algorithms) on the other hand an algorithm that deletes faces according to the stored quality has both Face\+Quality and Face as precondition. These conditions do N\+OT include computed properties like border\+Flags, manifoldness or watertightness. They are also used to grayout menus un-\/appliable entries. \mbox{\Hypertarget{class_mesh_filter_interface_aa6bcad28fee2de9526b3f01c8ac158a5}\label{class_mesh_filter_interface_aa6bcad28fee2de9526b3f01c8ac158a5}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!get\+Requirements@{get\+Requirements}}
+\index{get\+Requirements@{get\+Requirements}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{get\+Requirements()}{getRequirements()}}
+{\footnotesize\ttfamily virtual int Mesh\+Filter\+Interface\+::get\+Requirements (\begin{DoxyParamCaption}\item[{Q\+Action $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+The filters can have some additional requirements on the mesh capabiliteis. For example if a filters requires Face-\/\+Face Adjacency you shoud re-\/implement this function making it returns Mesh\+Model\+::\+M\+M\+\_\+\+F\+A\+C\+E\+F\+A\+C\+E\+T\+O\+PO. The framework will ensure that the mesh has the requirements satisfied before invoking the apply\+Filter function
+
+Furthermore, requirements are checked just before the invocation of a filter. If your filter outputs a never used before mesh property (e.\+g. face colors), it will be allocated by a call to Mesh\+Model\+::update\+Data\+Mask(...) \mbox{\Hypertarget{class_mesh_filter_interface_a551a07190ee6f9333fdd94f0f38e417a}\label{class_mesh_filter_interface_a551a07190ee6f9333fdd94f0f38e417a}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!post\+Condition@{post\+Condition}}
+\index{post\+Condition@{post\+Condition}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{post\+Condition()}{postCondition()}}
+{\footnotesize\ttfamily virtual int Mesh\+Filter\+Interface\+::post\+Condition (\begin{DoxyParamCaption}\item[{Q\+Action $\ast$}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Function used by the framework to get info about the mesh properties changed by the filter. It is widely used by the meshlab\textquotesingle{}s preview system. TO BE R\+E\+P\+L\+A\+C\+ED W\+I\+TH = 0 \mbox{\Hypertarget{class_mesh_filter_interface_acbe7b0e88f3622b0faab5d16ab808148}\label{class_mesh_filter_interface_acbe7b0e88f3622b0faab5d16ab808148}} 
+\index{Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}!preview\+On\+Created\+Attributes@{preview\+On\+Created\+Attributes}}
+\index{preview\+On\+Created\+Attributes@{preview\+On\+Created\+Attributes}!Mesh\+Filter\+Interface@{Mesh\+Filter\+Interface}}
+\subsubsection{\texorpdfstring{preview\+On\+Created\+Attributes()}{previewOnCreatedAttributes()}}
+{\footnotesize\ttfamily int Mesh\+Filter\+Interface\+::preview\+On\+Created\+Attributes (\begin{DoxyParamCaption}\item[{Q\+Action $\ast$}]{act,  }\item[{const Mesh\+Model \&}]{mm }\end{DoxyParamCaption})}
+
+Generate the mask of attributes would be created IF the \hyperlink{class_mesh_filter_interface}{Mesh\+Filter\+Interface} filt would has been called on Mesh\+Model mm BE C\+A\+R\+E\+F\+U\+L! this function does N\+OT change in anyway the state of the Mesh\+Model!!!! 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/waleedzafar/\+Projects/\+F\+Y\+P/one/libs/meshlab/src/common/interfaces.\+h\item 
+/\+Users/waleedzafar/\+Projects/\+F\+Y\+P/one/libs/meshlab/src/common/interfaces.\+cpp\end{DoxyCompactItemize}

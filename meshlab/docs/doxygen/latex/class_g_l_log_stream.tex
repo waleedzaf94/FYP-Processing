@@ -1,0 +1,77 @@
+\hypertarget{class_g_l_log_stream}{}\section{G\+L\+Log\+Stream Class Reference}
+\label{class_g_l_log_stream}\index{G\+L\+Log\+Stream@{G\+L\+Log\+Stream}}
+
+
+{\ttfamily \#include $<$G\+L\+Log\+Stream.\+h$>$}
+
+
+
+Inherits Q\+Object.
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_af6d966e90f2222745df2a24bad857751}\label{class_g_l_log_stream_af6d966e90f2222745df2a24bad857751}} 
+enum {\bfseries Levels} \{ {\bfseries S\+Y\+S\+T\+EM} = 0, 
+{\bfseries W\+A\+R\+N\+I\+NG} = 1, 
+{\bfseries F\+I\+L\+T\+ER} = 2, 
+{\bfseries D\+E\+B\+UG} = 3
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a3268e852711f1e29470e9b8433ae1f35}\label{class_g_l_log_stream_a3268e852711f1e29470e9b8433ae1f35}} 
+void {\bfseries log\+Updated} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_add3b60f60b1a9fb6da942d8081366154}\label{class_g_l_log_stream_add3b60f60b1a9fb6da942d8081366154}} 
+void {\bfseries print} (Q\+String\+List \&list)
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a53f5fed730c7c237c5433715b02e8641}\label{class_g_l_log_stream_a53f5fed730c7c237c5433715b02e8641}} 
+void {\bfseries Save} (int Level, const char $\ast$filename)
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a0412b27ae20c5bd949cb468bae19a9bf}\label{class_g_l_log_stream_a0412b27ae20c5bd949cb468bae19a9bf}} 
+void {\bfseries Clear} ()
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_aaded695fc65626f5917ecf4d9104c0f4}\label{class_g_l_log_stream_aaded695fc65626f5917ecf4d9104c0f4}} 
+void {\bfseries Logf} (int Level, const char $\ast$f,...)
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a6f1dd55035bad7b01f4916faa06d0fe6}\label{class_g_l_log_stream_a6f1dd55035bad7b01f4916faa06d0fe6}} 
+void {\bfseries Log} (int Level, const char $\ast$buf)
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a6127cac326a06c74a7c012f12bd933b4}\label{class_g_l_log_stream_a6127cac326a06c74a7c012f12bd933b4}} 
+void {\bfseries Set\+Bookmark} ()
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a0b3885c68adbac65b640aa19d4c7cf69}\label{class_g_l_log_stream_a0b3885c68adbac65b640aa19d4c7cf69}} 
+void {\bfseries Clear\+Bookmark} ()
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_aba1c6b9b92248d2be8d32346e7b819ef}\label{class_g_l_log_stream_aba1c6b9b92248d2be8d32346e7b819ef}} 
+void {\bfseries Back\+To\+Bookmark} ()
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_ab55b6ec865c3b873bd58617fb6711c68}\label{class_g_l_log_stream_ab55b6ec865c3b873bd58617fb6711c68}} 
+void {\bfseries Real\+Time\+Logf} (const Q\+String \&Id, const Q\+String \&mesh\+Name, const char $\ast$f,...)
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a2a6377babbb720e05141b82a60d941e9}\label{class_g_l_log_stream_a2a6377babbb720e05141b82a60d941e9}} 
+void {\bfseries Real\+Time\+Log} (const Q\+String \&Id, const Q\+String \&mesh\+Name, const Q\+String \&text)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_af225f034f2b36a6a17714ae815862fee}\label{class_g_l_log_stream_af225f034f2b36a6a17714ae815862fee}} 
+Q\+List$<$ std\+::pair$<$ int, Q\+String $>$ $>$ {\bfseries S}
+\item 
+\mbox{\Hypertarget{class_g_l_log_stream_a11fd4ac710f3d5a40f00b1dd400c2e2c}\label{class_g_l_log_stream_a11fd4ac710f3d5a40f00b1dd400c2e2c}} 
+Q\+Multi\+Map$<$ Q\+String, Q\+Pair$<$ Q\+String, Q\+String $>$ $>$ {\bfseries Real\+Time\+Log\+Text}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This is the logging class. One for each document. Responsible of getting an history of the logging message printed out by filters. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/waleedzafar/\+Projects/\+F\+Y\+P/one/libs/meshlab/src/common/G\+L\+Log\+Stream.\+h\item 
+/\+Users/waleedzafar/\+Projects/\+F\+Y\+P/one/libs/meshlab/src/common/G\+L\+Log\+Stream.\+cpp\end{DoxyCompactItemize}

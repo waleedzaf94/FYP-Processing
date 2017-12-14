@@ -9,6 +9,8 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(INCLUDE_DIR .)
 
 include_directories("${PROJECT_SOURCE_DIR}")
+include_directories(${PROJECT_SOURCE_DIR}/meshlab)
+include_directories(${PROJECT_SOURCE_DIR}/vcglib)
 include_directories(${PCL_INCLUDE_DIRS})
 include_directories(${INCLUDE_DIR})
 link_directories(${PCL_LIBRARY_DIRS})

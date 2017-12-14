@@ -1,0 +1,157 @@
+\hypertarget{class_mesh_decorate_interface}{}\section{Mesh\+Decorate\+Interface Class Reference}
+\label{class_mesh_decorate_interface}\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}
+
+
+{\ttfamily \#include $<$interfaces.\+h$>$}
+
+
+
+Inherits Mesh\+Common\+Interface.
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7}{Decoration\+Class} \{ \newline
+\hyperlink{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a390d37beb0873ae56620e64b90954872}{Generic} = 0x00000, 
+\hyperlink{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a355b0828bd4c9505a4482615d601053b}{Per\+Mesh} = 0x00001, 
+\hyperlink{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7aea165dcb1f734e15584b4c8e4bc15a46}{Per\+Document} = 0x00002, 
+\hyperlink{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a979224ae674a957f93bc1b13c861c04e}{Pre\+Rendering} = 0x00004, 
+\newline
+\hyperlink{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a1e5666dea1d697cf38e0175d65876780}{Post\+Rendering} = 0x00008
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual Q\+String \hyperlink{class_mesh_decorate_interface_aed4eb195ecbf0f7e35dae555c8e6d1e7}{decoration\+Name} (Filter\+I\+D\+Type) const =0
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a4cd711507f45dfe4a375507bad4baa77}\label{class_mesh_decorate_interface_a4cd711507f45dfe4a375507bad4baa77}} 
+virtual Q\+String {\bfseries decoration\+Info} (Filter\+I\+D\+Type) const =0
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_ae96698bbcfcc94d199717208f7eaf1bb}\label{class_mesh_decorate_interface_ae96698bbcfcc94d199717208f7eaf1bb}} 
+virtual Q\+String {\bfseries decoration\+Name} (Q\+Action $\ast$a) const
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_aa438df3dc804a4a9f0f63b2645f50600}\label{class_mesh_decorate_interface_aa438df3dc804a4a9f0f63b2645f50600}} 
+virtual Q\+String {\bfseries decoration\+Info} (Q\+Action $\ast$a) const
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_ae77e62cd488e1f54e9689904ef978b58}\label{class_mesh_decorate_interface_ae77e62cd488e1f54e9689904ef978b58}} 
+virtual bool {\bfseries start\+Decorate} (Q\+Action $\ast$, Mesh\+Document \&, Rich\+Parameter\+Set $\ast$, G\+L\+Area $\ast$)
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a340823964c2ceb6ab74248ce39823fc2}\label{class_mesh_decorate_interface_a340823964c2ceb6ab74248ce39823fc2}} 
+virtual bool {\bfseries start\+Decorate} (Q\+Action $\ast$, Mesh\+Model \&, Rich\+Parameter\+Set $\ast$, G\+L\+Area $\ast$)
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a0f3360a354b8cead3acd6486823a79f5}\label{class_mesh_decorate_interface_a0f3360a354b8cead3acd6486823a79f5}} 
+virtual void {\bfseries decorate\+Mesh} (Q\+Action $\ast$, Mesh\+Model \&, Rich\+Parameter\+Set $\ast$, G\+L\+Area $\ast$, Q\+Painter $\ast$, \hyperlink{class_g_l_log_stream}{G\+L\+Log\+Stream} \&)=0
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_ac45a3f2a8ebb0cc98f8c4d26d11a679f}\label{class_mesh_decorate_interface_ac45a3f2a8ebb0cc98f8c4d26d11a679f}} 
+virtual void {\bfseries decorate\+Doc} (Q\+Action $\ast$, Mesh\+Document \&, Rich\+Parameter\+Set $\ast$, G\+L\+Area $\ast$, Q\+Painter $\ast$, \hyperlink{class_g_l_log_stream}{G\+L\+Log\+Stream} \&)=0
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a732109fdfde6a3bd096d072a422a200e}\label{class_mesh_decorate_interface_a732109fdfde6a3bd096d072a422a200e}} 
+virtual void {\bfseries end\+Decorate} (Q\+Action $\ast$, Mesh\+Model \&, Rich\+Parameter\+Set $\ast$, G\+L\+Area $\ast$)
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a96e99086b56af0ac430d66c91156ddb4}\label{class_mesh_decorate_interface_a96e99086b56af0ac430d66c91156ddb4}} 
+virtual void {\bfseries end\+Decorate} (Q\+Action $\ast$, Mesh\+Document \&, Rich\+Parameter\+Set $\ast$, G\+L\+Area $\ast$)
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_ae102f11860a50d871e6a729de2dade72}\label{class_mesh_decorate_interface_ae102f11860a50d871e6a729de2dade72}} 
+virtual bool \hyperlink{class_mesh_decorate_interface_ae102f11860a50d871e6a729de2dade72}{is\+Decoration\+Applicable} (Q\+Action $\ast$, const Mesh\+Model \&, Q\+String \&) const
+\begin{DoxyCompactList}\small\item\em tests if a decoration is applicable to a mesh. used only for Per\+Mesh Decorators. For istance curvature cannot be shown on a mesh without curvature. On failure (returning false) the function fills the Missing\+Items list with strings describing the missing items. It is invoked only for decoration of  Per\+Mesh class; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a9b449757d837814f2a9cb967611f6a7d}\label{class_mesh_decorate_interface_a9b449757d837814f2a9cb967611f6a7d}} 
+virtual int {\bfseries get\+Decoration\+Class} (Q\+Action $\ast$) const =0
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_abeb44596dcee0e57af196de7bfb48d80}\label{class_mesh_decorate_interface_abeb44596dcee0e57af196de7bfb48d80}} 
+virtual Q\+List$<$ Q\+Action $\ast$ $>$ {\bfseries actions} () const
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a39516bae6ed6c42d8e64c6960004d6d5}\label{class_mesh_decorate_interface_a39516bae6ed6c42d8e64c6960004d6d5}} 
+virtual Q\+List$<$ Filter\+I\+D\+Type $>$ {\bfseries types} () const
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_ae95ba838101198a627444c9ae7b2a5ed}\label{class_mesh_decorate_interface_ae95ba838101198a627444c9ae7b2a5ed}} 
+virtual Q\+Action $\ast$ {\bfseries action} (Q\+String name) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a2e860d47b48e42054301dc4fa0c55fc7}\label{class_mesh_decorate_interface_a2e860d47b48e42054301dc4fa0c55fc7}} 
+virtual Filter\+I\+D\+Type {\bfseries ID} (Q\+Action $\ast$a) const
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a069cda13c806e5478144dc4730a38078}\label{class_mesh_decorate_interface_a069cda13c806e5478144dc4730a38078}} 
+virtual Filter\+I\+D\+Type {\bfseries ID} (Q\+String name) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a20580bb7e085b95ed7f37f04154c4287}\label{class_mesh_decorate_interface_a20580bb7e085b95ed7f37f04154c4287}} 
+Q\+List$<$ Q\+Action $\ast$ $>$ {\bfseries action\+List}
+\item 
+\mbox{\Hypertarget{class_mesh_decorate_interface_a8d014a60483b64eb8b7c47ffc8e63368}\label{class_mesh_decorate_interface_a8d014a60483b64eb8b7c47ffc8e63368}} 
+Q\+List$<$ Filter\+I\+D\+Type $>$ {\bfseries type\+List}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{class_mesh_decorate_interface}{Mesh\+Decorate\+Interface} is the base class of all {\bfseries  decorators } Decorators are \textquotesingle{}read-\/only\textquotesingle{} visualization aids that helps to show some data about a document. Decorators can make some permesh precomputation but the rendering has to be efficient. Decorators should save the additional data into per-\/mesh attribute.
+
+There are two classes of Decorations
+\begin{DoxyItemize}
+\item Per\+Mesh
+\item Per\+Document
+\end{DoxyItemize}
+
+Per\+Mesh Decorators are associated to each mesh/view Some example of Per\+Document Decorations
+\begin{DoxyItemize}
+\item backgrounds
+\item trackball icon
+\item axis
+\item shadows
+\item screen space Ambient occlusion (think it as a generic \textquotesingle{}darkner\textquotesingle{})
+\end{DoxyItemize}
+
+Some example of Per\+Mesh Decorations
+\begin{DoxyItemize}
+\item coloring of selected vertex/face
+\item displaying of normals/curvature directions
+\item display of specific tagging 
+\end{DoxyItemize}
+
+\subsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7}\label{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7}} 
+\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}!Decoration\+Class@{Decoration\+Class}}
+\index{Decoration\+Class@{Decoration\+Class}!Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}
+\subsubsection{\texorpdfstring{Decoration\+Class}{DecorationClass}}
+{\footnotesize\ttfamily enum \hyperlink{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7}{Mesh\+Decorate\+Interface\+::\+Decoration\+Class}}
+
+The Decoration\+Class enum represents the set of keywords that must be used to categorize a filter. Each filter can belong to one or more filtering class, or-\/ed togheter. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Generic@{Generic}!Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}!Generic@{Generic}}}\mbox{\Hypertarget{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a390d37beb0873ae56620e64b90954872}\label{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a390d37beb0873ae56620e64b90954872}} 
+Generic&Should be avoided if possible. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Per\+Mesh@{Per\+Mesh}!Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}!Per\+Mesh@{Per\+Mesh}}}\mbox{\Hypertarget{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a355b0828bd4c9505a4482615d601053b}\label{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a355b0828bd4c9505a4482615d601053b}} 
+Per\+Mesh&Decoration that are applied on a single mesh \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Per\+Document@{Per\+Document}!Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}!Per\+Document@{Per\+Document}}}\mbox{\Hypertarget{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7aea165dcb1f734e15584b4c8e4bc15a46}\label{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7aea165dcb1f734e15584b4c8e4bc15a46}} 
+Per\+Document&Decoration that are applied on a single mesh \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Pre\+Rendering@{Pre\+Rendering}!Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}!Pre\+Rendering@{Pre\+Rendering}}}\mbox{\Hypertarget{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a979224ae674a957f93bc1b13c861c04e}\label{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a979224ae674a957f93bc1b13c861c04e}} 
+Pre\+Rendering&Decoration that are applied {\itshape before} the rendering of the document/mesh \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Post\+Rendering@{Post\+Rendering}!Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}!Post\+Rendering@{Post\+Rendering}}}\mbox{\Hypertarget{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a1e5666dea1d697cf38e0175d65876780}\label{class_mesh_decorate_interface_ab781fd76c42ba9249b36b7eb16e10ed7a1e5666dea1d697cf38e0175d65876780}} 
+Post\+Rendering&Decoration that are applied {\itshape after} the rendering of the document/mesh \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_mesh_decorate_interface_aed4eb195ecbf0f7e35dae555c8e6d1e7}\label{class_mesh_decorate_interface_aed4eb195ecbf0f7e35dae555c8e6d1e7}} 
+\index{Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}!decoration\+Name@{decoration\+Name}}
+\index{decoration\+Name@{decoration\+Name}!Mesh\+Decorate\+Interface@{Mesh\+Decorate\+Interface}}
+\subsubsection{\texorpdfstring{decoration\+Name()}{decorationName()}}
+{\footnotesize\ttfamily virtual Q\+String Mesh\+Decorate\+Interface\+::decoration\+Name (\begin{DoxyParamCaption}\item[{Filter\+I\+D\+Type}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+The very short string (a few words) describing each filtering action This string is used also to define the menu entry 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/waleedzafar/\+Projects/\+F\+Y\+P/one/libs/meshlab/src/common/interfaces.\+h\end{DoxyCompactItemize}

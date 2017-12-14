@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <vector>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/obj_io.h>
 #include <pcl/io/ply_io.h>
@@ -11,20 +12,42 @@
 #include <pcl/filters/conditional_removal.h>
 #include <pcl/common/common_headers.h>
 #include <boost/thread/thread.hpp>
+#include <vcg/complex/complex.h>
+#include <wrap/io_trimesh/import.h>
 
 using namespace std;
 
+class MyVertex;
+class MyEdge;
+class MyFace;
+
+struct MyUsedTypes : public vcg::UsedTypes<vcg::Use<MyVertex> ::AsVertexType, vcg::Use<MyEdge> ::AsEdgeType, vcg::Use<MyFace> ::AsFaceType> {};
+
+class MyVertex : public vcg::Vertex<MyUsedTypes, vcg::vertex::Coord3f, vcg::vertex::Normal3f, vcg::vertex::BitFlags> {};
+
+class MyEdge : public vcg::Edge<MyUsedTypes> {};
+
+class MyFace : public vcg::Face<MyUsedTypes, vcg::face::FFAdj, vcg::face::VertexRef, vcg::face::BitFlags> {};
+
+class MyMesh : public vcg::tri::TriMesh<std::vector<MyVertex>, std::vector<MyFace>, std::vector<MyEdge> > {};
+
 class ProcessXYZ {
+private:
+    //Members
     pcl::PointCloud<pcl::PointXYZ> cloud;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr;
     string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
-private:
-    void importOBJModel(string);
+    MyMesh mesh;
+    
+    //Functions
+    void importOBJAsPSD(string);
+    void importOBJAsMesh(string);
     void saveModelAsPLY(string);
     void statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
 public:
+    //Functions
     void viewModel();
     void viewModel(pcl::PointCloud<pcl::PointXYZ>);
     void processModel(string);
@@ -41,13 +64,14 @@ int main() {
 }
 
 void ProcessXYZ::processModel(string filename) {
-    this->importOBJModel(filename);
+    this->importOBJAsMesh(filename);
+//    this->importOBJAsPSD(filename);
 //    this->viewModel();
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
+//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
 //    this->saveModelAsPLY(this->plyFolder + "orig.ply");
 //    this->statisticalOutlierRemoval(cloudPtr);
 //    this->radiusOutlierRemoval(cloudPtr);
-    this->conditionalOutlierRemoval(cloudPtr);
+//    this->conditionalOutlierRemoval(cloudPtr);
 }
 
 void ProcessXYZ::conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
@@ -85,11 +109,21 @@ void ProcessXYZ::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Const
     cout << "Completed sor." << endl;
 }
 
-void ProcessXYZ::importOBJModel(string filename) {
+void ProcessXYZ::importOBJAsPSD(string filename) {
     int imp = pcl::io::loadOBJFile(filename, this->cloud);
     this->cloudPtr = this->cloud.makeShared();
     if (imp == 0)
         cout << "Imported file at " << filename << endl;
+}
+
+void ProcessXYZ::importOBJAsMesh(string filename) {
+    int zero;
+    if (vcg::tri::io::ImporterOBJ<MyMesh>::Open(this->mesh, filename.c_str(), zero) == vcg::tri::io::ImporterOBJ<MyMesh>::E_NOERROR) {
+        cout << "Imported OBJ as Mesh from " << filename << endl;
+    }
+    else {
+        cout << "Error importing file: " << filename << endl;
+    }
 }
 
 void ProcessXYZ::viewModel(pcl::PointCloud<pcl::PointXYZ> cloud) {
