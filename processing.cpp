@@ -14,6 +14,7 @@
 #include <boost/thread/thread.hpp>
 #include <vcg/complex/complex.h>
 #include <wrap/io_trimesh/import.h>
+#include <wrap/io_trimesh/export.h>
 
 using namespace std;
 
@@ -37,6 +38,7 @@ private:
     pcl::PointCloud<pcl::PointXYZ> cloud;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr;
     string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
+    string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
     MyMesh mesh;
     
     //Functions
@@ -48,10 +50,14 @@ private:
     void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
 public:
     //Functions
+    void setPLYFolder(string);
+    void setOBJFolder(string);
     void viewModel();
     void viewModel(pcl::PointCloud<pcl::PointXYZ>);
     void processModel(string);
     void saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ>, string);
+    void saveMeshAsPLY(MyMesh&, string);
+    void saveMeshAsOBJ(MyMesh&, string);
 };
 
 int main() {
@@ -65,6 +71,7 @@ int main() {
 
 void ProcessXYZ::processModel(string filename) {
     this->importOBJAsMesh(filename);
+    this->saveMeshAsOBJ(this->mesh, this->objFolder + "meshOrig.obj");
 //    this->importOBJAsPSD(filename);
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
@@ -126,6 +133,24 @@ void ProcessXYZ::importOBJAsMesh(string filename) {
     }
 }
 
+void ProcessXYZ::saveMeshAsPLY(MyMesh &mesh, string filename) {
+    //TODO: Fix this. Leads to some library error or sth.
+//    int err = vcg::tri::io::ExporterPLY<MyMesh>::Save(mesh, filename.c_str(), 0);
+    int err=-1;
+    if (err == 0)
+        cout << "Saved mesh at " << filename << endl;
+    else
+        cout << "Error saving mesh at " << filename << endl;
+}
+
+void ProcessXYZ::saveMeshAsOBJ(MyMesh& mesh, string filename) {
+    int err = vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, filename.c_str(), 0);
+    if (err == 0)
+        cout << "Saved mesh at " << filename << endl;
+    else
+        cout << "Error saving mesh at " << filename << endl;
+}
+
 void ProcessXYZ::viewModel(pcl::PointCloud<pcl::PointXYZ> cloud) {
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer (new pcl::visualization::PCLVisualizer("3D Viewer"));
     viewer->setBackgroundColor(0, 0, 0);
@@ -147,6 +172,14 @@ void ProcessXYZ::saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ> cloud, string fil
     pcl::PLYWriter w;
     w.write(filepath, cloud);
     cout << "Saved model at " << filepath << endl;
+}
+
+void ProcessXYZ::setOBJFolder(string fpath) {
+    this->objFolder = fpath;
+}
+
+void ProcessXYZ::setPLYFolder(string fpath) {
+    this->plyFolder = fpath;
 }
 
 
