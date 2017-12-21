@@ -1,7 +1,11 @@
+
+//Standard
 #include <iostream>
 #include <stdio.h>
 #include <string>
 #include <vector>
+
+//PCL
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/obj_io.h>
 #include <pcl/io/ply_io.h>
@@ -12,7 +16,27 @@
 #include <pcl/filters/conditional_removal.h>
 #include <pcl/common/common_headers.h>
 #include <boost/thread/thread.hpp>
+
+//VCG
 #include <vcg/complex/complex.h>
+#include <vcg/complex/algorithms/inertia.h>
+#include <vcg/complex/algorithms/hole.h>
+#include <vcg/complex/algorithms/local_optimization.h>
+#include <vcg/complex/algorithms/point_sampling.h>
+#include <vcg/complex/algorithms/smooth.h>
+#include <vcg/complex/algorithms/refine.h>
+//#include <vcg/complex/algorithms/ransac_matching.h>
+#include <vcg/complex/algorithms/local_optimization/tri_edge_flip.h>
+#include <vcg/complex/algorithms/update/color.h>
+#include <vcg/complex/algorithms/update/selection.h>
+#include <vcg/space/point_matching.h>
+//Topology Computation
+#include <vcg/complex/algorithms/update/topology.h>
+#include <vcg/complex/algorithms/update/flag.h>
+#include <vcg/complex/algorithms/update/normal.h>
+//Half Edge Iterators
+#include <vcg/simplex/face/pos.h>
+//Input Output
 #include <wrap/io_trimesh/import.h>
 #include <wrap/io_trimesh/export.h>
 
@@ -32,6 +56,12 @@ class MyFace : public vcg::Face<MyUsedTypes, vcg::face::FFAdj, vcg::face::Vertex
 
 class MyMesh : public vcg::tri::TriMesh<std::vector<MyVertex>, std::vector<MyFace>, std::vector<MyEdge> > {};
 
+class MyDelaunayFlip : public vcg::tri::TriEdgeFlip<MyMesh, MyDelaunayFlip> {
+public:
+    typedef vcg::tri::TriEdgeFlip<MyMesh, MyDelaunayFlip> TEF;
+    inline MyDelaunayFlip (const TEF::PosType &p, int i, vcg::BaseParameterClass *pp) : TEF(p, i, pp) {}
+};
+
 class ProcessXYZ {
 private:
     //Members
@@ -39,6 +69,7 @@ private:
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr;
     string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
     string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
+    string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
     MyMesh mesh;
     
     //Functions
@@ -48,16 +79,23 @@ private:
     void statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void ransacTest(MyMesh&);
+    void createBoundingBox(MyMesh&);
+    void holeFillTrivialEar(MyMesh&);
+    bool normalTest(typename vcg::face::Pos<MyMesh::FaceType>);
 public:
     //Functions
     void setPLYFolder(string);
     void setOBJFolder(string);
+    MyMesh& getMesh();
     void viewModel();
     void viewModel(pcl::PointCloud<pcl::PointXYZ>);
     void processModel(string);
     void saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ>, string);
     void saveMeshAsPLY(MyMesh&, string);
     void saveMeshAsOBJ(MyMesh&, string);
+    void importOBJAsMesh(string, MyMesh&);
+    void printVertexLocation(MyVertex&);
 };
 
 int main() {
@@ -71,7 +109,10 @@ int main() {
 
 void ProcessXYZ::processModel(string filename) {
     this->importOBJAsMesh(filename);
-    this->saveMeshAsOBJ(this->mesh, this->objFolder + "meshOrig.obj");
+    this->holeFillTrivialEar(this->mesh);
+//    this->ransacTest(this->mesh);
+//    this->saveMeshAsOBJ(this->mesh, this->objFolder + "ransacTest.obj");
+//    this->saveMeshAsOBJ(this->mesh, this->objFolder + "meshOrig.obj");
 //    this->importOBJAsPSD(filename);
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
@@ -124,8 +165,12 @@ void ProcessXYZ::importOBJAsPSD(string filename) {
 }
 
 void ProcessXYZ::importOBJAsMesh(string filename) {
+    this->importOBJAsMesh(filename, this->mesh);
+}
+
+void ProcessXYZ::importOBJAsMesh(string filename, MyMesh& mesh) {
     int zero;
-    if (vcg::tri::io::ImporterOBJ<MyMesh>::Open(this->mesh, filename.c_str(), zero) == vcg::tri::io::ImporterOBJ<MyMesh>::E_NOERROR) {
+    if (vcg::tri::io::ImporterOBJ<MyMesh>::Open(mesh, filename.c_str(), zero) == vcg::tri::io::ImporterOBJ<MyMesh>::E_NOERROR) {
         cout << "Imported OBJ as Mesh from " << filename << endl;
     }
     else {
@@ -180,6 +225,202 @@ void ProcessXYZ::setOBJFolder(string fpath) {
 
 void ProcessXYZ::setPLYFolder(string fpath) {
     this->plyFolder = fpath;
+}
+
+MyMesh& ProcessXYZ::getMesh() {
+    return this->mesh;
+}
+
+void ProcessXYZ::ransacTest(MyMesh & mesh) {
+//    cout << "Mesh has " << mesh.VN() << " vertices, " << mesh.FN() << " faces and " << mesh.EN() << " edges." << endl;
+//    vcg::tri::UpdateBounding<MyMesh>::Box(mesh);
+//
+//    vcg::RansacFramework<MyMesh, vcg::BaseFeatureSet<MyMesh> > ran;
+//    vcg::RansacFramework<MyMesh, vcg::BaseFeatureSet<MyMesh> >::Param params;
+//    vcg::BaseFeatureSet<MyMesh>::Param bParams;
+//    params.samplingRadiusPerc = 0.008;
+//    params.evalSize = 50;
+//    params.inlierRatioThr = 0.5;
+//    params.iterMax = 400;
+//    params.maxMatchingFeatureNum = 500;
+//    bParams.featureSampleRatio = 0.5;
+//    MyMesh mesh2;
+//    this->importOBJAsMesh(this->fname, mesh2);
+//    ran.Init(this->mesh, mesh2, params, bParams);
+//    cout << "Ran Init" << endl;
+}
+
+void ProcessXYZ::createBoundingBox(MyMesh & mesh) {
+    vcg::Box3<float> boundingBox;
+    
+}
+
+void ProcessXYZ::printVertexLocation(MyVertex & vertex) {
+    
+}
+
+//template <class MESH>
+bool ProcessXYZ::normalTest(typename vcg::face::Pos<MyMesh::FaceType> pos) {
+    MyMesh::ScalarType thr = 0.0f;
+//    MyMesh::CoordType NdP = vcg::TriangleNormal<MyMesh::FaceType>(*pos.f);
+    MyMesh::CoordType tmp, oop, soglia = MyMesh::CoordType(thr, thr, thr);
+    vcg::face::Pos<MyMesh::FaceType> aux = pos;
+    do {
+        aux.FlipF();
+        aux.FlipE();
+        oop = vcg::Abs(tmp - ::vcg::TriangleNormal<MyMesh::FaceType>(*pos.f));
+        if (oop < soglia)
+            return false;
+    } while ((aux != pos) && (!aux.IsBorder()));
+    return true;
+}
+
+void ProcessXYZ::holeFillTrivialEar(MyMesh & mesh) {
+    int holeSize = 5;
+    //Update face-face topology
+    vcg::tri::UpdateTopology<MyMesh>::FaceFace(mesh);
+    vcg::tri::UpdateNormal<MyMesh>::PerVertexPerFace(mesh);
+    vcg::tri::UpdateFlags<MyMesh>::FaceBorderFromFF(mesh);
+    assert(vcg::tri::Clean<MyMesh>::IsFFAdjacencyConsistent(mesh));
+    
+    //Compute the average of face areas
+    float avg, sumA = 0.0f;
+    int numA = 0, indices;
+    indices = mesh.face.size();
+    MyMesh::FaceIterator fi;
+    for (fi = mesh.face.begin(); fi != mesh.face.end(); ++fi) {
+        sumA += vcg::DoubleArea(*fi)/2;
+        numA++;
+        for (int ind=0; ind<3; ++ind) {
+            fi->V(ind)->InitIMark();
+        }
+    }
+    avg = sumA / numA;
+    //Algo
+    vcg::tri::Hole<MyMesh>::EarCuttingFill<vcg::tri::TrivialEar<MyMesh> >(mesh, holeSize, false);
+    vcg::tri::UpdateFlags<MyMesh>::FaceBorderFromFF(mesh);
+    assert(vcg::tri::Clean<MyMesh>::IsFFAdjacencyConsistent(mesh));
+    
+    //Start refining
+    MyMesh::VertexIterator vi;
+    MyMesh::FaceIterator f;
+    vector<MyMesh::FacePointer> vf;
+    f = mesh.face.begin();
+    f += indices;
+    for (; f != mesh.face.end(); ++f) {
+        if (!f->IsD()) {
+            f->SetS();
+        }
+    }
+    
+    vector<MyMesh::FacePointer *> FPP;
+    vector<MyMesh::FacePointer> added;
+    vector<MyMesh::FacePointer>::iterator vfit;
+    int i = 1;
+    for (f = mesh.face.begin(); f != mesh.face.end(); ++f) {
+        if (!(*f).IsD()) {
+            if (f->IsS()) {
+                f->V(0)->IsW();
+                f->V(1)->IsW();
+                f->V(2)->IsW();
+            }
+            else {
+                f->V(0)->ClearW();
+                f->V(1)->ClearW();
+                f->V(2)->ClearW();
+            }
+        }
+    }
+    
+    vcg::BaseParameterClass pp;
+    vcg::LocalOptimization<MyMesh> Fs(mesh, &pp);
+    Fs.SetTargetMetric(0.0f);
+    Fs.Init<MyDelaunayFlip>();
+    Fs.DoOptimization();
+    
+    do {
+        vf.clear();
+        f = mesh.face.begin();
+        f += indices;
+        for (; f != mesh.face.end(); ++f) {
+            if (f->IsS()) {
+                bool test = true;
+                for (int ind = 0; ind < 3; ++ind) {
+                    f->V(ind)->InitIMark();
+                }
+                test = (vcg::DoubleArea<MyMesh::FaceType>(*f)/2) > avg;
+                if (test)
+                    vf.push_back(&(*f));
+            }
+        }
+        printf("\r Refining [%d] -> %d", i, int(vf.size()));
+        i++;
+        
+        FPP.clear();
+        added.clear();
+        for (vfit = vf.begin(); vfit != vf.end(); ++vfit) {
+            FPP.push_back(&(*vfit));
+        }
+        int toAdd = vf.size();
+        MyMesh::FaceIterator f1, f2;
+        f2 = vcg::tri::Allocator<MyMesh>::AddFaces(mesh, toAdd*2, FPP);
+        MyMesh::VertexIterator vertp = vcg::tri::Allocator<MyMesh>::AddVertices(mesh, toAdd);
+        vector<MyMesh::FacePointer> added;
+        added.reserve(toAdd);
+        vfit = vf.begin();
+        
+        for (int i=0; i<toAdd; ++i, f2++, vertp++) {
+            f1 = f2;
+            f2++;
+            TriSplit<MyMesh, CenterPointBarycenter<MyMesh> >::Apply(vf[i], &(*f1), &(*f2), &(*vertp), CenterPointBarycenter<MyMesh>());
+            f1->SetS();
+            f2->SetS();
+            for (int itr=0; itr<3; itr++) {
+                f1->V(itr)->SetW();
+                f2->V(itr)->SetW();
+            }
+            added.push_back(&(*f1));
+            added.push_back(&(*f2));
+        }
+        vcg::BaseParameterClass pp;
+        vcg::LocalOptimization<MyMesh> FlippingSession(mesh, &pp);
+        FlippingSession.SetTargetMetric(0.0f);
+        FlippingSession.Init<MyDelaunayFlip>();
+        FlippingSession.DoOptimization();
+    } while (!vf.empty());
+    
+    vcg::LocalOptimization<MyMesh> Fiss(mesh, &pp);
+    Fiss.SetTargetMetric(0.0f);
+    Fiss.Init<MyDelaunayFlip>();
+    Fiss.DoOptimization();
+    
+//    vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, "trivialEar.obj", false);
+    int UBIT = MyMesh::VertexType::NewBitFlag();
+    f = mesh.face.begin();
+    f += indices;
+    for (; f != mesh.face.end(); ++f) {
+        if (f->IsS()) {
+            for (int ind=0; ind<3; ++ind) {
+                if (this->normalTest(vcg::face::Pos<MyMesh::FaceType>(&(*f), ind))) {
+                    f->V(ind)->SetUserBit(UBIT);
+                }
+            }
+            f->ClearS();
+        }
+    }
+    for (vi = mesh.vert.begin(); vi != mesh.vert.end(); ++vi) {
+        if (!(*vi).IsD()) {
+            if (vi->IsUserBit(UBIT)) {
+                (*vi).SetS();
+                vi->ClearUserBit(UBIT);
+            }
+        }
+    }
+    
+    vcg::tri::Smooth<MyMesh>::VertexCoordLaplacianBlend(mesh, 1, true);
+    printf("Completed. Saving...\n");
+    string fpath = this->objFolder + "trivialEar.obj";
+    vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, fpath.c_str(), false);
 }
 
 
