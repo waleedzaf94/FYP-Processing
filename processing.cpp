@@ -262,7 +262,7 @@ void ProcessXYZ::printVertexLocation(MyVertex & vertex) {
 //template <class MESH>
 bool ProcessXYZ::normalTest(typename vcg::face::Pos<MyMesh::FaceType> pos) {
     MyMesh::ScalarType thr = 0.0f;
-//    MyMesh::CoordType NdP = vcg::TriangleNormal<MyMesh::FaceType>(*pos.f);
+    MyMesh::CoordType NdP = vcg::TriangleNormal<MyMesh::FaceType>(*pos.f);
     MyMesh::CoordType tmp, oop, soglia = MyMesh::CoordType(thr, thr, thr);
     vcg::face::Pos<MyMesh::FaceType> aux = pos;
     do {
