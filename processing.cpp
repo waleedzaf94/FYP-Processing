@@ -1,4 +1,6 @@
 
+#define amanDev
+
 //Standard
 #include <iostream>
 #include <stdio.h>
@@ -67,9 +69,15 @@ private:
     //Members
     pcl::PointCloud<pcl::PointXYZ> cloud;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr;
+    #ifdef amanDev  
+    string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
+    string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";
+    string fname = "/home/aman/Desktop/FYP-Processing/335.obj";
+    #else
     string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
     string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
     string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
+    #endif
     MyMesh mesh;
     
     //Functions
@@ -99,7 +107,11 @@ public:
 };
 
 int main() {
+    #ifdef amanDev
+    string fname = "/home/aman/Desktop/FYP-Processing/335.obj";
+    #else
     string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
+    #endif
     //cout << "Input filename: ";
     //cin >> fname;
     ProcessXYZ processing;
@@ -111,7 +123,7 @@ void ProcessXYZ::processModel(string filename) {
     this->importOBJAsMesh(filename);
     this->holeFillTrivialEar(this->mesh);
 //    this->ransacTest(this->mesh);
-//    this->saveMeshAsOBJ(this->mesh, this->objFolder + "ransacTest.obj");
+    // this->saveMeshAsOBJ(this->mesh, this->objFolder + "ransacTest.obj");
 //    this->saveMeshAsOBJ(this->mesh, this->objFolder + "meshOrig.obj");
 //    this->importOBJAsPSD(filename);
 //    this->viewModel();
@@ -157,6 +169,7 @@ void ProcessXYZ::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Const
     cout << "Completed sor." << endl;
 }
 
+// unused 
 void ProcessXYZ::importOBJAsPSD(string filename) {
     int imp = pcl::io::loadOBJFile(filename, this->cloud);
     this->cloudPtr = this->cloud.makeShared();
@@ -277,9 +290,16 @@ bool ProcessXYZ::normalTest(typename vcg::face::Pos<MyMesh::FaceType> pos) {
 
 void ProcessXYZ::holeFillTrivialEar(MyMesh & mesh) {
     int holeSize = 5;
+
     //Update face-face topology
     vcg::tri::UpdateTopology<MyMesh>::FaceFace(mesh);
-    vcg::tri::UpdateNormal<MyMesh>::PerVertexPerFace(mesh);
+
+    vcg::tri::UpdateNormal<MyMesh>::PerVertexClear(mesh);
+    vcg::tri::UpdateNormal<MyMesh>::PerVertex(mesh);
+    // THIS IS NOT WOTKING ... Unable to UpdateNormal using Faces.
+    // vcg::tri::UpdateNormal<MyMesh>::PerFace(mesh);
+    // vcg::tri::UpdateNormal<MyMesh>::PerVertexPerFace(mesh);
+
     vcg::tri::UpdateFlags<MyMesh>::FaceBorderFromFF(mesh);
     assert(vcg::tri::Clean<MyMesh>::IsFFAdjacencyConsistent(mesh));
     
@@ -296,8 +316,12 @@ void ProcessXYZ::holeFillTrivialEar(MyMesh & mesh) {
         }
     }
     avg = sumA / numA;
+
+    cout << "Average: " << avg << endl;
+
+
     //Algo
-    vcg::tri::Hole<MyMesh>::EarCuttingFill<vcg::tri::TrivialEar<MyMesh> >(mesh, holeSize, false);
+    vcg::tri::Hole<MyMesh>::EarCuttingIntersectionFill<vcg::tri::SelfIntersectionEar<MyMesh> >(mesh, holeSize, false);
     vcg::tri::UpdateFlags<MyMesh>::FaceBorderFromFF(mesh);
     assert(vcg::tri::Clean<MyMesh>::IsFFAdjacencyConsistent(mesh));
     
@@ -312,7 +336,7 @@ void ProcessXYZ::holeFillTrivialEar(MyMesh & mesh) {
             f->SetS();
         }
     }
-    
+
     vector<MyMesh::FacePointer *> FPP;
     vector<MyMesh::FacePointer> added;
     vector<MyMesh::FacePointer>::iterator vfit;
@@ -339,6 +363,7 @@ void ProcessXYZ::holeFillTrivialEar(MyMesh & mesh) {
     Fs.DoOptimization();
     
     do {
+        // not working 
         vf.clear();
         f = mesh.face.begin();
         f += indices;
@@ -422,20 +447,3 @@ void ProcessXYZ::holeFillTrivialEar(MyMesh & mesh) {
     string fpath = this->objFolder + "trivialEar.obj";
     vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, fpath.c_str(), false);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
