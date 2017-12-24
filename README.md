@@ -5,11 +5,11 @@
 - At some point, we should create header files and move the custom class definitions there.
 
 ## TODO
-- [] Fix a lot of the code
-- [] Conversion function between point cloud and mesh
-- [] Outlier removal testing
-- [] Documentation
-- [] Implement either ransac or the density thing for plane detection + isolation + corner + edge detection to create outer bounds for the room
+- [ ] Fix a lot of the code
+- [ ] Conversion function between point cloud and mesh
+- [ ] Outlier removal testing
+- [ ] Documentation
+- [ ] Implement either ransac or the density thing for plane detection + isolation + corner + edge detection to create outer bounds for the room
 
 ## VCG Library
 - Created templated classes MyMesh, MyFace, MyEdge, MyVertex and a struct MyUsedTypes
@@ -36,7 +36,7 @@ Picked up the example from `trimesh_hole.cpp` in `vcglib/apps/sample/trimesh_hol
 - Can import OBJs
 - Can perform statistical outlier removal and radius outlier removal. 
 - None seem quite useful so far. 
-- [] Need to test with varying parameters.
+- [ ] Need to test with varying parameters.
 - Some problem with the conditional outlier removal
 - Some problem with the view model function
 - Most stuff requires pointers to work (i.e. internal functions etc.)

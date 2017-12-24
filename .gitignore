@@ -25,3 +25,4 @@ DerivedData/
 /CMakeFiles
 /.vs
 /CMakeCache.txt
+.vscode
