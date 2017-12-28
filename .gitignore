@@ -9,6 +9,37 @@ xcuserdata/
 *.xcscmblueprint
 *.xccheckout
 
+
+## IntelliJ
+.idea/*
+# Sensitive or high-churn files:
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+
+# Gradle:
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# CMake
+cmake-build-debug/
+cmake-build-release/
+
+# Mongo Explorer plugin:
+.idea/**/mongoSettings.xml
+
+## File-based project format:
+*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+out/
+
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
 build/
 bin/
@@ -26,3 +57,5 @@ DerivedData/
 /.vs
 /CMakeCache.txt
 .vscode
+
+models/OBJ/*
