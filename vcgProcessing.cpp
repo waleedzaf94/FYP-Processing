@@ -32,8 +32,24 @@ void VCGProcessing::printVertexLocation(MyVertex & vertex) {}
 MyMesh& VCGProcessing::getMesh() {    return this->mesh;   }
 void VCGProcessing::setOBJFolder(string fpath) {   this->objFolder = fpath;  }
 void VCGProcessing::setPLYFolder(string fpath) {   this->plyFolder = fpath;  }
+void VCGProcessing::performProcess()
+{
+    this->holeFillTrivialEar(this->mesh);
+//    this->triFitting(this->mesh);
+}
+
 
 // private functions
+
+float EvalPlane(vcg::Plane3f &pl, std::vector<vcg::Point3f> posVec)
+{
+  float off=0;
+  for(size_t i=0;i<posVec.size();++i)
+    off += fabs(vcg::SignedDistancePlanePoint(pl,posVec[i]));
+
+  off/=float(posVec.size());
+  return off;
+}
 void VCGProcessing::importOBJAsMesh(string filename, MyMesh& mesh) {
     int zero;
     if (vcg::tri::io::ImporterOBJ<MyMesh>::Open(mesh, filename.c_str(), zero) == vcg::tri::io::ImporterOBJ<MyMesh>::E_NOERROR) {
@@ -80,7 +96,7 @@ bool VCGProcessing::normalTest(typename vcg::face::Pos<MyMesh::FaceType> pos) {
     return true;
 }
 void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
-    int holeSize = 5;
+    int holeSize = 15;
 
     //Update face-face topology
     vcg::tri::UpdateTopology<MyMesh>::FaceFace(mesh);
@@ -111,7 +127,7 @@ void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
     cout << "Average: " << avg << endl;
 
 
-    //Algo
+    //Algo - Issue with Trivial Ear, Replaced with selfIntersectionEar...
     vcg::tri::Hole<MyMesh>::EarCuttingIntersectionFill<vcg::tri::SelfIntersectionEar<MyMesh> >(mesh, holeSize, false);
     vcg::tri::UpdateFlags<MyMesh>::FaceBorderFromFF(mesh);
     assert(vcg::tri::Clean<MyMesh>::IsFFAdjacencyConsistent(mesh));
@@ -154,7 +170,6 @@ void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
     Fs.DoOptimization();
 
     do {
-        // not working
         vf.clear();
         f = mesh.face.begin();
         f += indices;
@@ -164,13 +179,14 @@ void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
                 for (int ind = 0; ind < 3; ++ind) {
                     f->V(ind)->InitIMark();
                 }
-                test = (vcg::DoubleArea<MyMesh::FaceType>(*f)/2) > avg;
-                if (test)
+//                this is always false for some reason
+//                test = (vcg::DoubleArea<MyMesh::FaceType>(*f)/2) > avg;
+//                if (test)
                     vf.push_back(&(*f));
             }
         }
-        printf("\r Refining [%d] -> %d", i, int(vf.size()));
         i++;
+        printf("Refining [%d] -> %d\n", i, int(vf.size()));
 
         FPP.clear();
         added.clear();
@@ -203,14 +219,12 @@ void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
         FlippingSession.SetTargetMetric(0.0f);
         FlippingSession.Init<MyDelaunayFlip>();
         FlippingSession.DoOptimization();
-    } while (!vf.empty());
-
+    } while (i < 5);
+    cout << "Out of loop";
     vcg::LocalOptimization<MyMesh> Fiss(mesh, &pp);
     Fiss.SetTargetMetric(0.0f);
     Fiss.Init<MyDelaunayFlip>();
     Fiss.DoOptimization();
-
-//    vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, "trivialEar.obj", false);
     int UBIT = MyMesh::VertexType::NewBitFlag();
     f = mesh.face.begin();
     f += indices;
@@ -234,7 +248,57 @@ void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
     }
 
     vcg::tri::Smooth<MyMesh>::VertexCoordLaplacianBlend(mesh, 1, true);
-    printf("Completed. Saving...\n");
+    cout << "Completed. Saving..." << endl;
     string fpath = this->objFolder + "trivialEar.obj";
     vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, fpath.c_str(), false);
+}
+void VCGProcessing::triFitting(MyMesh & m){
+    vcg::tri::Icosahedron(m);
+//    need this but doesnt work cuz faces are not normalized
+    vcg::tri::UpdateNormal<MyMesh>::PerVertexNormalizedPerFaceNormalized(m);
+    vcg::tri::UpdateBounding<MyMesh>::Box(m);
+
+    // As a simple test just run over all the faces of a mesh
+    // get a few random points over it, perturb them and fit a plane on them.
+    vcg::Plane3f ple,plf,plw;
+    int cnt=0;
+    float scaleFac = m.bbox.Diag()/10.0f;
+    printf("ScaleFac %f\n\n",scaleFac);
+    vcg::math::MarsenneTwisterRNG rnd;
+    for(int i=0;i<m.FN();++i)
+    {
+    std::vector<vcg::Point3f> ExactVec;
+    std::vector<vcg::Point3f> PerturbVec;
+    std::vector<float> WeightVec;
+    vcg::Plane3f pl;
+    pl.Init(vcg::Barycenter(m.face[i]),m.face[i].N());
+    for(int j=0;j<200;++j)
+    {
+      vcg::Point3f p = vcg::tri::SurfaceSampling<MyMesh>::RandomPointInTriangle(m.face[i]);
+      ExactVec.push_back(p);
+      vcg::Point3f off = vcg::math::GeneratePointInUnitBallUniform<float>(rnd);
+      p+=off*scaleFac;
+      float w =  std::max(0.0f, 1.0f-fabs(vcg::SignedDistancePlanePoint(pl,p))/scaleFac);
+      PerturbVec.push_back(p);
+      WeightVec.push_back(w*w); // as weight we use the square of  (1-distance)
+    }
+
+    vcg::FitPlaneToPointSet(ExactVec,ple);
+    float err=EvalPlane(ple,ExactVec);
+
+    vcg::FitPlaneToPointSet(PerturbVec,plf);
+    float err0=EvalPlane(plf,ExactVec);
+
+    vcg::WeightedFitPlaneToPointSet(PerturbVec,WeightVec,plw);
+    float err1=EvalPlane(plw,ExactVec);
+    printf("Exact %5.3f Fit to Perturbed %5.3f Weighted fit to perturbed %5.3f\n",err,err0,err1);
+    if(err0>err1) cnt++;
+    }
+
+    printf("\nWeighted Fitting was better %i on %i\n",cnt,m.FN());
+
+    vcg::tri::Smooth<MyMesh>::VertexCoordLaplacianBlend(m, 1, true);
+    cout << "Completed. Saving..." << endl;
+    string fpath = this->objFolder + "fitting.obj";
+    vcg::tri::io::ExporterOBJ<MyMesh>::Save(m, fpath.c_str(), false);
 }

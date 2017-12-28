@@ -14,10 +14,6 @@ class PCLProcessing {
     //Members
     pcl::PointCloud<pcl::PointXYZ> cloud;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr;
-    void statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
-    void radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
-    void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
-    void importOBJAsPSD(string);
     #ifdef amanDev
     string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
     string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";
@@ -27,10 +23,16 @@ class PCLProcessing {
     string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
     string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
     #endif
+    // functions
+    void statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void importOBJAsPSD(string);
 
     public:
     void viewModel();
     void viewModel(pcl::PointCloud<pcl::PointXYZ>);
     void saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ>, string);
     void saveModelAsPLY(string);
+    void performProcess();
 };

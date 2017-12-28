@@ -1,3 +1,5 @@
+#define amanDev
+
 //VCG
 #include <vcg/complex/complex.h>
 #include <vcg/complex/algorithms/inertia.h>
@@ -46,8 +48,8 @@ class VCGProcessing {
 private:
     //Members
     #ifdef amanDev
-    string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
-    string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";
+    string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY/";
+    string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ/";
     string fname = "/home/aman/Desktop/FYP-Processing/335.obj";
     #else
     string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
@@ -55,13 +57,14 @@ private:
     string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
     #endif
     MyMesh mesh;
-
     //Functions
     void ransacTest(MyMesh&);
     void createBoundingBox(MyMesh&);
     void holeFillTrivialEar(MyMesh&);
+    void triFitting(MyMesh&);
     void importOBJAsMesh(string, MyMesh&);
     bool normalTest(typename vcg::face::Pos<MyMesh::FaceType>);
+
 public:
     //Functions
     void setPLYFolder(string);
@@ -71,4 +74,5 @@ public:
     void saveMeshAsPLY(MyMesh&, string);
     void saveMeshAsOBJ(MyMesh&, string);
     void printVertexLocation(MyVertex&);
+    void performProcess();
 };

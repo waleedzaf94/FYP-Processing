@@ -1,5 +1,3 @@
-#define amanDev
-
 //Standard
 #include <iostream>
 #include <stdio.h>
@@ -10,10 +8,10 @@
 using namespace std;
 
 int main() {
-    #ifdef amanDev
-    string fname = "/home/aman/Desktop/FYP-Processing/335.obj";
+    #ifndef amanDev
+        string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
     #else
-    string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
+        string fname = "/home/aman/Desktop/FYP-Processing/models/335.obj";
     #endif
     //cout << "Input filename: ";
     //cin >> fname;
@@ -23,13 +21,13 @@ int main() {
 }
 
 void ProcessXYZ::processModel(string filename) {
-//        this->vcgProcessor.getMesh();
-        this->vcgProcessor.importOBJAsMesh(filename);
+      this->vcgProcessor.importOBJAsMesh(filename);
+      this->vcgProcessor.performProcess();
 //    this->holeFillTrivialEar(this->mesh);
 //    this->ransacTest(this->mesh);
 //    this->vcgProcessor.saveMeshAsOBJ(this->mesh, this->objFolder + "ransacTest.obj");
 //    this->saveMeshAsOBJ(this->mesh, this->objFolder + "meshOrig.obj");
-//    this->importOBJAsPSD(filename);
+//      this->pclProcessor.importOBJAsPSD(filename);
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
 //    this->saveModelAsPLY(this->plyFolder + "orig.ply");
