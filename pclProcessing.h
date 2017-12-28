@@ -11,6 +11,8 @@
 #include <pcl/search/kdtree.h>
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/segmentation/extract_clusters.h>
+#include <pcl/sample_consensus/sac_model_parallel_plane.h>
+#include <pcl/sample_consensus/sac_model_perpendicular_plane.h>
 
 #include <pcl/features/don.h>
 
@@ -35,6 +37,9 @@ class PCLProcessing {
     void radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void diffOfNormalsSegmentation(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void savePCD(string, pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     public:
     void viewModel();
     void viewModel(pcl::PointCloud<pcl::PointXYZ>);

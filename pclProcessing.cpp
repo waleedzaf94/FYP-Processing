@@ -21,6 +21,46 @@ void PCLProcessing::conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Co
 	cor.filter(*filtered);
 	this->saveModelAsPLY(*filtered, this->plyFolder + "corFiltered.ply");
 }
+
+void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
+{
+        std::vector<int> inliers;
+
+    // created RandomSampleConsensus object and compute the appropriated model
+    SampleConsensusModelParallelPlane<pcl::PointXYZ> model (cloud);
+    model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
+    model.setEpsAngle (pcl::deg2rad (5));
+    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
+    ransac.setDistanceThreshold (.01);
+    ransac.computeModel();
+    ransac.getInliers(inliers);
+
+    // copies all inliers of the model computed to another PointCloud
+    pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
+    
+    this->saveModelAsPLY(*final, this->plyFolder + "floor.ply");
+}
+
+void PCLProcessing::wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
+{
+    std::vector<int> inliers;
+
+    // created RandomSampleConsensus object and compute the appropriated model
+    SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> model (cloud);
+    model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
+    model.setEpsAngle (pcl::deg2rad (5));
+    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
+    ransac.setDistanceThreshold (.01);
+    ransac.computeModel();
+    ransac.getInliers(inliers);
+
+    // copies all inliers of the model computed to another PointCloud
+    pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
+
+    this->saveModelAsPLY(*final, this->plyFolder + "wall.ply");
+}
+
+
 void PCLProcessing::radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered (new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::RadiusOutlierRemoval<pcl::PointXYZ> ror;
@@ -38,9 +78,9 @@ void PCLProcessing::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Co
 	sor.setStddevMulThresh(1.0);
 	sor.filter(*filtered);
 	this->saveModelAsPLY(*filtered, this->plyFolder + "sorFiltered.ply");
-
 	cout << "Completed sor." << endl;
 }
+
 void PCLProcessing::diffOfNormalsSegmentation(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 {
 	//The smallest scale to use in the DoN filter.
