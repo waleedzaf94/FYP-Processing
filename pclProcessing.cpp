@@ -24,12 +24,13 @@ void PCLProcessing::conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Co
 
 void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 {
-        std::vector<int> inliers;
+    std::vector<int> inliers;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
 
     // created RandomSampleConsensus object and compute the appropriated model
-    SampleConsensusModelParallelPlane<pcl::PointXYZ> model (cloud);
+    pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> model (new pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> (cloud));
     model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
-    model.setEpsAngle (pcl::deg2rad (5));
+    model.setEpsAngle (pcl::deg2rad (5.0));
     pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
     ransac.setDistanceThreshold (.01);
     ransac.computeModel();
@@ -44,13 +45,14 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 void PCLProcessing::wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 {
     std::vector<int> inliers;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
 
     // created RandomSampleConsensus object and compute the appropriated model
-    SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> model (cloud);
+    pcl::SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> model (new pcl::SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> (cloud));
     model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
-    model.setEpsAngle (pcl::deg2rad (5));
-    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
-    ransac.setDistanceThreshold (.01);
+    model.setEpsAngle (pcl::deg2rad (5.0));
+    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model, 0.01);
+    // ransac.setDistanceThreshold (.01);
     ransac.computeModel();
     ransac.getInliers(inliers);
 
@@ -59,7 +61,6 @@ void PCLProcessing::wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 
     this->saveModelAsPLY(*final, this->plyFolder + "wall.ply");
 }
-
 
 void PCLProcessing::radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered (new pcl::PointCloud<pcl::PointXYZ>);
@@ -253,5 +254,6 @@ void PCLProcessing::importOBJAsPSD(string filename) {
 }
 void PCLProcessing::performProcess()
 {
-	this->diffOfNormalsSegmentation(cloudPtr);
+	this->floorFinder(cloudPtr);
+	this->wallFinder(cloudPtr);
 }

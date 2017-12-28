@@ -11,8 +11,15 @@
 #include <pcl/search/kdtree.h>
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/segmentation/extract_clusters.h>
+#include <pcl/sample_consensus/ransac.h>
 #include <pcl/sample_consensus/sac_model_parallel_plane.h>
 #include <pcl/sample_consensus/sac_model_perpendicular_plane.h>
+
+#include <pcl/console/parse.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/sample_consensus/ransac.h>
+#include <pcl/visualization/pcl_visualizer.h>
+#include <boost/thread/thread.hpp>
 
 #include <pcl/features/don.h>
 
