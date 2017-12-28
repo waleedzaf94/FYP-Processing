@@ -7,11 +7,18 @@
 #include <pcl/filters/radius_outlier_removal.h>
 #include <pcl/filters/conditional_removal.h>
 #include <pcl/common/common_headers.h>
+#include <pcl/search/organized.h>
+#include <pcl/search/kdtree.h>
+#include <pcl/features/normal_3d_omp.h>
+#include <pcl/segmentation/extract_clusters.h>
+
+#include <pcl/features/don.h>
+
 //#include <boost/thread/thread.Hhpp>
 
 class PCLProcessing {
     private:
-    //Members
+    //Membersc
     pcl::PointCloud<pcl::PointXYZ> cloud;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr;
     #ifdef amanDev
@@ -27,12 +34,12 @@ class PCLProcessing {
     void statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
-    void importOBJAsPSD(string);
-
+    void diffOfNormalsSegmentation(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     public:
     void viewModel();
     void viewModel(pcl::PointCloud<pcl::PointXYZ>);
     void saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ>, string);
     void saveModelAsPLY(string);
     void performProcess();
+    void importOBJAsPSD(string);
 };

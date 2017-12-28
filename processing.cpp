@@ -21,13 +21,14 @@ int main() {
 }
 
 void ProcessXYZ::processModel(string filename) {
-      this->vcgProcessor.importOBJAsMesh(filename);
-      this->vcgProcessor.performProcess();
+//      this->vcgProcessor.importOBJAsMesh(filename);
+//      this->vcgProcessor.performProcess();
 //    this->holeFillTrivialEar(this->mesh);
 //    this->ransacTest(this->mesh);
 //    this->vcgProcessor.saveMeshAsOBJ(this->mesh, this->objFolder + "ransacTest.obj");
 //    this->saveMeshAsOBJ(this->mesh, this->objFolder + "meshOrig.obj");
-//      this->pclProcessor.importOBJAsPSD(filename);
+      this->pclProcessor.importOBJAsPSD(filename);
+      this->pclProcessor.performProcess();
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
 //    this->saveModelAsPLY(this->plyFolder + "orig.ply");

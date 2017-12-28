@@ -102,7 +102,7 @@ void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
     vcg::tri::UpdateTopology<MyMesh>::FaceFace(mesh);
 
     vcg::tri::UpdateNormal<MyMesh>::PerVertexClear(mesh);
-    vcg::tri::UpdateNormal<MyMesh>::PerVertex(mesh);
+    vcg::tri::UpdateNormal<MyMesh>::PerVertexNormalized(mesh);
     // THIS IS NOT WOTKING ... Unable to UpdateNormal using Faces.
     // vcg::tri::UpdateNormal<MyMesh>::PerFace(mesh);
     // vcg::tri::UpdateNormal<MyMesh>::PerVertexPerFace(mesh);

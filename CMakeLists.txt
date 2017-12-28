@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 11)
 
 project(one)
-find_package(PCL 1.8 REQUIRED COMPONENTS common io visualization filters)
+find_package(PCL 1.8 REQUIRED)
 
 # Output folder
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
