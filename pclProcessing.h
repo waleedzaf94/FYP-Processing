@@ -25,6 +25,8 @@
 
 //#include <boost/thread/thread.Hhpp>
 
+using namespace std;
+
 class PCLProcessing {
     private:
     //Membersc

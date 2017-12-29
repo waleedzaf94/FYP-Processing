@@ -8,13 +8,14 @@ find_package(PCL 1.8 REQUIRED)
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(INCLUDE_DIR .)
 include_directories("${PROJECT_SOURCE_DIR}")
-include_directories(${PROJECT_SOURCE_DIR}/meshlab)
 include_directories(${PROJECT_SOURCE_DIR}/vcglib)
 include_directories(${PCL_INCLUDE_DIRS})
-include_directories(${INCLUDE_DIR})
 link_directories(${PCL_LIBRARY_DIRS})
+file(GLOB processing_SRC
+	"*.h"
+	"*.cpp"
+)
 add_definitions(${PCL_DEFINITIONS})
-add_executable(processing ${PROJECT_SOURCE_DIR}/processing.cpp)
+add_executable(processing ${processing_SRC})
 target_link_libraries(processing ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
