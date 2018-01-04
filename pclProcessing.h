@@ -47,7 +47,9 @@ class PCLProcessing {
     void conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void diffOfNormalsSegmentation(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
-    void wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void planeFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+
+//    void wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void savePCD(string, pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     public:
     void viewModel();

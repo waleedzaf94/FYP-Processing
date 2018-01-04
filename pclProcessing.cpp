@@ -3,12 +3,14 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <pcl/sample_consensus/sac_model_plane.h>
 
 #include "pclProcessing.h"
 
 using namespace pcl;
 
 // Private Functions
+inline
 void PCLProcessing::conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered (new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::ConditionAnd<pcl::PointXYZ>::Ptr rangeCond(new pcl::ConditionAnd<pcl::PointXYZ>());
@@ -22,15 +24,38 @@ void PCLProcessing::conditionalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Co
 	this->saveModelAsPLY(*filtered, this->plyFolder + "corFiltered.ply");
 }
 
+inline
+void PCLProcessing::planeFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
+{
+    std::vector<int> inliers;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
+
+    // created RandomSampleConsensus object and compute the appropriated model
+    pcl::SampleConsensusModelPlane<pcl::PointXYZ>::Ptr
+        model (new pcl::SampleConsensusModelPlane<pcl::PointXYZ> (cloud));
+
+    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
+    ransac.setDistanceThreshold (.01);
+    ransac.computeModel();
+    ransac.getInliers(inliers);
+
+    // copies all inliers of the model computed to another PointCloud
+    pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
+
+    this->saveModelAsPLY(*final, this->plyFolder + "/initPlane.ply");
+}
+
+inline
 void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 {
     std::vector<int> inliers;
     pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
 
     // created RandomSampleConsensus object and compute the appropriated model
-    pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> model (new pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> (cloud));
-    model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
-    model.setEpsAngle (pcl::deg2rad (5.0));
+    pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ>::Ptr
+        model (new pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> (cloud));
+//    model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
+//    model.setEpsAngle (pcl::deg2rad (5.0));
     pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
     ransac.setDistanceThreshold (.01);
     ransac.computeModel();
@@ -39,29 +64,29 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     // copies all inliers of the model computed to another PointCloud
     pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
     
-    this->saveModelAsPLY(*final, this->plyFolder + "floor.ply");
+    this->saveModelAsPLY(*final, this->plyFolder + "/floor.ply");
 }
-
-void PCLProcessing::wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
-{
-    std::vector<int> inliers;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
-
-    // created RandomSampleConsensus object and compute the appropriated model
-    pcl::SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> model (new pcl::SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> (cloud));
-    model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
-    model.setEpsAngle (pcl::deg2rad (5.0));
-    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model, 0.01);
-    // ransac.setDistanceThreshold (.01);
-    ransac.computeModel();
-    ransac.getInliers(inliers);
-
-    // copies all inliers of the model computed to another PointCloud
-    pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
-
-    this->saveModelAsPLY(*final, this->plyFolder + "wall.ply");
-}
-
+//
+//void PCLProcessing::wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
+//{
+//    std::vector<int> inliers;
+//    pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
+//
+//    // created RandomSampleConsensus object and compute the appropriated model
+//    pcl::SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> model (new pcl::SampleConsensusModelPerpendicularPlane<pcl::PointXYZ> (cloud));
+//    model.setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
+//    model.setEpsAngle (pcl::deg2rad (5.0));
+//    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model, 0.01);
+//    // ransac.setDistanceThreshold (.01);
+//    ransac.computeModel();
+//    ransac.getInliers(inliers);
+//
+//    // copies all inliers of the model computed to another PointCloud
+//    pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
+//
+//    this->saveModelAsPLY(*final, this->plyFolder + "wall.ply");
+//}
+inline
 void PCLProcessing::radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered (new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::RadiusOutlierRemoval<pcl::PointXYZ> ror;
@@ -71,6 +96,8 @@ void PCLProcessing::radiusOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPt
 	ror.filter(*filtered);
 	this->saveModelAsPLY(*filtered, this->plyFolder + "rorFiltered.ply");
 }
+
+inline
 void PCLProcessing::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered (new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor(false);
@@ -82,6 +109,7 @@ void PCLProcessing::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Co
 	cout << "Completed sor." << endl;
 }
 
+inline
 void PCLProcessing::diffOfNormalsSegmentation(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 {
 	//The smallest scale to use in the DoN filter.
@@ -231,6 +259,7 @@ void PCLProcessing::diffOfNormalsSegmentation(pcl::PointCloud<pcl::PointXYZ>::Co
 }
 
 // Public Members
+inline
 void PCLProcessing::viewModel(pcl::PointCloud<pcl::PointXYZ> cloud) {
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer (new pcl::visualization::PCLVisualizer("3D Viewer"));
 	viewer->setBackgroundColor(0, 0, 0);
@@ -239,21 +268,31 @@ void PCLProcessing::viewModel(pcl::PointCloud<pcl::PointXYZ> cloud) {
 	viewer->addCoordinateSystem(1.0);
 	viewer->initCameraParameters();
 }
+
+inline
 void PCLProcessing::viewModel() {    this->viewModel(this->cloud);   }
+
+inline
 void PCLProcessing::saveModelAsPLY(string filepath) {    this->saveModelAsPLY(this->cloud, filepath);    }
+
+inline
 void PCLProcessing::saveModelAsPLY(pcl::PointCloud<pcl::PointXYZ> cloud, string filepath) {
 	pcl::PLYWriter w;
 	w.write(filepath, cloud);
 	cout << "Saved model at " << filepath << endl;
 }
+
+inline
 void PCLProcessing::importOBJAsPSD(string filename) {
 	int imp = pcl::io::loadOBJFile(filename, this->cloud);
 	this->cloudPtr = this->cloud.makeShared();
 	if (imp == 0)
 		cout << "Imported file at " << filename << endl;
 }
+
+inline
 void PCLProcessing::performProcess()
 {
 	this->floorFinder(cloudPtr);
-	this->wallFinder(cloudPtr);
+//	this->wallFinder(cloudPtr);
 }

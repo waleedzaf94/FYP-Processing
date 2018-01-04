@@ -11,7 +11,9 @@
 using namespace std;
 
 // public functions
+inline
 void VCGProcessing::importOBJAsMesh(string filename) {    return VCGProcessing::importOBJAsMesh(filename, this->mesh);   }
+inline
 void VCGProcessing::saveMeshAsPLY(MyMesh &mesh, string filename) {
     //TODO: Fix this. Leads to some library error or sth.
 //    int err = vcg::tri::io::ExporterPLY<MyMesh>::Save(mesh, filename.c_str(), 0);
@@ -21,6 +23,7 @@ void VCGProcessing::saveMeshAsPLY(MyMesh &mesh, string filename) {
     else
         cout << "Error saving mesh at " << filename << endl;
 }
+inline
 void VCGProcessing::saveMeshAsOBJ(MyMesh& mesh, string filename) {
     int err = vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, filename.c_str(), 0);
     if (err == 0)
@@ -28,10 +31,15 @@ void VCGProcessing::saveMeshAsOBJ(MyMesh& mesh, string filename) {
     else
         cout << "Error saving mesh at " << filename << endl;
 }
+inline
 void VCGProcessing::printVertexLocation(MyVertex & vertex) {}
+inline
 MyMesh& VCGProcessing::getMesh() {    return this->mesh;   }
+inline
 void VCGProcessing::setOBJFolder(string fpath) {   this->objFolder = fpath;  }
+inline
 void VCGProcessing::setPLYFolder(string fpath) {   this->plyFolder = fpath;  }
+inline
 void VCGProcessing::performProcess()
 {
     this->holeFillTrivialEar(this->mesh);
@@ -41,6 +49,7 @@ void VCGProcessing::performProcess()
 
 // private functions
 
+inline
 float EvalPlane(vcg::Plane3f &pl, std::vector<vcg::Point3f> posVec)
 {
   float off=0;
@@ -50,6 +59,7 @@ float EvalPlane(vcg::Plane3f &pl, std::vector<vcg::Point3f> posVec)
   off/=float(posVec.size());
   return off;
 }
+inline
 void VCGProcessing::importOBJAsMesh(string filename, MyMesh& mesh) {
     int zero;
     if (vcg::tri::io::ImporterOBJ<MyMesh>::Open(mesh, filename.c_str(), zero) == vcg::tri::io::ImporterOBJ<MyMesh>::E_NOERROR) {
@@ -59,6 +69,7 @@ void VCGProcessing::importOBJAsMesh(string filename, MyMesh& mesh) {
         cout << "Error importing file: " << filename << endl;
     }
 }
+inline
 void VCGProcessing::ransacTest(MyMesh & mesh) {
 //    cout << "Mesh has " << mesh.VN() << " vertices, " << mesh.FN() << " faces and " << mesh.EN() << " edges." << endl;
 //    vcg::tri::UpdateBounding<MyMesh>::Box(mesh);
@@ -77,10 +88,12 @@ void VCGProcessing::ransacTest(MyMesh & mesh) {
 //    ran.Init(this->mesh, mesh2, params, bParams);
 //    cout << "Ran Init" << endl;
 }
+inline
 void VCGProcessing::createBoundingBox(MyMesh & mesh) {
     vcg::Box3<float> boundingBox;
 
 }
+inline
 bool VCGProcessing::normalTest(typename vcg::face::Pos<MyMesh::FaceType> pos) {
     MyMesh::ScalarType thr = 0.0f;
     MyMesh::CoordType NdP = vcg::TriangleNormal<MyMesh::FaceType>(*pos.f);
@@ -95,6 +108,7 @@ bool VCGProcessing::normalTest(typename vcg::face::Pos<MyMesh::FaceType> pos) {
     } while ((aux != pos) && (!aux.IsBorder()));
     return true;
 }
+inline
 void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
     int holeSize = 15;
 
@@ -252,6 +266,7 @@ void VCGProcessing::holeFillTrivialEar(MyMesh & mesh) {
     string fpath = this->objFolder + "trivialEar.obj";
     vcg::tri::io::ExporterOBJ<MyMesh>::Save(mesh, fpath.c_str(), false);
 }
+inline
 void VCGProcessing::triFitting(MyMesh & m){
     vcg::tri::Icosahedron(m);
 //    need this but doesnt work cuz faces are not normalized
