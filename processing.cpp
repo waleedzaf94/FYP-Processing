@@ -29,8 +29,9 @@ void ProcessXYZ::processModel(string filename) {
 //    this->ransacTest(this->mesh);
 //    this->vcgProcessor.saveMeshAsOBJ(this->mesh, this->objFolder + "ransacTest.obj");
 //    this->saveMeshAsOBJ(this->mesh, this->objFolder + "meshOrig.obj");
-      this->pclProcessor.importOBJAsPSD(filename);
-      this->pclProcessor.performProcess();
+// this->pclProcessor.importOBJAsPSD(filename);
+//   this->pclProcessor.performProcess();
+    this->cgalProcessor.testImportOBJ();
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
 //    this->saveModelAsPLY(this->plyFolder + "orig.ply");
