@@ -39,7 +39,7 @@ class PCLProcessing {
     #else
     string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
     string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
-    string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
+    string fname = "/Users/waleedzafar/projects/fyp/one/models/335.obj";
     #endif
     // functions
     void statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
@@ -49,7 +49,7 @@ class PCLProcessing {
     void floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void planeFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
 
-//    void wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void savePCD(string, pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     public:
     void viewModel();

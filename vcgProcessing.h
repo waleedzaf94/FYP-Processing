@@ -1,4 +1,3 @@
-#define amanDev
 
 //VCG
 #include <vcg/complex/complex.h>
