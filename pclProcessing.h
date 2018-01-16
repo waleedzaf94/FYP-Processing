@@ -50,6 +50,7 @@ class PCLProcessing {
     void planeFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
 
     void wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void getPlaneCoefficients(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void savePCD(string, pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     public:
     void viewModel();

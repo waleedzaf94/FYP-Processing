@@ -54,7 +54,7 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     // created RandomSampleConsensus object and compute the appropriated model
     pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ>::Ptr
         model (new pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> (cloud));
-    model->setAxis(Eigen::Vector3f (1.0, 0.0, 0.0));
+    model->setAxis(Eigen::Vector3f (0.0, 0.0, 1.0));
     model->setEpsAngle(pcl::deg2rad(15.0));
     pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
     ransac.setDistanceThreshold (.01);
@@ -64,7 +64,17 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     // copies all inliers of the model computed to another PointCloud
     pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
     
-    this->saveModelAsPLY(*final, this->plyFolder + "/y15.ply");
+    Eigen::VectorXf mc;
+    mc.resize(4);
+    vector<int> indices;
+    for (int i=0; i<3; i++)
+        indices.push_back(i);
+    
+    pcl::SampleConsensusModelPlane<pcl::PointXYZ> modelPlane (final);
+    modelPlane.computeModelCoefficients(indices, mc);
+    cout << "Plane coefficients: " << mc(0) << ", " << mc(1) << ", " << mc(2) << ", " << mc(3) << endl;
+    
+    this->saveModelAsPLY(*final, this->plyFolder + "/z15.ply");
 }
 
 inline
@@ -78,12 +88,23 @@ void PCLProcessing::wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     model->setAxis (Eigen::Vector3f (0.0, 0.0, 1.0));
     model->setEpsAngle (pcl::deg2rad (5.0));
     pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model, 0.01);
-     ransac.setDistanceThreshold (.01);
+    ransac.setDistanceThreshold (.01);
     ransac.computeModel();
     ransac.getInliers(inliers);
 
     // copies all inliers of the model computed to another PointCloud
     pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
+    
+    Eigen::VectorXf mc;
+    mc.resize(4);
+    vector<int> indices;
+    for (int i=0; i<3; i++)
+        indices.push_back(i);
+    
+    pcl::SampleConsensusModelPlane<pcl::PointXYZ> modelPlane (final);
+    modelPlane.computeModelCoefficients(indices, mc);
+    cout << "Plane coefficients: " << mc(0) << ", " << mc(1) << ", " << mc(2) << ", " << mc(3) << endl;
+//    model->computeModelCoefficients(indices, mc);
 
     this->saveModelAsPLY(*final, this->plyFolder + "wall.ply");
 }
@@ -108,6 +129,11 @@ void PCLProcessing::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Co
 	sor.filter(*filtered);
 	this->saveModelAsPLY(*filtered, this->plyFolder + "sorFiltered.ply");
 	cout << "Completed sor." << endl;
+}
+
+inline
+void PCLProcessing::getPlaneCoefficients(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
+    
 }
 
 inline
@@ -291,9 +317,11 @@ void PCLProcessing::importOBJAsPSD(string filename) {
 		cout << "Imported file at " << filename << endl;
 }
 
+
+
 inline
 void PCLProcessing::performProcess()
 {
-//    this->floorFinder(cloudPtr);
-    this->wallFinder(cloudPtr);
+    this->floorFinder(cloudPtr);
+//    this->wallFinder(cloudPtr);
 }

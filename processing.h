@@ -1,5 +1,5 @@
 #include "vcgProcessing.cpp"
-// #include "pclProcessing.cpp"
+#include "pclProcessing.cpp"
 #include "cgalProcessing.cpp"
 
 class ProcessXYZ {
@@ -17,6 +17,6 @@ private:
 public:
     void processModel(string);
     VCGProcessing vcgProcessor;
-    // PCLProcessing pclProcessor;
-    CGALProcessing cgalProcessor; 
+    PCLProcessing pclProcessor;
+    CGALProcessing cgalProcessor;
 };
