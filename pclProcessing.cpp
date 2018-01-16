@@ -60,7 +60,6 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 {
     std::vector<int> inliers;
     pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr remainingModel (new pcl::PointCloud<pcl::PointXYZ>);
 
     // created RandomSampleConsensus object and compute the appropriated model
     pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ>::Ptr
@@ -69,6 +68,7 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     model->setEpsAngle(pcl::deg2rad(15.0));
     pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
     ransac.setDistanceThreshold (.01);
+    ransac.setMaxIterations(1000);
     ransac.computeModel();
     ransac.getInliers(inliers);
 
@@ -336,6 +336,7 @@ void PCLProcessing::performProcess()
 {
     this->extractIndicies(cloudPtr);
 //    this->wallFinder(cloudPtr);
+//    this->floorFinder(cloudPtr);
 }
 
 inline 
@@ -365,16 +366,18 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
     // Create the segmentation object
     pcl::SACSegmentation<pcl::PointXYZ> seg;
     // Optional
-    seg.setOptimizeCoefficients (false);
+    seg.setOptimizeCoefficients (true);
     // Mandatory
     // seg.setModelType (pcl::SACMODEL_PLANE);
-    seg.setModelType (pcl:: SACMODEL_PERPENDICULAR_PLANE);
+    seg.setModelType (pcl:: SACMODEL_PARALLEL_PLANE);
+    // seg.setModelType (pcl:: SACMODEL_PERPENDICULAR_PLANE);
     seg.setMethodType (pcl::SAC_RANSAC);
-    seg.setMaxIterations (20);
-    seg.setDistanceThreshold (0.1);
+    seg.setMaxIterations (1000);
+    seg.setDistanceThreshold (0.065);
 
     // Settings for PERPENDICULAR PLANE
-    seg.setAxis(Eigen::Vector3f (0.0, 1.0, 0.0));
+    // These are the estimated vector of the floor 
+    seg.setAxis(Eigen::Vector3f (0.10, 0.99, 0.06));
     seg.setEpsAngle(pcl::deg2rad(15.0));
     // Create the filtering object
     pcl::ExtractIndices<pcl::PointXYZ> extract;
