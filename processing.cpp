@@ -1,5 +1,7 @@
 //Standard
 
+#define amanDev
+
 #include <iostream>
 #include <stdio.h>
 #include <string>
