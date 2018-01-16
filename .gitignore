@@ -42,6 +42,7 @@ out/
 
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
 build/
+build2/
 bin/
 DerivedData/
 *.moved-aside

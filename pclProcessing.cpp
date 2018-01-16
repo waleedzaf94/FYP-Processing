@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <pcl/sample_consensus/sac_model_plane.h>
+#include <pcl/filters/extract_indices.h>
 
 #include "pclProcessing.h"
 
@@ -43,6 +44,17 @@ void PCLProcessing::planeFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
 
     this->saveModelAsPLY(*final, this->plyFolder + "/initPlane.ply");
+}
+
+
+inline 
+void PCLProcessing::removePoints(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, std::vector<int> points, pcl::PointCloud<pcl::PointXYZ>::ConstPtr newCloud)
+{
+    pcl::ExtractIndices<pcl::PointXYZ> extract;
+    extract.setInputCloud (cloud);
+    extract.setIndices (points);
+    extract.setNegative(true);
+    extract.filter(*newCloud);
 }
 
 inline
