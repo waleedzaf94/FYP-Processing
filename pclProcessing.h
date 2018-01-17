@@ -36,9 +36,10 @@ using namespace std;
 
 class PCLProcessing {
     private:
-    //Membersc
+    //Members
     pcl::PointCloud<pcl::PointXYZ> cloud;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr;
+    string modelFName = "dotnet";
     #ifdef amanDev
     string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
     string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";

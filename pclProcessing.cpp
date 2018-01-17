@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/filesystem.hpp>
+
 #include "pclProcessing.h"
 
 using namespace pcl;
@@ -342,23 +344,28 @@ void PCLProcessing::performProcess()
 inline 
 void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud_blob)
 {
-    // pcl::PCLPointCloud2::Ptr cloud_blob (new pcl::PCLPointCloud2), cloud_filtered_blob (new pcl::PCLPointCloud2);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZ>), cloud_p (new pcl::PointCloud<pcl::PointXYZ>), cloud_f (new pcl::PointCloud<pcl::PointXYZ>);
 
     std::cerr << "PointCloud before filtering: " << cloud_blob->width * cloud_blob->height << " data points." << std::endl;
+    
+    // Set control variables
+    float voxelGridLeafSize = 0.01;
+    int segMaxIterations = 10000;
+    double segDistanceThreshold = 0.15;
+    double segEpsAngle = 5.0;
+    double cHullAlpha = 0.3;
 
     // Create the filtering object: downsample the dataset using a leaf size of 1cm
     pcl::VoxelGrid<pcl::PointXYZ> sor;
     sor.setInputCloud (cloud_blob);
-    sor.setLeafSize (0.01f, 0.01f, 0.01f);
+    sor.setLeafSize (voxelGridLeafSize, voxelGridLeafSize, voxelGridLeafSize);
     sor.filter (*cloud_filtered);
 
     std::cerr << "PointCloud after filtering: " << cloud_filtered->width * cloud_filtered->height << " data points." << std::endl;
 
     // // Write the downsampled version to disk
     pcl::PCDWriter writer;
-    // writer.write<pcl::PointXYZ> ("table_scene_lms400_downsampled.pcd", *cloud_filtered, false);
-    this->saveModelAsPLY(*cloud_filtered, this->plyFolder+"/modelModel.ply" );
+    this->saveModelAsPLY(*cloud_filtered, this->plyFolder + "/" + this->modelFName + "_downsampled.ply" );
 
 
     pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients ());
@@ -372,13 +379,14 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
     seg.setModelType (pcl:: SACMODEL_PARALLEL_PLANE);
     // seg.setModelType (pcl:: SACMODEL_PERPENDICULAR_PLANE);
     seg.setMethodType (pcl::SAC_RANSAC);
-    seg.setMaxIterations (1000);
-    seg.setDistanceThreshold (0.065);
+    seg.setMaxIterations (segMaxIterations);
+//    seg.setDistanceThreshold (0.065);
+    seg.setDistanceThreshold(segDistanceThreshold);
 
     // Settings for PERPENDICULAR PLANE
     // These are the estimated vector of the floor 
     seg.setAxis(Eigen::Vector3f (0.10, 0.99, 0.06));
-    seg.setEpsAngle(pcl::deg2rad(15.0));
+    seg.setEpsAngle(pcl::deg2rad(segEpsAngle));
     // Create the filtering object
     pcl::ExtractIndices<pcl::PointXYZ> extract;
 
@@ -406,14 +414,21 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_hull (new pcl::PointCloud<pcl::PointXYZ>);
         pcl::ConcaveHull<pcl::PointXYZ> chull;
         chull.setInputCloud (cloud_p);
-        chull.setAlpha (0.1);
+        chull.setAlpha (cHullAlpha);
         chull.reconstruct (*cloud_hull);
 
         std::cerr << "Concave hull has: " << cloud_hull->points.size () << " data points." << std::endl;
 
         std::stringstream ss;
-        ss << "test_cave_2_" << i << ".pcd";
-        writer.write<pcl::PointXYZ> (ss.str (), *cloud_hull, false);
+//        ss << "test_cave_2_5000i_10cm_3_" << i << ".ply";
+        ss << this->plyFolder << "segments/" << this->modelFName << "/" << voxelGridLeafSize << "_" << segMaxIterations << "_" << segDistanceThreshold << "_" << segEpsAngle << "_" << cHullAlpha << "/";
+        boost::filesystem::path dir(ss.str());
+        if (!boost::filesystem::exists(dir)) {
+            boost::filesystem::create_directory(dir);
+        }
+        ss << i << ".ply";
+//        writer.write<pcl::PointXYZ> (ss.str (), *cloud_hull, false);
+        this->saveModelAsPLY(*cloud_hull, ss.str());
 
         // Create the filtering object
         extract.setNegative (true);

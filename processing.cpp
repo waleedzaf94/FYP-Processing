@@ -1,7 +1,5 @@
 //Standard
 
-#define amanDev
-
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -12,7 +10,7 @@ using namespace std;
 
 int main() {
     #ifndef amanDev
-        string fname = "/Users/waleedzafar/projects/fyp/one/models/335.obj";
+        string fname = "/Users/waleedzafar/projects/fyp/one/models/DotNet.obj";
     #else
         string fname = "/home/aman/Desktop/FYP-Processing/models/335.obj";
     #endif

@@ -13,6 +13,20 @@ private:
     string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
     string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
     #endif
+    string modelFName = "335";
+    struct vertexInfo {
+        float x, y, z;
+    };
+    struct planeInfo {
+        float x, y, z, d;
+    };
+    struct modelInfo {
+        planeInfo floor;
+        planeInfo roof;
+        std::vector<planeInfo> walls;
+        std::vector<vertexInfo> corners;
+    };
+    
 
 public:
     void processModel(string);
