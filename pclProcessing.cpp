@@ -48,13 +48,20 @@ void PCLProcessing::planeFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 
 
 inline 
-void PCLProcessing::removePoints(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, std::vector<int> points, pcl::PointCloud<pcl::PointXYZ>::ConstPtr newCloud)
+void PCLProcessing::removePoints(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, std::vector<int> vp, pcl::PointCloud<pcl::PointXYZ>::Ptr newCloud)
 {
     pcl::ExtractIndices<pcl::PointXYZ> extract;
+    pcl::IndicesPtr points (new std::vector<int>);
+    points->assign(vp.begin(), vp.end());
+//    pcl::PointIndices::Ptr points;
+//    pcl::PointIndices p;
+//    pcl::PointIndicesPtr pp;
+//    p.indices = vp;
+//    points->indices.assign(vp.begin(), vp.end());
     extract.setInputCloud (cloud);
-    // extract.setIndices (points);
+    extract.setIndices (points);
     extract.setNegative(true);
-    // extract.filter(*newCloud);
+    extract.filter(*newCloud);
 }
 
 inline
@@ -67,16 +74,17 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ>::Ptr
         model (new pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> (cloud));
     model->setAxis(Eigen::Vector3f (0.0, 0.0, 1.0));
-    model->setEpsAngle(pcl::deg2rad(15.0));
+    model->setEpsAngle(pcl::deg2rad(5.0));
     pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model);
-    ransac.setDistanceThreshold (.01);
-    ransac.setMaxIterations(1000);
+    ransac.setDistanceThreshold (0.1);
+    ransac.setMaxIterations(10000);
     ransac.computeModel();
     ransac.getInliers(inliers);
 
     // copies all inliers of the model computed to another PointCloud
     pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
     
+    // calculate plane coefficients
     Eigen::VectorXf mc;
     mc.resize(4);
     vector<int> indices;
@@ -86,9 +94,35 @@ void PCLProcessing::floorFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
     pcl::SampleConsensusModelPlane<pcl::PointXYZ> modelPlane (final);
     modelPlane.computeModelCoefficients(indices, mc);
     cout << "Plane coefficients: " << mc(0) << ", " << mc(1) << ", " << mc(2) << ", " << mc(3) << endl;
-    // this->removePoints(cloud, inliers, remainingModel);
-    this->saveModelAsPLY(*final, this->plyFolder + "/z15.ply");
-    // this->saveModelAsPLY(*remainingModel, this->plyFolder+"/remainingModel.ply" );
+    this->saveModelAsPLY(*final, this->plyFolder + "dotnetFloor.ply");
+    
+    pcl::PointCloud<pcl::PointXYZ>::Ptr remaining (new pcl::PointCloud<pcl::PointXYZ>);
+    this->removePoints(cloud, inliers, remaining);
+//    this->saveModelAsPLY(*remaining, this->plyFolder + "remaining.ply");
+    
+    inliers.clear();
+    pcl::PointCloud<pcl::PointXYZ>::Ptr final2 (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ>::Ptr model2 (new pcl::SampleConsensusModelParallelPlane<pcl::PointXYZ> (remaining));
+    model2->setAxis(Eigen::Vector3f (1.0, 0.0, 1.0));
+    model2->setEpsAngle(pcl::deg2rad(10.0));
+    pcl::RandomSampleConsensus<pcl::PointXYZ> ransac2 (model2);
+    ransac2.setDistanceThreshold (0.1);
+    ransac2.setMaxIterations(10000);
+    ransac2.computeModel();
+    ransac2.getInliers(inliers);
+    
+    pcl::copyPointCloud<pcl::PointXYZ>(*remaining, inliers, *final2);
+    
+    //Plane coefficients
+    pcl::SampleConsensusModelPlane<pcl::PointXYZ> modelPlane2 (final2);
+    modelPlane2.computeModelCoefficients(indices, mc);
+    cout << "Plane coefficients: " << mc(0) << ", " << mc(1) << ", " << mc(2) << ", " << mc(3) << endl;
+    this->saveModelAsPLY(*final2, this->plyFolder + "dotnetRoof.ply");
+    pcl::PointCloud<pcl::PointXYZ>::Ptr remaining2 (new pcl::PointCloud<pcl::PointXYZ>);
+    this->removePoints(remaining, inliers, remaining2);
+//    this->saveModelAsPLY(*remaining2, this->plyFolder + "remaining2.ply");
+    
+    this->frRemoved = remaining;
 }
 
 inline
@@ -143,11 +177,6 @@ void PCLProcessing::statisticalOutlierRemoval(pcl::PointCloud<pcl::PointXYZ>::Co
 	sor.filter(*filtered);
 	this->saveModelAsPLY(*filtered, this->plyFolder + "sorFiltered.ply");
 	cout << "Completed sor." << endl;
-}
-
-inline
-void PCLProcessing::getPlaneCoefficients(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
-    
 }
 
 inline
@@ -331,14 +360,13 @@ void PCLProcessing::importOBJAsPSD(string filename) {
 		cout << "Imported file at " << filename << endl;
 }
 
-
-
 inline
 void PCLProcessing::performProcess()
 {
-    this->extractIndicies(cloudPtr);
+    this->createConcaveHull(cloudPtr);
+    this->floorFinder(concaveHull);
+    this->extractIndicies(frRemoved);
 //    this->wallFinder(cloudPtr);
-//    this->floorFinder(cloudPtr);
 }
 
 inline 
@@ -352,7 +380,7 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
     float voxelGridLeafSize = 0.01;
     int segMaxIterations = 10000;
     double segDistanceThreshold = 0.15;
-    double segEpsAngle = 5.0;
+    double segEpsAngle = 2.0;
     double cHullAlpha = 0.3;
 
     // Create the filtering object: downsample the dataset using a leaf size of 1cm
@@ -367,7 +395,14 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
     pcl::PCDWriter writer;
     this->saveModelAsPLY(*cloud_filtered, this->plyFolder + "/" + this->modelFName + "_downsampled.ply" );
 
-
+//    // Create concave hull of model
+//    pcl::PointCloud<pcl::PointXYZ>::Ptr mc_hull (new pcl::PointCloud<pcl::PointXYZ>);
+//    pcl::ConcaveHull<pcl::PointXYZ> chull;
+//    chull.setInputCloud (cloud_filtered);
+//    chull.setAlpha (cHullAlpha);
+//    chull.reconstruct (*mc_hull);
+//    this->saveModelAsPLY(*mc_hull, this->plyFolder + this->modelFName + "concaveHull.ply");
+    
     pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients ());
     pcl::PointIndices::Ptr inliers (new pcl::PointIndices ());
     // Create the segmentation object
@@ -385,7 +420,8 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
 
     // Settings for PERPENDICULAR PLANE
     // These are the estimated vector of the floor 
-    seg.setAxis(Eigen::Vector3f (0.10, 0.99, 0.06));
+//    seg.setAxis(Eigen::Vector3f (0.10, 0.99, 0.06));
+    seg.setAxis(Eigen::Vector3f (0, 1, 0));
     seg.setEpsAngle(pcl::deg2rad(segEpsAngle));
     // Create the filtering object
     pcl::ExtractIndices<pcl::PointXYZ> extract;
@@ -420,7 +456,6 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
         std::cerr << "Concave hull has: " << cloud_hull->points.size () << " data points." << std::endl;
 
         std::stringstream ss;
-//        ss << "test_cave_2_5000i_10cm_3_" << i << ".ply";
         ss << this->plyFolder << "segments/" << this->modelFName << "/" << voxelGridLeafSize << "_" << segMaxIterations << "_" << segDistanceThreshold << "_" << segEpsAngle << "_" << cHullAlpha << "/";
         boost::filesystem::path dir(ss.str());
         if (!boost::filesystem::exists(dir)) {
@@ -437,3 +472,22 @@ void PCLProcessing::extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
         i++;
     }
 }
+
+inline
+void PCLProcessing::createConcaveHull(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloudPtr) {
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudHull (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::ConcaveHull<pcl::PointXYZ> chull;
+    chull.setInputCloud (cloudPtr);
+    chull.setAlpha(0.3);
+    chull.reconstruct(*cloudHull);
+    this->concaveHull = cloudHull;
+}
+
+
+
+
+
+
+
+
+

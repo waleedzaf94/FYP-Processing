@@ -14,8 +14,6 @@ int main() {
     #else
         string fname = "/home/aman/Desktop/FYP-Processing/models/335.obj";
     #endif
-    //cout << "Input filename: ";
-    //cin >> fname;
     ProcessXYZ processor;
     processor.processModel(fname);
     return 0;
