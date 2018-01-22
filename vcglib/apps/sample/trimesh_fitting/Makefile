@@ -15,7 +15,7 @@ CXX           = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefau
 DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -stdlib=libc++ -std=c++11 -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -fPIC $(DEFINES)
-INCPATH       = -I. -I. -I../../.. -I/usr/local/Cellar/qt/5.10.0/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.10.0/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/AGL.framework/Headers -I/usr/local/Cellar/qt/5.10.0/mkspecs/macx-clang -F/usr/local/Cellar/qt/5.10.0/lib
+INCPATH       = -I. -I. -I../../.. -I/usr/local/Cellar/qt/5.10.0_1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.10.0_1/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/AGL.framework/Headers -I/usr/local/Cellar/qt/5.10.0_1/mkspecs/macx-clang -F/usr/local/Cellar/qt/5.10.0_1/lib
 QMAKE         = /usr/local/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -38,7 +38,7 @@ DISTNAME      = trimesh_fitting1.0.0
 DISTDIR = /Users/waleedzafar/Projects/FYP/one/vcglib/apps/sample/trimesh_fitting/.tmp/trimesh_fitting1.0.0
 LINK          = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
 LFLAGS        = -stdlib=libc++ -headerpad_max_install_names $(EXPORT_ARCH_ARGS) -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wl,-rpath,@executable_path/Frameworks
-LIBS          = $(SUBLIBS) -F/usr/local/Cellar/qt/5.10.0/lib -framework QtGui -framework QtCore -framework DiskArbitration -framework IOKit -framework OpenGL -framework AGL 
+LIBS          = $(SUBLIBS) -F/usr/local/Cellar/qt/5.10.0_1/lib -framework QtGui -framework QtCore -framework DiskArbitration -framework IOKit -framework OpenGL -framework AGL 
 AR            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar cq
 RANLIB        = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib -s
 SED           = sed
@@ -52,191 +52,191 @@ OBJECTS_DIR   = ./
 
 SOURCES       = trimesh_fitting.cpp 
 OBJECTS       = trimesh_fitting.o
-DIST          = /usr/local/Cellar/qt/5.10.0/mkspecs/features/spec_pre.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/qdevice.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/device_config.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/unix.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/mac.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/macx.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/sanitize.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/gcc-base.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/gcc-base-mac.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/clang.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/clang-mac.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/qconfig.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3danimation.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3danimation_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dcore.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dcore_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dextras.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dextras_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dinput.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dinput_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dlogic.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dlogic_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquick.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquick_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickanimation.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickextras.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickextras_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickinput.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickinput_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickrender.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickrender_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickscene2d.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3drender.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3drender_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_accessibility_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bluetooth.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bluetooth_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bootstrap_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_charts.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_charts_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_clipboard_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_concurrent.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_concurrent_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_core.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_core_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_datavisualization.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_datavisualization_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_dbus.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_dbus_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designer.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designer_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designercomponents_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_devicediscovery_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_edid_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_fb_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_fontdatabase_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gamepad.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gamepad_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_graphics_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gui.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gui_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_help.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_help_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_location.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_location_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_macextras.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_macextras_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimedia.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimedia_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimediawidgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_network.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_network_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_networkauth.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_networkauth_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_nfc.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_nfc_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_opengl.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_opengl_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_openglextensions.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_openglextensions_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_packetprotocol_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_platformcompositor_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_positioning.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_positioning_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_printsupport.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_printsupport_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_purchasing.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_purchasing_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qml.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qml_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmldebug_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmldevtools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmltest.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmltest_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quick.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quick_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickcontrols2.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickparticles_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickwidgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickwidgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_remoteobjects.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_remoteobjects_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_repparser.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_repparser_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_script.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_script_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scripttools.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scripttools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scxml.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scxml_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sensors.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sensors_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialbus.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialbus_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialport.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialport_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sql.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sql_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_svg.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_svg_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_testlib.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_testlib_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_texttospeech.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_texttospeech_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_theme_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uiplugin.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uitools.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uitools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webchannel.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webchannel_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webengine.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webengine_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecore.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecore_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginewidgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_websockets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_websockets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webview.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webview_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_widgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_widgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xml.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xml_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xmlpatterns.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt_functions.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt_config.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/macx-clang/qmake.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/spec_post.prf \
+DIST          = /usr/local/Cellar/qt/5.10.0_1/mkspecs/features/spec_pre.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/qdevice.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/device_config.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/unix.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/mac.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/macx.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/sanitize.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/gcc-base.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/gcc-base-mac.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/clang.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/clang-mac.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/qconfig.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3danimation.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3danimation_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dcore.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dcore_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dextras.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dextras_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dinput.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dinput_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dlogic.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dlogic_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquick.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquick_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickanimation.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickextras.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickextras_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickinput.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickinput_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickrender.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickrender_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickscene2d.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3drender.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3drender_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_accessibility_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bluetooth.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bluetooth_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bootstrap_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_charts.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_charts_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_clipboard_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_concurrent.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_concurrent_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_core.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_core_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_datavisualization.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_datavisualization_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_dbus.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_dbus_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designer.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designer_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designercomponents_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_devicediscovery_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_edid_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_fb_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_fontdatabase_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gamepad.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gamepad_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_graphics_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gui.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_help.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_help_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_location.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_location_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_macextras.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_macextras_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimedia.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimedia_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimediawidgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_network.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_network_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_networkauth.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_networkauth_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_nfc.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_nfc_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_opengl.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_opengl_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_openglextensions.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_openglextensions_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_packetprotocol_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_platformcompositor_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_positioning.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_positioning_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_printsupport.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_printsupport_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_purchasing.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_purchasing_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qml.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qml_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmldebug_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmldevtools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmltest.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmltest_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quick.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quick_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickcontrols2.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickparticles_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickwidgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickwidgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_remoteobjects.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_remoteobjects_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_repparser.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_repparser_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_script.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_script_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scripttools.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scripttools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scxml.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scxml_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sensors.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sensors_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialbus.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialbus_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialport.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialport_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sql.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sql_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_svg.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_svg_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_testlib.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_testlib_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_texttospeech.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_texttospeech_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_theme_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uiplugin.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uitools.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uitools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webchannel.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webchannel_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webengine.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webengine_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecore.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecore_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginewidgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_websockets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_websockets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webview.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webview_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_widgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_widgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xml.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xml_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xmlpatterns.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt_functions.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt_config.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/macx-clang/qmake.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/spec_post.prf \
 		../.qmake.stash \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/exclusive_builds.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/sdk.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/toolchain.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/toolchain.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/default_pre.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/default_pre.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/exclusive_builds.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/sdk.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/toolchain.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/toolchain.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/default_pre.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/default_pre.prf \
 		../common.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/resolve_config.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/default_post.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/default_post.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/objective_c.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/mac.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/warn_on.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/resources.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/moc.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/unix/opengl.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/unix/thread.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qmake_use.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/file_copies.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/rez.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/asset_catalogs.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/testcase_targets.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/exceptions.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/yacc.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/lex.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/resolve_config.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/default_post.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/default_post.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/objective_c.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/mac.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/warn_on.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/resources.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/moc.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/unix/opengl.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/unix/thread.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qmake_use.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/file_copies.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/rez.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/asset_catalogs.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/testcase_targets.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/exceptions.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/yacc.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/lex.prf \
 		trimesh_fitting.pro  trimesh_fitting.cpp
 QMAKE_TARGET  = trimesh_fitting
 DESTDIR       = 
@@ -254,383 +254,383 @@ first: all
 $(TARGET):  $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
-Makefile: trimesh_fitting.pro /usr/local/Cellar/qt/5.10.0/mkspecs/macx-clang/qmake.conf /usr/local/Cellar/qt/5.10.0/mkspecs/features/spec_pre.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/qdevice.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/device_config.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/unix.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/mac.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/macx.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/sanitize.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/gcc-base.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/gcc-base-mac.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/clang.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/common/clang-mac.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/qconfig.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3danimation.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3danimation_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dcore.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dcore_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dextras.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dextras_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dinput.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dinput_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dlogic.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dlogic_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquick.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquick_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickanimation.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickextras.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickextras_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickinput.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickinput_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickrender.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickrender_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickscene2d.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3drender.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3drender_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_accessibility_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bluetooth.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bluetooth_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bootstrap_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_charts.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_charts_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_clipboard_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_concurrent.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_concurrent_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_core.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_core_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_datavisualization.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_datavisualization_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_dbus.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_dbus_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designer.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designer_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designercomponents_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_devicediscovery_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_edid_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_fb_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_fontdatabase_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gamepad.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gamepad_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_graphics_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gui.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gui_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_help.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_help_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_location.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_location_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_macextras.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_macextras_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimedia.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimedia_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimediawidgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_network.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_network_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_networkauth.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_networkauth_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_nfc.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_nfc_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_opengl.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_opengl_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_openglextensions.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_openglextensions_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_packetprotocol_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_platformcompositor_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_positioning.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_positioning_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_printsupport.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_printsupport_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_purchasing.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_purchasing_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qml.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qml_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmldebug_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmldevtools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmltest.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmltest_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quick.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quick_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickcontrols2.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickparticles_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickwidgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickwidgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_remoteobjects.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_remoteobjects_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_repparser.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_repparser_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_script.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_script_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scripttools.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scripttools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scxml.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scxml_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sensors.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sensors_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialbus.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialbus_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialport.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialport_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sql.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sql_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_svg.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_svg_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_testlib.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_testlib_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_texttospeech.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_texttospeech_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_theme_support_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uiplugin.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uitools.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uitools_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webchannel.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webchannel_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webengine.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webengine_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecore.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecore_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginewidgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_websockets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_websockets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webview.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webview_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_widgets.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_widgets_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xml.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xml_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xmlpatterns.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt_functions.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt_config.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/macx-clang/qmake.conf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/spec_post.prf \
+Makefile: trimesh_fitting.pro /usr/local/Cellar/qt/5.10.0_1/mkspecs/macx-clang/qmake.conf /usr/local/Cellar/qt/5.10.0_1/mkspecs/features/spec_pre.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/qdevice.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/device_config.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/unix.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/mac.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/macx.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/sanitize.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/gcc-base.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/gcc-base-mac.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/clang.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/clang-mac.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/qconfig.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3danimation.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3danimation_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dcore.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dcore_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dextras.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dextras_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dinput.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dinput_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dlogic.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dlogic_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquick.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquick_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickanimation.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickextras.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickextras_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickinput.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickinput_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickrender.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickrender_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickscene2d.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3drender.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3drender_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_accessibility_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bluetooth.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bluetooth_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bootstrap_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_charts.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_charts_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_clipboard_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_concurrent.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_concurrent_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_core.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_core_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_datavisualization.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_datavisualization_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_dbus.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_dbus_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designer.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designer_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designercomponents_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_devicediscovery_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_edid_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_fb_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_fontdatabase_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gamepad.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gamepad_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_graphics_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gui.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_help.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_help_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_location.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_location_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_macextras.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_macextras_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimedia.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimedia_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimediawidgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_network.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_network_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_networkauth.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_networkauth_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_nfc.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_nfc_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_opengl.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_opengl_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_openglextensions.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_openglextensions_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_packetprotocol_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_platformcompositor_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_positioning.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_positioning_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_printsupport.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_printsupport_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_purchasing.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_purchasing_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qml.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qml_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmldebug_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmldevtools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmltest.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmltest_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quick.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quick_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickcontrols2.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickparticles_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickwidgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickwidgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_remoteobjects.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_remoteobjects_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_repparser.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_repparser_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_script.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_script_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scripttools.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scripttools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scxml.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scxml_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sensors.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sensors_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialbus.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialbus_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialport.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialport_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sql.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sql_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_svg.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_svg_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_testlib.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_testlib_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_texttospeech.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_texttospeech_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_theme_support_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uiplugin.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uitools.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uitools_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webchannel.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webchannel_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webengine.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webengine_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecore.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecore_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginewidgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_websockets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_websockets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webview.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webview_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_widgets.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_widgets_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xml.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xml_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xmlpatterns.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt_functions.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt_config.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/macx-clang/qmake.conf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/spec_post.prf \
 		../.qmake.stash \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/exclusive_builds.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/sdk.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/toolchain.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/toolchain.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/default_pre.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/default_pre.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/exclusive_builds.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/sdk.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/toolchain.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/toolchain.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/default_pre.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/default_pre.prf \
 		../common.pri \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/resolve_config.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/default_post.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/default_post.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/objective_c.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/mac.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/warn_on.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/resources.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/moc.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/unix/opengl.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/unix/thread.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/qmake_use.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/file_copies.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/rez.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/asset_catalogs.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/testcase_targets.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/exceptions.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/yacc.prf \
-		/usr/local/Cellar/qt/5.10.0/mkspecs/features/lex.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/resolve_config.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/default_post.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/default_post.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/objective_c.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/mac.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/warn_on.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/resources.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/moc.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/unix/opengl.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/unix/thread.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qmake_use.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/file_copies.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/rez.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/asset_catalogs.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/testcase_targets.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/exceptions.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/yacc.prf \
+		/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/lex.prf \
 		trimesh_fitting.pro \
-		/usr/local/Cellar/qt/5.10.0/lib/QtGui.framework/QtGui.prl \
-		/usr/local/Cellar/qt/5.10.0/lib/QtCore.framework/QtCore.prl
+		/usr/local/Cellar/qt/5.10.0_1/lib/QtGui.framework/QtGui.prl \
+		/usr/local/Cellar/qt/5.10.0_1/lib/QtCore.framework/QtCore.prl
 	$(QMAKE) -o Makefile trimesh_fitting.pro
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/spec_pre.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/qdevice.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/device_config.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/unix.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/mac.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/macx.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/sanitize.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/gcc-base.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/gcc-base-mac.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/clang.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/common/clang-mac.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/qconfig.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3danimation.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3danimation_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dcore.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dcore_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dextras.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dextras_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dinput.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dinput_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dlogic.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dlogic_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquick.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquick_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickanimation.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickanimation_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickextras.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickextras_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickinput.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickinput_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickrender.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickrender_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickscene2d.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3dquickscene2d_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3drender.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_3drender_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_accessibility_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bluetooth.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bluetooth_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_bootstrap_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_charts.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_charts_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_clipboard_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_concurrent.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_concurrent_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_core.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_core_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_datavisualization.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_datavisualization_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_dbus.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_dbus_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designer.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designer_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_designercomponents_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_devicediscovery_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_edid_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_fb_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_fontdatabase_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gamepad.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gamepad_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_graphics_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gui.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_gui_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_help.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_help_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_location.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_location_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_macextras.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_macextras_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimedia.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimedia_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimediawidgets.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_multimediawidgets_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_network.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_network_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_networkauth.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_networkauth_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_nfc.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_nfc_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_opengl.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_opengl_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_openglextensions.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_openglextensions_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_packetprotocol_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_platformcompositor_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_positioning.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_positioning_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_printsupport.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_printsupport_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_purchasing.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_purchasing_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qml.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qml_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmldebug_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmldevtools_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmltest.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qmltest_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quick.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quick_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickcontrols2.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickcontrols2_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickparticles_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quicktemplates2_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickwidgets.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_quickwidgets_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_remoteobjects.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_remoteobjects_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_repparser.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_repparser_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_script.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_script_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scripttools.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scripttools_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scxml.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_scxml_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sensors.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sensors_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialbus.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialbus_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialport.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_serialport_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sql.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_sql_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_svg.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_svg_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_testlib.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_testlib_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_texttospeech.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_texttospeech_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_theme_support_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uiplugin.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uitools.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_uitools_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webchannel.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webchannel_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webengine.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webengine_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecore.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecore_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginewidgets.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webenginewidgets_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_websockets.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_websockets_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webview.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_webview_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_widgets.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_widgets_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xml.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xml_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xmlpatterns.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/modules/qt_lib_xmlpatterns_private.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt_functions.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt_config.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/macx-clang/qmake.conf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/spec_post.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/spec_pre.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/qdevice.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/device_config.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/unix.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/mac.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/macx.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/sanitize.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/gcc-base.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/gcc-base-mac.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/clang.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/common/clang-mac.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/qconfig.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3danimation.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3danimation_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dcore.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dcore_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dextras.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dextras_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dinput.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dinput_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dlogic.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dlogic_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquick.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquick_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickanimation.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickanimation_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickextras.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickextras_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickinput.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickinput_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickrender.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickrender_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickscene2d.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3dquickscene2d_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3drender.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_3drender_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_accessibility_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bluetooth.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bluetooth_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_bootstrap_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_charts.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_charts_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_clipboard_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_concurrent.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_concurrent_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_core.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_core_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_datavisualization.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_datavisualization_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_dbus.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_dbus_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designer.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designer_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_designercomponents_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_devicediscovery_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_edid_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_fb_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_fontdatabase_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gamepad.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gamepad_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_graphics_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gui.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_gui_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_help.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_help_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_location.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_location_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_macextras.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_macextras_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimedia.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimedia_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimediawidgets.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_multimediawidgets_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_network.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_network_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_networkauth.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_networkauth_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_nfc.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_nfc_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_opengl.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_opengl_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_openglextensions.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_openglextensions_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_packetprotocol_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_platformcompositor_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_positioning.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_positioning_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_printsupport.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_printsupport_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_purchasing.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_purchasing_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qml.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qml_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmldebug_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmldevtools_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmltest.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qmltest_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quick.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quick_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickcontrols2.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickcontrols2_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickparticles_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quicktemplates2_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickwidgets.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_quickwidgets_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_remoteobjects.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_remoteobjects_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_repparser.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_repparser_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_script.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_script_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scripttools.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scripttools_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scxml.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_scxml_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sensors.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sensors_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialbus.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialbus_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialport.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_serialport_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sql.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_sql_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_svg.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_svg_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_testlib.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_testlib_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_texttospeech.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_texttospeech_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_theme_support_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uiplugin.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uitools.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_uitools_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webchannel.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webchannel_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webengine.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webengine_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecore.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecore_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginewidgets.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webenginewidgets_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_websockets.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_websockets_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webview.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_webview_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_widgets.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_widgets_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xml.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xml_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xmlpatterns.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/modules/qt_lib_xmlpatterns_private.pri:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt_functions.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt_config.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/macx-clang/qmake.conf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/spec_post.prf:
 ../.qmake.stash:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/exclusive_builds.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/sdk.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/toolchain.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/toolchain.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/default_pre.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/default_pre.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/exclusive_builds.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/sdk.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/toolchain.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/toolchain.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/default_pre.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/default_pre.prf:
 ../common.pri:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/resolve_config.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/default_post.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/default_post.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/objective_c.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/mac.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/warn_on.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/qt.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/resources.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/moc.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/unix/opengl.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/unix/thread.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/qmake_use.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/file_copies.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/rez.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/mac/asset_catalogs.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/testcase_targets.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/exceptions.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/yacc.prf:
-/usr/local/Cellar/qt/5.10.0/mkspecs/features/lex.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/resolve_config.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/default_post.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/default_post.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/objective_c.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/mac.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/warn_on.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qt.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/resources.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/moc.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/unix/opengl.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/unix/thread.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/qmake_use.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/file_copies.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/rez.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/mac/asset_catalogs.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/testcase_targets.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/exceptions.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/yacc.prf:
+/usr/local/Cellar/qt/5.10.0_1/mkspecs/features/lex.prf:
 trimesh_fitting.pro:
-/usr/local/Cellar/qt/5.10.0/lib/QtGui.framework/QtGui.prl:
-/usr/local/Cellar/qt/5.10.0/lib/QtCore.framework/QtCore.prl:
+/usr/local/Cellar/qt/5.10.0_1/lib/QtGui.framework/QtGui.prl:
+/usr/local/Cellar/qt/5.10.0_1/lib/QtCore.framework/QtCore.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile trimesh_fitting.pro
 
@@ -645,7 +645,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents /usr/local/Cellar/qt/5.10.0/mkspecs/features/data/dummy.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents /usr/local/Cellar/qt/5.10.0_1/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents trimesh_fitting.cpp $(DISTDIR)/
 
 
@@ -674,8 +674,8 @@ compiler_rcc_clean:
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
-moc_predefs.h: /usr/local/Cellar/qt/5.10.0/mkspecs/features/data/dummy.cpp
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -pipe -stdlib=libc++ -std=c++11 -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -dM -E -o moc_predefs.h /usr/local/Cellar/qt/5.10.0/mkspecs/features/data/dummy.cpp
+moc_predefs.h: /usr/local/Cellar/qt/5.10.0_1/mkspecs/features/data/dummy.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -pipe -stdlib=libc++ -std=c++11 -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -dM -E -o moc_predefs.h /usr/local/Cellar/qt/5.10.0_1/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all:
 compiler_moc_header_clean:

@@ -40,6 +40,7 @@ class PCLProcessing {
     pcl::PointCloud<pcl::PointXYZ>::Ptr concaveHull;
     pcl::PointCloud<pcl::PointXYZ>::Ptr frRemoved;
     string modelFName = "dotnet";
+    string presF = "/Users/waleedzafar/projects/fyp/one/models/pres/";
     #ifdef amanDev
     string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
     string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";
@@ -59,7 +60,7 @@ class PCLProcessing {
     void removePoints(pcl::PointCloud<pcl::PointXYZ>::ConstPtr, vector<int>, pcl::PointCloud<pcl::PointXYZ>::Ptr);
     void wallFinder(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void savePCD(string, pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
-    void extractIndicies(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
+    void extractIndices(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
     void createConcaveHull(pcl::PointCloud<pcl::PointXYZ>::ConstPtr);
 
     public:
