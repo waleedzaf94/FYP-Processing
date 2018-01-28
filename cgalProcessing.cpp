@@ -2,9 +2,9 @@
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel  K;
-typedef CGAL::Polyhedron_3<K>                     Polyhedron_3;
-typedef K::Point_3                                Point_3;
+typedef CGAL::Exact_predicates_inexact_constructions_kernel  Kernel;
+typedef CGAL::Polyhedron_3<Kernel>                     Polyhedron_3;
+typedef Kernel::Point_3                                Point_3;
 // typedef CGAL::Surface_mesh<Point_3>               Surface_mesh;
 typedef Polyhedron_3::Facet_iterator                   Facet_iterator;
 typedef Polyhedron_3::Halfedge_around_facet_circulator Halfedge_facet_circulator;
@@ -20,7 +20,7 @@ public:
       polyhedron_builder( PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), tris(_tris) {}
       void operator()( HDS& hds) {
             typedef typename HDS::Vertex   Vertex;
-                  typedef typename Vertex::Point Point;
+            typedef typename Vertex::Point_3 Point;
             
             // create a cgal incremental builder
                   CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
@@ -48,7 +48,7 @@ public:
 inline
 void CGALProcessing::testOBJ()
 {
-      std::string filename = "/home/aman/Desktop/FYP-Processing/models/335.obj";
+    std::string filename = "/Users/waleedzafar/projects/fyp/one/models/DotNet.obj";
       PointVector points;
       std::vector<std::vector<std::size_t>> faces;
       Polyhedron_3 poly;
