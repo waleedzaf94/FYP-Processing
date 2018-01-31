@@ -2,6 +2,15 @@
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 
+// Point set shape detection imports
+//#include <CGAL/IO/read_xyz_points.h>
+#include <CGAL/IO/read_ply_points.h>
+#include <CGAL/Point_with_normal_3.h>
+#include <CGAL/property_map.h>
+#include <CGAL/Shape_detection_3.h>
+
+
+
 typedef CGAL::Exact_predicates_inexact_constructions_kernel  Kernel;
 typedef CGAL::Polyhedron_3<Kernel>                     Polyhedron_3;
 typedef Kernel::Point_3                                Point_3;
@@ -10,6 +19,18 @@ typedef Polyhedron_3::Facet_iterator                   Facet_iterator;
 typedef Polyhedron_3::Halfedge_around_facet_circulator Halfedge_facet_circulator;
 typedef Polyhedron_3::HalfedgeDS             HalfedgeDS;
 typedef std::vector<Point_3> PointVector;
+
+typedef std::pair<Kernel::Point_3, Kernel::Vector_3> Point_with_normal;
+typedef std::vector<Point_with_normal> Pwn_vector;
+typedef CGAL::First_of_pair_property_map<Point_with_normal> Point_map;
+typedef CGAL::Second_of_pair_property_map<Point_with_normal> Normal_map;
+typedef CGAL::Shape_detection_3::Efficient_RANSAC_traits<Kernel, Pwn_vector, Point_map, Normal_map> Traits;
+typedef CGAL::Shape_detection_3::Efficient_RANSAC<Traits> Efficient_ransac;
+typedef CGAL::Shape_detection_3::Plane<Traits> cgalPlane;
+typedef CGAL::Shape_detection_3::Cone<Traits> cgalCone;
+typedef CGAL::Shape_detection_3::Cylinder<Traits> cgalCylinder;
+typedef CGAL::Shape_detection_3::Sphere<Traits> cgalSphere;
+typedef CGAL::Shape_detection_3::Torus<Traits> cgalTorus;
 
 // A modifier creating a triangle with the incremental builder.
 template<class HDS>
@@ -110,3 +131,60 @@ void CGALProcessing::inputTest(std::string filename, PointVector &points, std::v
       CGAL::read_OBJ(input, points, faces);
       std::cout << points.size() << " " << faces.size() << "\n";
 }
+
+inline
+void CGALProcessing::shapeDetection(){
+    // points with normals
+    Pwn_vector points;
+    
+    // loads point set from a file
+    // read_xyz_points_and_normals takes an OutputIterator for storing the points
+    // and a property_map to store the normal vector with each point
+    std::ifstream stream(this->fname);
+    
+//    if (!stream || !CGAL::read_xyz_points_and_normals(stream, std::back_inserter(points), Point_map(), Normal_map())) {
+//        std::cerr << "Error. Cannot read file." << std::endl;
+//    }
+    if (!stream || !CGAL::read_ply_points_and_normals(stream, std::back_inserter(points), Point_map(), Normal_map())) {
+        std::cerr << "Error. Cannot read file." << std::endl;
+    }
+    
+    std::cout << points.size() << " points originally." << std::endl;
+    
+    // Instantiate shape detection engine
+    Efficient_ransac ransac;
+    ransac.set_input(points);
+    ransac.add_shape_factory<cgalPlane>();
+//    ransac.add_shape_factory<cgalSphere>();
+//    ransac.add_shape_factory<cgalCylinder>();
+//    ransac.add_shape_factory<cgalCone>();
+//    ransac.add_shape_factory<cgalTorus>();
+    ransac.detect();
+    
+    std::cout << ransac.shapes().end() - ransac.shapes().begin() << " shapes detected." << std::endl;
+    std::cout << ransac.number_of_unassigned_points() << " unassigned points." << std::endl;
+    
+    Efficient_ransac::Shape_range shapes = ransac.shapes();
+    Efficient_ransac::Shape_range::iterator it = shapes.begin();
+    
+    while (it != shapes.end()) {
+        if (cgalPlane* plane = dynamic_cast<cgalPlane*>(it->get())) {
+            Kernel::Vector_3 normal = plane->plane_normal();
+            std::cout << "Plane with normal " << normal << std::endl;
+            std::cout << "Kernel::Plane_3: " << static_cast<Kernel::Plane_3>(*plane) << std::endl;
+            std::cout << "Info: " << plane->info() << std::endl;
+        }
+        else {
+            std::cout << (*it)->info() << std::endl;
+        }
+        it++;
+    }
+    
+}
+
+
+
+
+
+
+
