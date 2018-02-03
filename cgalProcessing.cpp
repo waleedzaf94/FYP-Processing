@@ -1,44 +1,13 @@
+
 #include "cgalProcessing.h"
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-#include <CGAL/Polyhedron_3.h>
-
-// Point set shape detection imports
-//#include <CGAL/IO/read_xyz_points.h>
-#include <CGAL/IO/read_ply_points.h>
-#include <CGAL/Point_with_normal_3.h>
-#include <CGAL/property_map.h>
-#include <CGAL/Shape_detection_3.h>
-
-
-
-typedef CGAL::Exact_predicates_inexact_constructions_kernel  Kernel;
-typedef CGAL::Polyhedron_3<Kernel>                     Polyhedron_3;
-typedef Kernel::Point_3                                Point_3;
-// typedef CGAL::Surface_mesh<Point_3>               Surface_mesh;
-typedef Polyhedron_3::Facet_iterator                   Facet_iterator;
-typedef Polyhedron_3::Halfedge_around_facet_circulator Halfedge_facet_circulator;
-typedef Polyhedron_3::HalfedgeDS             HalfedgeDS;
-typedef std::vector<Point_3> PointVector;
-
-typedef std::pair<Kernel::Point_3, Kernel::Vector_3> Point_with_normal;
-typedef std::vector<Point_with_normal> Pwn_vector;
-typedef CGAL::First_of_pair_property_map<Point_with_normal> Point_map;
-typedef CGAL::Second_of_pair_property_map<Point_with_normal> Normal_map;
-typedef CGAL::Shape_detection_3::Efficient_RANSAC_traits<Kernel, Pwn_vector, Point_map, Normal_map> Traits;
-typedef CGAL::Shape_detection_3::Efficient_RANSAC<Traits> Efficient_ransac;
-typedef CGAL::Shape_detection_3::Plane<Traits> cgalPlane;
-typedef CGAL::Shape_detection_3::Cone<Traits> cgalCone;
-typedef CGAL::Shape_detection_3::Cylinder<Traits> cgalCylinder;
-typedef CGAL::Shape_detection_3::Sphere<Traits> cgalSphere;
-typedef CGAL::Shape_detection_3::Torus<Traits> cgalTorus;
 
 // A modifier creating a triangle with the incremental builder.
 template<class HDS>
 class polyhedron_builder : public CGAL::Modifier_base<HDS> {
 public:
-      PointVector &coords;
+    CGALProcessing::PointVector &coords;
       std::vector<std::vector<std::size_t> >   &tris;
-      polyhedron_builder( PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), tris(_tris) {}
+    polyhedron_builder( CGALProcessing::PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), tris(_tris) {}
       void operator()( HDS& hds) {
             typedef typename HDS::Vertex   Vertex;
             typedef typename Vertex::Point_3 Point;
@@ -48,7 +17,7 @@ public:
                   B.begin_surface( coords.size(), tris.size());
             
             // add the polyhedron vertices
-            for( Point_3 i : coords ){
+            for( CGALProcessing::Point_3 i : coords ){
                   B.add_vertex(i);
             }
       
@@ -98,32 +67,6 @@ void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std:
     P.delegate(builder);
 }
 
-
-inline 
-void CGALProcessing::outputWriter(std::string filename, Polyhedron_3 &poly)
-{
-//     write the polyhedron out as a .OFF file
-    std::ofstream os(filename);
-    os << poly;
-    os.close();
-     // Write polyhedron in Object File Format (OFF).
-//     CGAL::set_ascii_mode( std::cout);
-//     std::cout << "OFF" << std::endl << poly.size_of_vertices() << ' '
-//               << poly.size_of_facets() << " 0" << std::endl;
-//     std::copy( poly.points_begin(), poly.points_end(),
-//                std::ostream_iterator<Point_3>( std::cout, "\n"));
-//     for (  Facet_iterator i = poly.facets_begin(); i != poly.facets_end(); ++i) {
-//         Halfedge_facet_circulator j = i->facet_begin();
-//         // Facets in polyhedral surfaces are at least triangles.
-//         CGAL_assertion( CGAL::circulator_size(j) >= 3);
-//         std::cout << CGAL::circulator_size(j) << ' ';
-//         do {
-//             std::cout << ' ' << std::distance(poly.vertices_begin(), j->vertex());
-//         } while ( ++j != i->facet_begin());
-//         std::cout << std::endl;
-//     }
-}
-
 inline
 void CGALProcessing::inputTest(std::string filename, PointVector &points, std::vector<std::vector<std::size_t> > &faces)
 {
@@ -136,15 +79,13 @@ inline
 void CGALProcessing::shapeDetection(){
     // points with normals
     Pwn_vector points;
+    CGAL::Timer timer;
     
     // loads point set from a file
     // read_xyz_points_and_normals takes an OutputIterator for storing the points
     // and a property_map to store the normal vector with each point
     std::ifstream stream(this->fname);
     
-//    if (!stream || !CGAL::read_xyz_points_and_normals(stream, std::back_inserter(points), Point_map(), Normal_map())) {
-//        std::cerr << "Error. Cannot read file." << std::endl;
-//    }
     if (!stream || !CGAL::read_ply_points_and_normals(stream, std::back_inserter(points), Point_map(), Normal_map())) {
         std::cerr << "Error. Cannot read file." << std::endl;
     }
@@ -159,28 +100,116 @@ void CGALProcessing::shapeDetection(){
 //    ransac.add_shape_factory<cgalCylinder>();
 //    ransac.add_shape_factory<cgalCone>();
 //    ransac.add_shape_factory<cgalTorus>();
-    ransac.detect();
     
-    std::cout << ransac.shapes().end() - ransac.shapes().begin() << " shapes detected." << std::endl;
-    std::cout << ransac.number_of_unassigned_points() << " unassigned points." << std::endl;
+    timer.start();
+    ransac.preprocess();
+    timer.stop();
+    std::cout << "Preprocessing time: " << timer.time() * 1000 << " ms\n";
     
     Efficient_ransac::Shape_range shapes = ransac.shapes();
+    FT bestCoverage = 0;
+    
+    for (size_t i = 0; i<3; i++) {
+        timer.reset();
+        timer.start();
+        
+        ransac.detect();
+        
+        timer.stop();
+        
+        FT coverage = FT(points.size() - ransac.number_of_unassigned_points()) / FT(points.size());
+        
+        std::cout << "time: " << timer.time() * 1000 << " ms\n";
+        std::cout << ransac.shapes().end() - ransac.shapes().begin() << " primitives, " << coverage << " coverage\n";
+        
+        if (coverage > bestCoverage) {
+            bestCoverage = coverage;
+            shapes = ransac.shapes();
+        }
+    }
+    
+    this->writeShapesToFiles(shapes);
+    
     Efficient_ransac::Shape_range::iterator it = shapes.begin();
     
     while (it != shapes.end()) {
-        if (cgalPlane* plane = dynamic_cast<cgalPlane*>(it->get())) {
-            Kernel::Vector_3 normal = plane->plane_normal();
-            std::cout << "Plane with normal " << normal << std::endl;
-            std::cout << "Kernel::Plane_3: " << static_cast<Kernel::Plane_3>(*plane) << std::endl;
-            std::cout << "Info: " << plane->info() << std::endl;
+        boost::shared_ptr<Efficient_ransac::Shape> shape = *it;
+        std::cout << (*it)->info() << std::endl;
+        
+        FT sumDistances = 0;
+        std::vector<std::size_t>::const_iterator indexIt = (*it)->indices_of_assigned_points().begin();
+        
+        while (indexIt != (*it)->indices_of_assigned_points().end()) {
+            const Point_with_normal &p = *(points.begin() + (*indexIt));
+            sumDistances += CGAL::sqrt((*it)->squared_distance(p.first));
+            indexIt++;
         }
-        else {
-            std::cout << (*it)->info() << std::endl;
-        }
+        
+        FT averageDistance = sumDistances / shape->indices_of_assigned_points().size();
+        std::cout << " average distance: " << averageDistance << std::endl;
         it++;
     }
     
+//    ransac.detect();
+    
+//    std::cout << ransac.shapes().end() - ransac.shapes().begin() << " shapes detected." << std::endl;
+//    std::cout << ransac.number_of_unassigned_points() << " unassigned points." << std::endl;
+//
+//    Efficient_ransac::Shape_range shapes = ransac.shapes();
+//    Efficient_ransac::Shape_range::iterator it = shapes.begin();
+//
+//    while (it != shapes.end()) {
+//        if (cgalPlane* plane = dynamic_cast<cgalPlane*>(it->get())) {
+//            Kernel::Vector_3 normal = plane->plane_normal();
+//            std::cout << "Plane with normal " << normal << std::endl;
+//            std::cout << "Kernel::Plane_3: " << static_cast<Kernel::Plane_3>(*plane) << std::endl;
+//            std::cout << "Info: " << plane->info() << std::endl;
+//        }
+//        else {
+//            std::cout << (*it)->info() << std::endl;
+//        }
+//        it++;
+//    }
+    
 }
+
+inline
+void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes) {
+    Efficient_ransac::Shape_range::iterator it = shapes.begin();
+    int shapeNum=0;
+    while (it != shapes.end()) {
+//        Pwn_vector points = it->get()->;
+        std::vector<size_t> indices = it->get()->indices_of_assigned_points();
+        long numPoints = indices.size();
+        std::vector<size_t>::const_iterator iti = indices.begin();
+        while (iti != indices.end()) {
+//            Point_with_normal pw = *(points.begin() + (*iti));
+//            Kernel::Point_3 p = pw.first;
+        }
+    }
+}
+
+inline
+void CGALProcessing::writeShapeToFile(Efficient_ransac::Shape_range::iterator it, std::string filepath) {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
