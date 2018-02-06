@@ -26,7 +26,6 @@
 
 class CGALProcessing {
 
-
     public:
     #ifdef amanDev
     std::string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
@@ -67,5 +66,4 @@ class CGALProcessing {
     void outputWriter(std::string, Polyhedron_3 &);
     void incrementBuilder(Polyhedron_3 &, PointVector &, std::vector<std::vector<std::size_t> > &);
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
-    void writeShapeToFile(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range::iterator, std::string);
 };

@@ -1,10 +1,4 @@
 
-//Standard
-#include <iostream>
-#include <stdio.h>
-#include <string>
-#include <vector>
-
 #include "vcgProcessing.h"
 
 using namespace std;

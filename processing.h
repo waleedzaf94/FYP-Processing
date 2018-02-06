@@ -1,6 +1,9 @@
-//#include "vcgProcessing.cpp"
-//#include "pclProcessing.cpp"
-//#include "cgalProcessing.cpp"
+
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
+
 #include "vcgProcessing.h"
 #include "pclProcessing.h"
 #include "cgalProcessing.h"

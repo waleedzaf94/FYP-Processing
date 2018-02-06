@@ -1,18 +1,13 @@
-//Standard
 
-#include <iostream>
-#include <stdio.h>
-#include <string>
-#include <vector>
 #include "processing.h"
 
 using namespace std;
 
 int main() {
     #ifndef amanDev
-        string fname = "/Users/waleedzafar/projects/fyp/one/models/DotNet.obj";
+    string fname = "/Users/waleedzafar/projects/fyp/one/models/DotNet.obj";
     #else
-        string fname = "/home/aman/Desktop/FYP-Processing/models/335.obj";
+    string fname = "/home/aman/Desktop/FYP-Processing/models/335.obj";
     #endif
     ProcessXYZ processor;
     processor.processModel(fname);

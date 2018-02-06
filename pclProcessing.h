@@ -1,3 +1,9 @@
+
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
+
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/obj_io.h>
 #include <pcl/io/ply_io.h>
@@ -29,6 +35,8 @@
 #include <boost/thread/thread.hpp>
 
 #include <pcl/features/don.h>
+
+#include <boost/filesystem.hpp>
 
 using namespace std;
 

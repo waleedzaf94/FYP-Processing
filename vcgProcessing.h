@@ -1,4 +1,9 @@
 
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
+
 //VCG
 #include <vcg/complex/complex.h>
 #include <vcg/complex/algorithms/inertia.h>

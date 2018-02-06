@@ -1,17 +1,9 @@
-//Standard
-#include <iostream>
-#include <stdio.h>
-#include <string>
-#include <vector>
-
-#include <boost/filesystem.hpp>
 
 #include "pclProcessing.h"
 
 using namespace pcl;
 
 // Private Functions
-
 inline 
 void PCLProcessing::removePoints(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, std::vector<int> vp, pcl::PointCloud<pcl::PointXYZ>::Ptr newCloud)
 {

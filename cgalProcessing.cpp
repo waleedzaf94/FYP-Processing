@@ -208,11 +208,6 @@ void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes, Pw
     }
 }
 
-inline
-void CGALProcessing::writeShapeToFile(Efficient_ransac::Shape_range::iterator it, std::string filepath) {
-    
-}
-
 
 
 
