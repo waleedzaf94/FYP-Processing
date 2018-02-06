@@ -75,7 +75,6 @@ void CGALProcessing::inputTest(std::string filename, PointVector &points, std::v
       std::cout << points.size() << " " << faces.size() << "\n";
 }
 
-inline
 void CGALProcessing::shapeDetection(){
     // points with normals
     Pwn_vector points;
@@ -128,7 +127,9 @@ void CGALProcessing::shapeDetection(){
         }
     }
     
-    this->writeShapesToFiles(shapes);
+    this->writeShapesToFiles(shapes, points);
+    
+    return;
     
     Efficient_ransac::Shape_range::iterator it = shapes.begin();
     
@@ -174,18 +175,36 @@ void CGALProcessing::shapeDetection(){
 }
 
 inline
-void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes) {
+void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes, Pwn_vector points) {
     Efficient_ransac::Shape_range::iterator it = shapes.begin();
     int shapeNum=0;
     while (it != shapes.end()) {
-//        Pwn_vector points = it->get()->;
         std::vector<size_t> indices = it->get()->indices_of_assigned_points();
-        long numPoints = indices.size();
         std::vector<size_t>::const_iterator iti = indices.begin();
+        Pwn_vector newPoints(1);
         while (iti != indices.end()) {
-//            Point_with_normal pw = *(points.begin() + (*iti));
-//            Kernel::Point_3 p = pw.first;
+            Point_with_normal pw = *(points.begin() + (*iti));
+            Kernel::Point_3 p = pw.first;
+            Kernel::Vector_3 v = pw.second;
+            CGAL::Epick::Direction_3 d = v.direction();
+            printf("Point: %f, %f, %f \n", p.x(), p.y(), p.z());
+            printf("Vector: %f, %f, %f, %d \n", v.x(), v.y(), v.z(), v.dimension());
+            printf("Direction: %f, %f, %f \n", d.dx(), d.dy(), d.dz());
+            newPoints.push_back(pw);
+            iti++;
         }
+        std::cout << "Shape with " << newPoints.size() << " points\n";
+        std::string outFile = this->plyFolder + "/CGAL/" + std::to_string(shapeNum) + ".ply";
+        std::ofstream out(outFile);
+//        CGAL::set_ascii_mode(out);
+        if (!out || !CGAL::write_ply_points_and_normals(out, newPoints.begin(), newPoints.end(), Point_map(), Normal_map())) {
+            std::cerr << "Error writing file: " << outFile << std::endl;
+        }
+        else {
+            std::cerr << "Wrote file: " << outFile << std::endl;
+        }
+        shapeNum++;
+        it++;
     }
 }
 

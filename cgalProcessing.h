@@ -14,11 +14,11 @@
 #include <CGAL/Polygon_mesh_processing/refine.h>
 #include <CGAL/IO/OBJ_reader.h>
 #include <CGAL/Surface_mesh.h>
-
-#include<CGAL/IO/Polyhedron_iostream.h>
+#include <CGAL/IO/Polyhedron_iostream.h>
 
 // Point set shape detection imports
 #include <CGAL/IO/read_ply_points.h>
+#include <CGAL/IO/write_ply_points.h>
 #include <CGAL/Point_with_normal_3.h>
 #include <CGAL/property_map.h>
 #include <CGAL/Shape_detection_3.h>
@@ -66,6 +66,6 @@ class CGALProcessing {
     void inputTest(std::string, PointVector &, std::vector<std::vector<std::size_t> > &);
     void outputWriter(std::string, Polyhedron_3 &);
     void incrementBuilder(Polyhedron_3 &, PointVector &, std::vector<std::vector<std::size_t> > &);
-    void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range);
+    void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
     void writeShapeToFile(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range::iterator, std::string);
 };

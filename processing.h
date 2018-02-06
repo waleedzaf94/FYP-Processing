@@ -1,6 +1,10 @@
-#include "vcgProcessing.cpp"
-#include "pclProcessing.cpp"
-#include "cgalProcessing.cpp"
+//#include "vcgProcessing.cpp"
+//#include "pclProcessing.cpp"
+//#include "cgalProcessing.cpp"
+#include "vcgProcessing.h"
+#include "pclProcessing.h"
+#include "cgalProcessing.h"
+
 
 class ProcessXYZ {
 private:
@@ -29,8 +33,8 @@ private:
     
 
 public:
-    void processModel(string);
+    void processModel(std::string);
     VCGProcessing vcgProcessor;
     PCLProcessing pclProcessor;
-     CGALProcessing cgalProcessor;
+    CGALProcessing cgalProcessor;
 };
