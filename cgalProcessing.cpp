@@ -184,28 +184,57 @@ void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes, Pw
         Pwn_vector newPoints(1);
         while (iti != indices.end()) {
             Point_with_normal pw = *(points.begin() + (*iti));
-            Kernel::Point_3 p = pw.first;
-            Kernel::Vector_3 v = pw.second;
-            CGAL::Epick::Direction_3 d = v.direction();
-            printf("Point: %f, %f, %f \n", p.x(), p.y(), p.z());
-            printf("Vector: %f, %f, %f, %d \n", v.x(), v.y(), v.z(), v.dimension());
-            printf("Direction: %f, %f, %f \n", d.dx(), d.dy(), d.dz());
+//            Kernel::Point_3 p = pw.first;
+//            Kernel::Vector_3 v = pw.second;
+//            CGAL::Epick::Direction_3 d = v.direction();
+//            printf("Point: %f, %f, %f \n", p.x(), p.y(), p.z());
+//            printf("Vector: %f, %f, %f, %d \n", v.x(), v.y(), v.z(), v.dimension());
+//            printf("Direction: %f, %f, %f \n", d.dx(), d.dy(), d.dz());
             newPoints.push_back(pw);
             iti++;
         }
         std::cout << "Shape with " << newPoints.size() << " points\n";
         std::string outFile = this->plyFolder + "/CGAL/" + std::to_string(shapeNum) + ".ply";
-        std::ofstream out(outFile);
-//        CGAL::set_ascii_mode(out);
-        if (!out || !CGAL::write_ply_points_and_normals(out, newPoints.begin(), newPoints.end(), Point_map(), Normal_map())) {
-            std::cerr << "Error writing file: " << outFile << std::endl;
+        if (this->writePlyPointsAndNormals(newPoints, outFile)) {
+            std::cerr << "Wrote file: " << outFile << std::endl;
         }
         else {
-            std::cerr << "Wrote file: " << outFile << std::endl;
+            std::cerr << "Error writing file: " << outFile << std::endl;
         }
         shapeNum++;
         it++;
     }
+}
+
+inline
+bool CGALProcessing::writePlyPointsAndNormals (Pwn_vector points, std::string fname) {
+    std::ofstream out(fname);
+    if (!out) {
+        std::cerr << "Error writing file: " << fname << std::endl;
+        return false;
+    }
+    // PLY Header
+    out << "ply\n";
+    out << "format ascii 1.0\n";
+    out << "element vertex " << std::distance(points.begin(), points.end()) << std::endl;
+    out << "property double x\n";
+    out << "property double y\n";
+    out << "property double z\n";
+    out << "property double nx\n";
+    out << "property double ny\n";
+    out << "property double nz\n";
+    out << "end_header\n";
+    
+    //Vertices
+//    std::vector<Point_with_normal>::iterator it = points.begin();
+//    while (
+    for (auto it = points.begin(); it != points.end(); it++) {
+        Kernel::Point_3 point = it->first;
+        Kernel::Vector_3 normal = it->second;
+        out << point.x() << " " << point.y() << " " << point.z() << " " << normal.x() << " " << normal.y() << " " << normal.z() << std::endl;
+    }
+    
+    return true;
 }
 
 

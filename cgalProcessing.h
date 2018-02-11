@@ -18,7 +18,7 @@
 
 // Point set shape detection imports
 #include <CGAL/IO/read_ply_points.h>
-#include <CGAL/IO/write_ply_points.h>
+//#include <CGAL/IO/write_ply_points.h>
 #include <CGAL/Point_with_normal_3.h>
 #include <CGAL/property_map.h>
 #include <CGAL/Shape_detection_3.h>
@@ -36,8 +36,7 @@ class CGALProcessing {
     std::string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
     std::string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
     #endif
-    void testOBJ();
-    void shapeDetection();
+    
     typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
     typedef Kernel::FT                                          FT;
     typedef CGAL::Polyhedron_3<Kernel>                          Polyhedron_3;
@@ -59,6 +58,11 @@ class CGALProcessing {
     typedef CGAL::Shape_detection_3::Cylinder<Traits>               cgalCylinder;
     typedef CGAL::Shape_detection_3::Sphere<Traits>                 cgalSphere;
     typedef CGAL::Shape_detection_3::Torus<Traits>                  cgalTorus;
+    
+    // Public functions
+    void testOBJ();
+    void shapeDetection();
+    bool writePlyPointsAndNormals (std::vector<Point_with_normal>, std::string);
 
 
     private:
@@ -66,4 +70,5 @@ class CGALProcessing {
     void outputWriter(std::string, Polyhedron_3 &);
     void incrementBuilder(Polyhedron_3 &, PointVector &, std::vector<std::vector<std::size_t> > &);
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
+    
 };
