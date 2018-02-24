@@ -1,4 +1,7 @@
 
+#ifndef VCG_PROCESSING_H
+#define VCG_PROCESSING_H
+
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -80,3 +83,5 @@ public:
     void printVertexLocation(MyVertex&);
     void performProcess();
 };
+
+#endif //VCG_PROCESSING_H

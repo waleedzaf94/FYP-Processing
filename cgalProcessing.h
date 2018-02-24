@@ -1,4 +1,7 @@
 
+#ifndef CGAL_PROCESSING_H
+#define CGAL_PROCESSING_H
+
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -6,6 +9,11 @@
 #include <map>
 #include <fstream>
 #include <algorithm>
+#include <thread>
+#include <chrono>
+#include <sstream>
+#include <fstream>
+#include <cstring>
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
@@ -18,7 +26,6 @@
 
 // Point set shape detection imports
 #include <CGAL/IO/read_ply_points.h>
-//#include <CGAL/IO/write_ply_points.h>
 #include <CGAL/Point_with_normal_3.h>
 #include <CGAL/property_map.h>
 #include <CGAL/Shape_detection_3.h>
@@ -36,6 +43,15 @@ class CGALProcessing {
     std::string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
     std::string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
     #endif
+    
+    struct float3 {
+        float x, y, z;
+    };
+    struct PlyFile {
+        std::vector<float3> vertices;
+        std::vector<float3> normals;
+        std::vector<std::vector<int> > faces;
+    };
     
     typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
     typedef Kernel::FT                                          FT;
@@ -63,8 +79,7 @@ class CGALProcessing {
     void testOBJ();
     void shapeDetection();
     bool writePlyPointsAndNormals (std::vector<Point_with_normal>, std::string);
-
-
+    
     private:
     void inputTest(std::string, PointVector &, std::vector<std::vector<std::size_t> > &);
     void outputWriter(std::string, Polyhedron_3 &);
@@ -72,3 +87,7 @@ class CGALProcessing {
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
     
 };
+
+#endif //CGAL_PROCESSING_H
+
+

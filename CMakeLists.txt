@@ -3,7 +3,7 @@ project(one)
 set(CMAKE_CXX_STANDARD 11)
 
 find_package(CGAL REQUIRED)
-find_package( Boost REQUIRED )
+find_package(Boost REQUIRED )
 find_package(Eigen3 REQUIRED)
 
 find_package(PCL 1.8 REQUIRED)

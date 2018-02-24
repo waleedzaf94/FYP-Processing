@@ -1,4 +1,7 @@
 
+#ifndef PCL_PROCESSING_H
+#define PCL_PROCESSING_H
+
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -79,3 +82,7 @@ class PCLProcessing {
     void performProcess();
     void importOBJAsPSD(string);
 };
+
+#endif //PCL_PROCESSING_H
+
+

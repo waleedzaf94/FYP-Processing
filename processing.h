@@ -1,4 +1,7 @@
 
+//#ifndef PROCESS_XYZ_H
+//#define PROCESS_XYZ_H
+
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -7,6 +10,7 @@
 #include "vcgProcessing.h"
 #include "pclProcessing.h"
 #include "cgalProcessing.h"
+#include "processingIO.hpp"
 
 
 class ProcessXYZ {
@@ -21,23 +25,15 @@ private:
     string fname = "/Users/waleedzafar/projects/fyp/one/335.obj";
     #endif
     string modelFName = "335";
-    struct vertexInfo {
-        float x, y, z;
-    };
-    struct planeInfo {
-        float x, y, z, d;
-    };
-    struct modelInfo {
-        planeInfo floor;
-        planeInfo roof;
-        std::vector<planeInfo> walls;
-        std::vector<vertexInfo> corners;
-    };
-    
 
 public:
+    
     void processModel(std::string);
     VCGProcessing vcgProcessor;
     PCLProcessing pclProcessor;
     CGALProcessing cgalProcessor;
 };
+
+//#endif //PROCESS_XYZ_H
+
+

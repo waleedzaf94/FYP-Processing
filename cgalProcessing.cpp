@@ -6,59 +6,35 @@ template<class HDS>
 class polyhedron_builder : public CGAL::Modifier_base<HDS> {
 public:
     CGALProcessing::PointVector &coords;
-      std::vector<std::vector<std::size_t> >   &tris;
-    polyhedron_builder( CGALProcessing::PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), tris(_tris) {}
-      void operator()( HDS& hds) {
-            typedef typename HDS::Vertex   Vertex;
-            typedef typename Vertex::Point_3 Point;
-            
-            // create a cgal incremental builder
-                  CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
-                  B.begin_surface( coords.size(), tris.size());
-            
-            // add the polyhedron vertices
-            for( CGALProcessing::Point_3 i : coords ){
-                  B.add_vertex(i);
-            }
-      
-      // add the polyhedron triangles
-            for( std::vector<size_t> i : tris){
-                  B.begin_facet();
-                  B.add_vertex_to_facet( i[0] );
-                  B.add_vertex_to_facet( i[1] );
-                  B.add_vertex_to_facet( i[2] );
-                  B.end_facet();
-            }
-      
+    std::vector<std::vector<std::size_t> >   &tris;
+    polyhedron_builder( CGALProcessing::PointVector &_coords,
+    std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), tris(_tris) {}
+    void operator()( HDS& hds) {
+        typedef typename HDS::Vertex   Vertex;
+        typedef typename Vertex::Point_3 Point;
+        
+        // create a cgal incremental builder
+          CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
+              B.begin_surface( coords.size(), tris.size());
+        
+        // add the polyhedron vertices
+        for( CGALProcessing::Point_3 i : coords ){
+              B.add_vertex(i);
+        }
+  
+  // add the polyhedron triangles
+        for( std::vector<size_t> i : tris){
+              B.begin_facet();
+              B.add_vertex_to_facet( i[0] );
+              B.add_vertex_to_facet( i[1] );
+              B.add_vertex_to_facet( i[2] );
+              B.end_facet();
+        }
+  
       // finish up the surface
             B.end_surface();
       }
 };
-
-inline
-void CGALProcessing::testOBJ()
-{
-    std::string filename = "/Users/waleedzafar/projects/fyp/one/models/DotNet.obj";
-      PointVector points;
-      std::vector<std::vector<std::size_t>> faces;
-      Polyhedron_3 poly;
-      this->inputTest(filename, points, faces);
-//     // compute convex hull of non-collinear points
-      CGAL::convex_hull_3(points.begin(), points.end(), poly);
-      std::cout << "The convex hull contains " << poly.size_of_vertices() << " vertices" << std::endl;
-      if (!CGAL::is_triangle_mesh(poly)){
-            std::cerr << "Input geometry is not triangulated." << std::endl;
-            return;
-      }
-      std::string output = "dump.off";
-      // This crashes due to too many faces
-      // this->incrementBuilder(poly, points, faces);
-
-      this->outputWriter(output, poly);
-//     Surface_mesh sm;
-//     CGAL::convex_hull_3(points.begin(), points.end(), sm);
-//     std::cout << "The convex hull contains " << num_vertices(sm) << " vertices" << std::endl;
- }
 
 inline 
 void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std::vector<std::vector<std::size_t> > &faces)
@@ -236,8 +212,6 @@ bool CGALProcessing::writePlyPointsAndNormals (Pwn_vector points, std::string fn
     
     return true;
 }
-
-
 
 
 
