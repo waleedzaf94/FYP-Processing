@@ -52,15 +52,15 @@ modelInfo readPlyFile(string filename) {
                 vertexInfo v;
                 vector<string> words;
                 boost::split(words, lines[i], boost::is_any_of(" "));
-                v.x = stof(words[0]);
-                v.y = stof(words[1]);
-                v.z = stof(words[2]);
+                v.x = atof(words[0].c_str());
+                v.y = atof(words[1].c_str());
+                v.z = atof(words[2].c_str());
                 if (n) {
                     // Assume nx ny nz immediately follow x y z
                     normalInfo norm;
-                    norm.nx = stof(words[3]);
-                    norm.ny = stof(words[4]);
-                    norm.nz = stof(words[5]);
+                    norm.nx = atof(words[3].c_str());
+                    norm.ny = atof(words[4].c_str());
+                    norm.nz = atof(words[5].c_str());
                     normals.push_back(norm);
                 }
                 verts.push_back(v);
@@ -145,6 +145,71 @@ plyHeader readPlyHeader(vector<string> lines) {
     }
     return header;
 }
+
+void writePlyFile(string filename, modelInfo model) {
+    ofstream out(filename);
+    if (out.is_open()) {
+        //write header
+        writePlyHeader(out, model);
+        vertex_vector vertices = model.vertices;
+        face_vector faces = model.faces;
+        normal_vector normals = model.normals;
+        if (vertices.size() > 0) {
+            if (normals.size() > 0) {
+                for (int i=0; i<vertices.size(); i++) {
+                    vertexInfo v = vertices[i];
+                    normalInfo n = normals[i];
+                    out << v.x << " " << v.y << " " << v.z << " " << n.nx << " " << n.ny << " " << n.nz << endl;
+                }
+            }
+            else {
+                for (vertexInfo v: vertices) {
+                    out << v.x << " " << v.y << " " << v.z << endl;
+                }
+            }
+        }
+        if (faces.size() > 0) {
+            for (faceInfo f: faces) {
+                out << f.vertexIndices.size();
+                for (int i: f.vertexIndices) {
+                    out << " " << i;
+                }
+                out << endl;
+            }
+        }
+        out.close();
+    }
+    else {
+        cout << "Error opening out file: " << filename << endl;
+    }
+}
+
+void writePlyHeader(ofstream &out, modelInfo model) {
+    out << "ply\n";
+    out << "format ascii 1.0\n";
+    vertex_vector vertices = model.vertices;
+    face_vector faces = model.faces;
+    normal_vector normals = model.normals;
+    long vc = vertices.size(), fc = faces.size(), nc = normals.size();
+    if (vc > 0) {
+        out << "element vertex " << vc << endl;
+        out << "property float x\n";
+        out << "property float y\n";
+        out << "property float z\n";
+        if (nc > 0) {
+            out << "property float nx\n";
+            out << "property float ny\n";
+            out << "property float nz\n";
+        }
+    }
+    if (fc > 0) {
+        out << "element face " << fc << endl;
+        out << "property list uchar int vertex_indices\n";
+    }
+    out << "end_header\n";
+}
+
+
 
 
 

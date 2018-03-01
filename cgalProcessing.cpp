@@ -5,34 +5,60 @@
 template<class HDS>
 class polyhedron_builder : public CGAL::Modifier_base<HDS> {
 public:
-    CGALProcessing::PointVector &coords;
-    std::vector<std::vector<std::size_t> >   &tris;
-    polyhedron_builder( CGALProcessing::PointVector &_coords,
-    std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), tris(_tris) {}
-    void operator()( HDS& hds) {
-        typedef typename HDS::Vertex   Vertex;
-        typedef typename Vertex::Point_3 Point;
+    CGALProcessing::PointVector             &coords;
+    std::vector<std::vector<std::size_t> >  &faces;
+    
+    polyhedron_builder( CGALProcessing::PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), faces(_tris) {
+        
+    }
+    
+    void operator()(HDS & hds) {
         
         // create a cgal incremental builder
-          CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
-              B.begin_surface( coords.size(), tris.size());
+        CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
+        B.begin_surface( coords.size(), faces.size());
         
         // add the polyhedron vertices
         for( CGALProcessing::Point_3 i : coords ){
               B.add_vertex(i);
         }
-  
-  // add the polyhedron triangles
-        for( std::vector<size_t> i : tris){
-              B.begin_facet();
-              B.add_vertex_to_facet( i[0] );
-              B.add_vertex_to_facet( i[1] );
-              B.add_vertex_to_facet( i[2] );
-              B.end_facet();
+//        std::string outf = "/Users/waleedzafar/projects/fyp/one/models/PLY/debugLog.txt";
+//        std::ofstream out(outf);
+//        int f = 0;
+//        CGALProcessing::Facet_handle fh;
+        // add the polyhedron triangles
+        for (std::vector<size_t> i: faces) {
+            if (i.size() > 3) // Skip faces with more than 3 indices - maintain triangular mesh
+                continue;
+            if (B.test_facet(i.begin(), i.end())) {
+                B.begin_facet();
+                for (size_t j: i) {
+                    B.add_vertex_to_facet(j);
+                }
+                B.end_facet();
+            }
         }
+        
+        
+//        for( std::vector<size_t> i : faces){
+//            out << "Face " << f << ": ";
+//            fh = B.begin_facet();
+////            for (size_t t: i) {
+////                B.add_vertex_to_facet(t);
+////                out << t << " ";
+////            }
+//            for (int j=0; j<3; j++) {
+//                B.add_vertex_to_facet(i[j]);
+//                out << i[j] << " ";
+//            }
+//            B.end_facet();
+//            out << std::endl;
+//            f++;
+//        }
+//        out.close();
   
-      // finish up the surface
-            B.end_surface();
+        // finish up the surface
+        B.end_surface();
       }
 };
 
@@ -43,12 +69,44 @@ void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std:
     P.delegate(builder);
 }
 
-inline
+void CGALProcessing::inputTest(std::string filename) {
+    modelInfo model = readPlyFile(filename);
+    PointVector points;
+    std::vector<std::vector<std::size_t> > faces;
+    readModelInfo(model, points, faces);
+    Polyhedron_3 p;
+    incrementBuilder(p, points, faces);
+    std::cout << "Vertices: " << p.size_of_vertices() << " Faces: " << p.size_of_facets() << std::endl;
+//    std::string fname = this->plyFolder + "custom_output.ply";
+//    writePlyFile(fname, model);
+//    std::cout << "Triangles: " << p.is_pure_triangle() << std::endl;
+    std::string outName = this->plyFolder + "poly_output.off";
+    std::ofstream out(outName);
+    write_off(out, p);
+    std::cout << "Wrote from polyhedron: " << outName << std::endl;
+}
+
 void CGALProcessing::inputTest(std::string filename, PointVector &points, std::vector<std::vector<std::size_t> > &faces)
 {
       std::ifstream input(filename);
       CGAL::read_OBJ(input, points, faces);
       std::cout << points.size() << " " << faces.size() << "\n";
+}
+
+
+
+inline
+void CGALProcessing::readModelInfo(modelInfo model, PointVector & points, std::vector<std::vector<std::size_t> > &faces) {
+    for (vertexInfo v: model.vertices) {
+        points.push_back(Point_3(static_cast<double>(v.x), static_cast<double>(v.y), static_cast<double>(v.z)));
+    }
+    for (faceInfo f: model.faces) {
+        std::vector<std::size_t> indices;
+        for (int i: f.vertexIndices) {
+            indices.push_back(i);
+        }
+        faces.push_back(indices);
+    }
 }
 
 void CGALProcessing::shapeDetection(){

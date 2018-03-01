@@ -26,8 +26,12 @@ void ProcessXYZ::processModel(string filename) {
 //    this->cgalProcessor.testOBJ();
 //    this->cgalProcessor.shapeDetection();
 //    this->cgalProcessor.readPlyFile(filename);
-    modelInfo m = readPlyFile(filename);
-    printf("Faces: %lu, Vertices: %lu, Normals: %lu\n", m.faces.size(), m.vertices.size(), m.normals.size());
+//    modelInfo m = readPlyFile(filename);
+//    printf("Faces: %lu, Vertices: %lu, Normals: %lu\n", m.faces.size(), m.vertices.size(), m.normals.size());
+    
+    CGALProcessing::PointVector points;
+    vector<vector<size_t> > faces;
+    this->cgalProcessor.inputTest(filename);
     
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();

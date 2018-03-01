@@ -15,10 +15,10 @@
 using namespace std;
 
 struct vertexInfo {
-    float x, y, z;
+    double x, y, z;
 };
 struct faceInfo {
-    float x, y, z, d;
+    double x, y, z, d;
     long viCount;
     std::vector<int> vertexIndices;
 };
@@ -53,6 +53,8 @@ struct plyHeader {
 
 modelInfo readPlyFile(std::string);
 plyHeader readPlyHeader(vector<string>);
+void writePlyFile(std::string, modelInfo);
+void writePlyHeader(std::ofstream&, modelInfo);
 
 
 #endif /* processingIO_hpp */

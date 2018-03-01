@@ -15,6 +15,8 @@
 #include <fstream>
 #include <cstring>
 
+#include "processingIO.hpp"
+
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/convex_hull_3.h>
@@ -61,6 +63,8 @@ class CGALProcessing {
     typedef Polyhedron_3::Halfedge_around_facet_circulator      Halfedge_facet_circulator;
     typedef Polyhedron_3::HalfedgeDS                            HalfedgeDS;
     typedef std::vector<Point_3>                                PointVector;
+    typedef Polyhedron_3::Halfedge_around_facet_const_circulator    HFCC;
+    typedef HalfedgeDS::Face_handle                             Facet_handle;
     
     //Shape Detection 3 type definitions
     typedef std::pair<Kernel::Point_3, Kernel::Vector_3>            Point_with_normal;
@@ -78,10 +82,13 @@ class CGALProcessing {
     // Public functions
     void testOBJ();
     void shapeDetection();
-    bool writePlyPointsAndNormals (std::vector<Point_with_normal>, std::string);
+    bool writePlyPointsAndNormals(std::vector<Point_with_normal>, std::string);
+    void readModelInfo(modelInfo, PointVector &, std::vector<std::vector<std::size_t> > &);
+    void inputTest(std::string, PointVector &, std::vector<std::vector<std::size_t> > &);
+    void inputTest(std::string);
     
     private:
-    void inputTest(std::string, PointVector &, std::vector<std::vector<std::size_t> > &);
+    
     void outputWriter(std::string, Polyhedron_3 &);
     void incrementBuilder(Polyhedron_3 &, PointVector &, std::vector<std::vector<std::size_t> > &);
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);

@@ -23,6 +23,7 @@ include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 file(GLOB processing_SRC
 	"*.h"
+	"*.hpp"
 	"*.cpp"
 )
 
