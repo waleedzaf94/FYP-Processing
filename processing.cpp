@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     #ifndef amanDev
-    string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
+    string fname = "/Users/waleedzafar/projects/fyp/one/models/335_Blob.ply";
     #else
     string fname = "/home/aman/Desktop/FYP-Processing/models/335.obj";
     #endif

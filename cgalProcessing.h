@@ -63,8 +63,6 @@ class CGALProcessing {
     typedef Polyhedron_3::Halfedge_around_facet_circulator      Halfedge_facet_circulator;
     typedef Polyhedron_3::HalfedgeDS                            HalfedgeDS;
     typedef std::vector<Point_3>                                PointVector;
-    typedef Polyhedron_3::Halfedge_around_facet_const_circulator    HFCC;
-    typedef HalfedgeDS::Face_handle                             Facet_handle;
     
     //Shape Detection 3 type definitions
     typedef std::pair<Kernel::Point_3, Kernel::Vector_3>            Point_with_normal;
@@ -86,6 +84,7 @@ class CGALProcessing {
     void readModelInfo(modelInfo, PointVector &, std::vector<std::vector<std::size_t> > &);
     void inputTest(std::string, PointVector &, std::vector<std::vector<std::size_t> > &);
     void inputTest(std::string);
+    void polyhedronProcessing(Polyhedron_3 &);
     
     private:
     

@@ -22,14 +22,8 @@ public:
         for( CGALProcessing::Point_3 i : coords ){
               B.add_vertex(i);
         }
-//        std::string outf = "/Users/waleedzafar/projects/fyp/one/models/PLY/debugLog.txt";
-//        std::ofstream out(outf);
-//        int f = 0;
-//        CGALProcessing::Facet_handle fh;
         // add the polyhedron triangles
         for (std::vector<size_t> i: faces) {
-            if (i.size() > 3) // Skip faces with more than 3 indices - maintain triangular mesh
-                continue;
             if (B.test_facet(i.begin(), i.end())) {
                 B.begin_facet();
                 for (size_t j: i) {
@@ -38,24 +32,6 @@ public:
                 B.end_facet();
             }
         }
-        
-        
-//        for( std::vector<size_t> i : faces){
-//            out << "Face " << f << ": ";
-//            fh = B.begin_facet();
-////            for (size_t t: i) {
-////                B.add_vertex_to_facet(t);
-////                out << t << " ";
-////            }
-//            for (int j=0; j<3; j++) {
-//                B.add_vertex_to_facet(i[j]);
-//                out << i[j] << " ";
-//            }
-//            B.end_facet();
-//            out << std::endl;
-//            f++;
-//        }
-//        out.close();
   
         // finish up the surface
         B.end_surface();
@@ -76,14 +52,12 @@ void CGALProcessing::inputTest(std::string filename) {
     readModelInfo(model, points, faces);
     Polyhedron_3 p;
     incrementBuilder(p, points, faces);
-    std::cout << "Vertices: " << p.size_of_vertices() << " Faces: " << p.size_of_facets() << std::endl;
-//    std::string fname = this->plyFolder + "custom_output.ply";
-//    writePlyFile(fname, model);
-//    std::cout << "Triangles: " << p.is_pure_triangle() << std::endl;
-    std::string outName = this->plyFolder + "poly_output.off";
-    std::ofstream out(outName);
-    write_off(out, p);
-    std::cout << "Wrote from polyhedron: " << outName << std::endl;
+    std::cout << "Polyhedron: Vertices: " << p.size_of_vertices() << " Faces: " << p.size_of_facets() << std::endl;
+    this->polyhedronProcessing(p);
+//    std::string outName = this->plyFolder + "poly_output.off";
+//    std::ofstream out(outName);
+//    write_off(out, p);
+//    std::cout << "Wrote from polyhedron: " << outName << std::endl;
 }
 
 void CGALProcessing::inputTest(std::string filename, PointVector &points, std::vector<std::vector<std::size_t> > &faces)
@@ -93,7 +67,9 @@ void CGALProcessing::inputTest(std::string filename, PointVector &points, std::v
       std::cout << points.size() << " " << faces.size() << "\n";
 }
 
-
+void CGALProcessing::polyhedronProcessing(Polyhedron_3 & P) {
+    std::cout << "Polyhedron Processing" << std::endl;
+}
 
 inline
 void CGALProcessing::readModelInfo(modelInfo model, PointVector & points, std::vector<std::vector<std::size_t> > &faces) {
