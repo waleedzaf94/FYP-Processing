@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 
-#include "vcgProcessing.h"
-#include "pclProcessing.h"
+// #include "vcgProcessing.h"
+// #include "pclProcessing.h"
 #include "cgalProcessing.h"
 #include "processingIO.hpp"
 
@@ -29,8 +29,8 @@ private:
 public:
     
     void processModel(std::string);
-    VCGProcessing vcgProcessor;
-    PCLProcessing pclProcessor;
+    // VCGProcessing vcgProcessor;
+    // PCLProcessing pclProcessor;
     CGALProcessing cgalProcessor;
 };
 
