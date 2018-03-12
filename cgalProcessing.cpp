@@ -55,10 +55,37 @@ void CGALProcessing::inputTest(std::string filename) {
     incrementBuilder(p, points, faces);
     std::cout << "Polyhedron: Vertices: " << p.size_of_vertices() << " Faces: " << p.size_of_facets() << std::endl;
     this->polyhedronProcessing(p);
-//    std::string outName = this->plyFolder + "poly_output.off";
+    modelInfo mm;
+    this->polyhedronToModelInfo(p, mm);
+    std::string outName = this->plyFolder + "custom.obj";
+    writeObjFile(outName, mm);
 //    std::ofstream out(outName);
 //    write_off(out, p);
 //    std::cout << "Wrote from polyhedron: " << outName << std::endl;
+}
+
+void CGALProcessing::polyhedronToModelInfo(Polyhedron_3 & P, modelInfo & model) {
+    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
+        Point_3 point = it->point();
+        vertexInfo v;
+        v.x = point.cartesian(0);
+        v.y = point.cartesian(1);
+        v.z = point.cartesian(2);
+        model.vertices.push_back(v);
+    }
+    for (Facet_iterator it=P.facets_begin(); it != P.facets_end(); it++) {
+        Halfedge_facet_circulator j = it->facet_begin();
+        if (CGAL::circulator_size(j) >= 3) {
+            faceInfo face;
+            do {
+                face.vertexIndices.push_back(std::distance(P.vertices_begin(), j->vertex()));
+            } while ( ++j != it->facet_begin());
+            model.faces.push_back(face);
+        }
+        else {
+            std::cerr << "Invalid facet circulator size" << std::endl;
+        }
+    }
 }
 
 void CGALProcessing::inputTest(std::string filename, PointVector &points, std::vector<std::vector<std::size_t> > &faces)
