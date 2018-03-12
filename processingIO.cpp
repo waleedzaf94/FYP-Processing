@@ -9,6 +9,54 @@
 
 using namespace std;
 
+modelInfo readObjFile(string filename) {
+    std::ifstream file;
+    file.open(filename, ios::in);
+    vector<string> lines;
+    face_vector faces;
+    normal_vector normals;
+    vertex_vector verts;
+    modelInfo model;
+    if (file.is_open()) {
+        string l;
+        while (getline(file, l))
+            lines.push_back(l);
+        for (string line: lines) {
+            vector<string> words;
+            boost::split(words, line, boost::is_any_of(" "));
+            if (words[0] == "v") {
+                vertexInfo v;
+                v.x = atof(words[1].c_str());
+                v.y = atof(words[2].c_str());
+                v.z = atof(words[3].c_str());
+                verts.push_back(v);
+            }
+            else if (words[0] == "vn") {
+                normalInfo n;
+                n.nx = atof(words[1].c_str());
+                n.ny = atof(words[2].c_str());
+                n.nz = atof(words[3].c_str());
+                normals.push_back(n);
+            }
+            else if (words[0] == "f") {
+                faceInfo f;
+                // defined as vertex/texture/normal indices
+                for (int i=1; i<4; i++) {
+                    vector<string> w2;
+                    boost::split(w2, words[i], boost::is_any_of("/"));
+                    f.vertexIndices.push_back(atoi(w2[0].c_str()));
+                }
+                faces.push_back(f);
+            }
+        }
+        file.close();
+    }
+    model.faces = faces;
+    model.vertices = verts;
+    model.normals = normals;
+    return model;
+}
+
 modelInfo readPlyFile(string filename) {
     std::ifstream file;
     file.open(filename, ios::in);
@@ -71,8 +119,7 @@ modelInfo readPlyFile(string filename) {
                 faceInfo f;
                 vector<string> words;
                 boost::split(words, lines[i], boost::is_any_of(" "));
-                f.viCount = stol(words[0]);
-                for (int i=1; i<=f.viCount; i++) {
+                for (int i=1; i<=stol(words[0]); i++) {
                     f.vertexIndices.push_back(atoi(words[i].c_str()));
                 }
                 faces.push_back(f);
@@ -145,7 +192,31 @@ plyHeader readPlyHeader(vector<string> lines) {
     }
     return header;
 }
-
+void writeObjFile(string filename, modelInfo model) {
+    ofstream out(filename);
+    if (out.is_open()) {
+        out << "# " << model.vertices.size() << " vertices" << endl;
+        for (vertexInfo v: model.vertices) {
+            out << "v " << v.x << " " << v.y << " " << v.z << endl;
+        }
+        out << "# " << model.normals.size() << " vertex normals" << endl;
+        for (normalInfo n: model.normals) {
+            out << "vn " << n.nx << " " << n.ny << " " << n.nz << endl;
+        }
+        out << "# " << model.faces.size() << " faces" << endl;
+        for (faceInfo f: model.faces) {
+            out << "f ";
+            for (int i: f.vertexIndices) {
+                out << i << " ";
+            }
+            out << endl;
+        }
+        out.close();
+    }
+    else {
+        cout << "Error opening file: " << filename << endl;
+    }
+}
 void writePlyFile(string filename, modelInfo model) {
     ofstream out(filename);
     if (out.is_open()) {

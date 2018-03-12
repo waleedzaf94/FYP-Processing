@@ -1,11 +1,11 @@
 
 #include "processing.h"
-#define amanDev
+
 using namespace std;
 
 int main() {
     #ifndef amanDev
-        string fname = "/Users/waleedzafar/projects/fyp/one/models/335_Blob.ply";
+        string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.obj";
     #else
         string fname = "/home/aman/Desktop/FYP-Processing/models/335_Blob.ply";
     #endif

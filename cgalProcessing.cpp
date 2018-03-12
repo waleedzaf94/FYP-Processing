@@ -46,7 +46,8 @@ void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std:
 }
 
 void CGALProcessing::inputTest(std::string filename) {
-    modelInfo model = readPlyFile(filename);
+//    modelInfo model = readPlyFile(filename);
+    modelInfo model = readObjFile(filename);
     PointVector points;
     std::vector<std::vector<std::size_t> > faces;
     readModelInfo(model, points, faces);

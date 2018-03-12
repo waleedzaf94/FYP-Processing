@@ -15,15 +15,14 @@
 using namespace std;
 
 struct vertexInfo {
-    double x, y, z;
+    double x=0, y=0, z=0;
 };
 struct faceInfo {
-    double x, y, z, d;
-    long viCount;
+    double x=0, y=0, z=0, d=0; // Coefficients for plane equation
     std::vector<int> vertexIndices;
 };
 struct normalInfo {
-    float nx, ny, nz;
+    double nx=0, ny=0, nz=0;
 };
 typedef std::vector<vertexInfo> vertex_vector;
 typedef std::vector<normalInfo> normal_vector;
@@ -52,8 +51,10 @@ struct plyHeader {
 };
 
 modelInfo readPlyFile(std::string);
+modelInfo readObjFile(std::string);
 plyHeader readPlyHeader(vector<string>);
 void writePlyFile(std::string, modelInfo);
+void writeObjFile(std::string, modelInfo);
 void writePlyHeader(std::ofstream&, modelInfo);
 
 
