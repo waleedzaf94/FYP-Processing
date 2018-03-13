@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     #ifndef amanDev
-        string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.obj";
+        string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
     #else
         string fname = "/home/aman/Desktop/FYP-Processing/models/335_Blob.ply";
     #endif
@@ -29,9 +29,8 @@ void ProcessXYZ::processModel(string filename) {
 //    modelInfo m = readPlyFile(filename);
 //    printf("Faces: %lu, Vertices: %lu, Normals: %lu\n", m.faces.size(), m.vertices.size(), m.normals.size());
     
-    CGALProcessing::PointVector points;
-    vector<vector<size_t> > faces;
-    this->cgalProcessor.inputTest(filename);
+//    this->cgalProcessor.inputTest(filename);
+    this->cgalProcessor.advancingFrontSurfaceReconstruction(filename);
     
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();

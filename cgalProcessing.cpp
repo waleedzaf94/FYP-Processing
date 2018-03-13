@@ -55,10 +55,10 @@ void CGALProcessing::inputTest(std::string filename) {
     incrementBuilder(p, points, faces);
     std::cout << "Polyhedron: Vertices: " << p.size_of_vertices() << " Faces: " << p.size_of_facets() << std::endl;
     this->polyhedronProcessing(p);
-    modelInfo mm;
-    this->polyhedronToModelInfo(p, mm);
-    std::string outName = this->plyFolder + "custom.obj";
-    writeObjFile(outName, mm);
+//    modelInfo mm;
+//    this->polyhedronToModelInfo(p, mm);
+//    std::string outName = this->plyFolder + "custom.obj";
+//    writeObjFile(outName, mm);
 //    std::ofstream out(outName);
 //    write_off(out, p);
 //    std::cout << "Wrote from polyhedron: " << outName << std::endl;
@@ -88,15 +88,79 @@ void CGALProcessing::polyhedronToModelInfo(Polyhedron_3 & P, modelInfo & model) 
     }
 }
 
-void CGALProcessing::inputTest(std::string filename, PointVector &points, std::vector<std::vector<std::size_t> > &faces)
-{
-      std::ifstream input(filename);
-      CGAL::read_OBJ(input, points, faces);
-      std::cout << points.size() << " " << faces.size() << "\n";
+void CGALProcessing::polyhedronProcessing(Polyhedron_3 & P) {
+    Pwn_vector points;
+    polyhedronToPwnVector(P, points);
+    cout << "READ\n";
 }
 
-void CGALProcessing::polyhedronProcessing(Polyhedron_3 & P) {
-    std::cout << "Polyhedron Processing" << std::endl;
+void CGALProcessing::advancingFrontSurfaceReconstruction(Polyhedron_3 & P) {
+    
+}
+
+void CGALProcessing::advancingFrontSurfaceReconstruction(std::string fname) {
+    
+    Pwn_vector points;
+    this->readPlyToPwn(fname, points);
+    
+    std::cerr << "Shape detection...\n";
+    Efficient_ransac ransac;
+    ransac.set_input(points);
+    ransac.add_shape_factory<cgalPlane>(); // Only planes are useful for stucturing
+    // Default RANSAC parameters
+    Efficient_ransac::Parameters op;
+    op.probability = 0.05;
+    op.min_points = 100;
+    op.epsilon = 0.002;
+    op.cluster_epsilon = 0.02;
+    op.normal_threshold = 0.7;
+    ransac.detect(op); // Plane detection
+    std::cerr << "done\nPoint set structuring...\n";
+    Pwn_vector structured_pts;
+    Structure pss (points.begin (), points.end (), ransac,
+                   op.cluster_epsilon);  // Same parameter as RANSAC
+    for (std::size_t i = 0; i < pss.size(); ++ i)
+        structured_pts.push_back (pss[i]);
+    std::cerr << "done\nAdvancing front...\n";
+    std::vector<std::size_t> point_indices(boost::counting_iterator<std::size_t>(0),
+                                           boost::counting_iterator<std::size_t>(structured_pts.size()));
+    Triangulation_3 dt (boost::make_transform_iterator(point_indices.begin(), On_the_fly_pair(structured_pts)),
+                        boost::make_transform_iterator(point_indices.end(), On_the_fly_pair(structured_pts)));
+    Priority_with_structure_coherence<Structure> priority (pss,
+                                                           1000. * op.cluster_epsilon); // Avoid too large facets
+    Reconstruction R(dt, priority);
+    R.run ();
+    std::cerr << "done\nWriting result... ";
+    std::vector<Facet> output;
+    const Reconstruction::TDS_2& tds = R.triangulation_data_structure_2();
+    for(Reconstruction::TDS_2::Face_iterator fit = tds.faces_begin(); fit != tds.faces_end(); ++fit)
+        if(fit->is_on_surface())
+            output.push_back (CGAL::make_array(fit->vertex(0)->vertex_3()->id(),
+                                               fit->vertex(1)->vertex_3()->id(),
+                                               fit->vertex(2)->vertex_3()->id()));
+    std::string outname = this->plyFolder + "advancing2.off";
+    std::ofstream f (outname.c_str());
+    f << "OFF\n" << structured_pts.size () << " " << output.size() << " 0\n"; // Header
+    for (std::size_t i = 0; i < structured_pts.size (); ++ i)
+        f << structured_pts[i].first << std::endl;
+    for (std::size_t i = 0; i < output.size (); ++ i)
+        f << "3 "
+        << output[i][0] << " "
+        << output[i][1] << " "
+        << output[i][2] << std::endl;
+    std::cerr << "all done\n" << std::endl;
+    f.close();
+}
+
+inline
+void CGALProcessing::polyhedronToPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
+    // Still need to extract normals from Polyhedron
+    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
+        Point_3 point  = it->point();
+        Vector_3 vec;
+        Point_with_normal pwn(point, vec);
+        points.push_back(pwn);
+    }
 }
 
 inline
@@ -113,21 +177,28 @@ void CGALProcessing::readModelInfo(modelInfo model, PointVector & points, std::v
     }
 }
 
-void CGALProcessing::shapeDetection(){
-    // points with normals
-    Pwn_vector points;
-    CGAL::Timer timer;
+inline
+void CGALProcessing::readPlyToPwn(std::string fname, Pwn_vector & points) {
+    points.clear();
     
     // loads point set from a file
-    // read_xyz_points_and_normals takes an OutputIterator for storing the points
+    // read_ply_points_and_normals takes an OutputIterator for storing the points
     // and a property_map to store the normal vector with each point
-    std::ifstream stream(this->fname);
+    std::ifstream stream(fname);
     
     if (!stream || !CGAL::read_ply_points_and_normals(stream, std::back_inserter(points), Point_map(), Normal_map())) {
         std::cerr << "Error. Cannot read file." << std::endl;
     }
     
     std::cout << points.size() << " points originally." << std::endl;
+}
+
+void CGALProcessing::shapeDetection(){
+    // points with normals
+    Pwn_vector points;
+    CGAL::Timer timer;
+    
+    this->readPlyToPwn(this->fname, points);
     
     // Instantiate shape detection engine
     Efficient_ransac ransac;
