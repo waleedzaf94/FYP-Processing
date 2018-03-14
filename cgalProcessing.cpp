@@ -1,47 +1,19 @@
 
 #include "cgalProcessing.h"
 
-// A modifier creating a triangle with the incremental builder.
-template<class HDS>
-class polyhedron_builder : public CGAL::Modifier_base<HDS> {
-public:
-    CGALProcessing::PointVector             &coords;
-    std::vector<std::vector<std::size_t> >  &faces;
-    
-    polyhedron_builder( CGALProcessing::PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), faces(_tris) {
-        
-    }
-    
-    void operator()(HDS & hds) {
-        
-        // create a cgal incremental builder
-        CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
-        B.begin_surface( coords.size(), faces.size());
-        
-        // add the polyhedron vertices
-        for( CGALProcessing::Point_3 i : coords ){
-              B.add_vertex(i);
-        }
-        // add the polyhedron triangles
-        for (std::vector<size_t> i: faces) {
-            if (B.test_facet(i.begin(), i.end())) {
-                B.begin_facet();
-                for (size_t j: i) {
-                    B.add_vertex_to_facet(j);
-                }
-                B.end_facet();
-            }
-        }
-  
-        // finish up the surface
-        B.end_surface();
-      }
-};
-
 inline 
-void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std::vector<std::vector<std::size_t> > &faces)
-{
+void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std::vector<std::vector<std::size_t> > &faces) {
     polyhedron_builder<HalfedgeDS> builder(points, faces);
+    P.delegate(builder);
+}
+
+inline
+void CGALProcessing::incrementBuilder(Polyhedron_3 &P, Pwn_vector &points, std::vector<Facet> &faces) {
+    PointVector p;
+    std::vector<std::vector<std::size_t> > f;
+    this->pwnToPointVector(points, p);
+    this->facetVectorToStd(faces, f);
+    polyhedron_builder<HalfedgeDS> builder(p, f);
     P.delegate(builder);
 }
 
@@ -88,20 +60,51 @@ void CGALProcessing::polyhedronToModelInfo(Polyhedron_3 & P, modelInfo & model) 
     }
 }
 
+void CGALProcessing::printPolyhedronInfo(Polyhedron_3 & P) {
+    std::cout << "Polyhedron Vertices: " << P.size_of_vertices() << " Faces: " << P.size_of_facets() << std::endl;
+}
+
 void CGALProcessing::polyhedronProcessing(Polyhedron_3 & P) {
     Pwn_vector points;
     polyhedronToPwnVector(P, points);
     cout << "READ\n";
 }
 
-void CGALProcessing::advancingFrontSurfaceReconstruction(Polyhedron_3 & P) {
+void CGALProcessing::polyhedronProcessing(std::string filename) {
+    Polyhedron_3 poly;
+    Pwn_vector points;
+    this->readPlyToPwn(filename, points);
+    this->advancingFrontSurfaceReconstruction(points, poly);
+    this->printPolyhedronInfo(poly);
+}
+
+void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & output) {
     
 }
 
-void CGALProcessing::advancingFrontSurfaceReconstruction(std::string fname) {
+inline
+void CGALProcessing::pwnToPointVector(Pwn_vector & input, PointVector & output) {
+    output.clear();
+    for (Point_with_normal pwn: input) {
+        Point_3 point = pwn.first;
+        output.push_back(point);
+    }
+}
+
+inline
+void CGALProcessing::facetVectorToStd(std::vector<Facet> & input, std::vector<std::vector<std::size_t> > & output) {
+    output.clear();
+    for (Facet facet: input) {
+        std::vector<std::size_t> indices;
+        indices.push_back(facet[0]);
+        indices.push_back(facet[1]);
+        indices.push_back(facet[2]);
+        output.push_back(indices);
+    }
+}
+
+void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, Polyhedron_3 & poly) {
     
-    Pwn_vector points;
-    this->readPlyToPwn(fname, points);
     
     std::cerr << "Shape detection...\n";
     Efficient_ransac ransac;
@@ -111,9 +114,9 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(std::string fname) {
     Efficient_ransac::Parameters op;
     op.probability = 0.05;
     op.min_points = 100;
-    op.epsilon = 0.002;
-    op.cluster_epsilon = 0.02;
-    op.normal_threshold = 0.7;
+    op.epsilon = 0.005;
+    op.cluster_epsilon = 0.05;
+    op.normal_threshold = 0.8;
     ransac.detect(op); // Plane detection
     std::cerr << "done\nPoint set structuring...\n";
     Pwn_vector structured_pts;
@@ -138,7 +141,10 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(std::string fname) {
             output.push_back (CGAL::make_array(fit->vertex(0)->vertex_3()->id(),
                                                fit->vertex(1)->vertex_3()->id(),
                                                fit->vertex(2)->vertex_3()->id()));
-    std::string outname = this->plyFolder + "advancing2.off";
+    
+    this->incrementBuilder(poly, structured_pts, output);
+    
+    std::string outname = this->plyFolder + "advancing3.off";
     std::ofstream f (outname.c_str());
     f << "OFF\n" << structured_pts.size () << " " << output.size() << " 0\n"; // Header
     for (std::size_t i = 0; i < structured_pts.size (); ++ i)
