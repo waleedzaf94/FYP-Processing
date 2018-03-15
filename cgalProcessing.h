@@ -2,6 +2,12 @@
 #ifndef CGAL_PROCESSING_H
 #define CGAL_PROCESSING_H
 
+#ifdef BOOST_PARAMETER_MAX_ARITY
+#undef BOOST_PARAMETER_MAX_ARITY
+#endif
+#define BOOST_PARAMETER_MAX_ARITY 12
+
+
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -41,11 +47,11 @@
 #include <CGAL/Advancing_front_surface_reconstruction.h>
 
 // Surface mesh generation
-//#include <CGAL/Mesh_triangulation_3.h>
-//#include <CGAL/Mesh_complex_3_in_triangulation_3.h>
-//#include <CGAL/Mesh_criteria_3.h>
-//#include <CGAL/Polyhedral_mesh_domain_with_features_3.h>
-//#include <CGAL/make_mesh_3.h>
+#include <CGAL/Mesh_triangulation_3.h>
+#include <CGAL/Mesh_complex_3_in_triangulation_3.h>
+#include <CGAL/Mesh_criteria_3.h>
+#include <CGAL/Polyhedral_mesh_domain_with_features_3.h>
+#include <CGAL/make_mesh_3.h>
 
 class CGALProcessing {
 
@@ -105,8 +111,22 @@ class CGALProcessing {
     typedef CGAL::cpp11::array<std::size_t, 3>                      Facet;
     
     // Surface mesh generation types
-//    typedef CGAL::Mesh_polyhedron_3<Kernel>::type                   Mesh_polyhedron;
-//    typedef CGAL::Polyhedral_mesh_domain_with_features_3<Kernel>    Mesh_domain;
+    typedef CGAL::Mesh_polyhedron_3<Kernel>::type                   Mesh_polyhedron;
+    typedef CGAL::Polyhedral_mesh_domain_with_features_3<Kernel>    Mesh_domain;
+    typedef CGAL::HalfedgeDS_default<CGAL::Epick, CGAL::I_Polyhedron_derived_items_3<CGAL::Mesh_3::Mesh_polyhedron_items<int> >, std::__1::allocator<int> > Mesh_hds;
+    
+#ifdef CGAL_CONCURRENT_MESH_3
+    typedef CGAL::Parallel_tag      Concurrency_tag;
+#else
+    typedef CGAL::Sequential_tag    Concurrency_tag;
+#endif
+    
+    // Triangulation
+    typedef CGAL::Mesh_triangulation_3<Mesh_domain, CGAL::Default, Concurrency_tag>::type Tr;
+    typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr, Mesh_domain::Corner_index, Mesh_domain::Curve_segment_index> C3t3;
+    //Criteria
+    typedef CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
+    
     
     // Functor to init the advancing front algorithm with indexed points
     struct On_the_fly_pair {
@@ -185,6 +205,7 @@ class CGALProcessing {
     void outputWriter(std::string, Polyhedron_3 &);
     void incrementBuilder(Polyhedron_3 &, PointVector &, std::vector<std::vector<std::size_t> > &);
     void incrementBuilder(Polyhedron_3 &, Pwn_vector &, std::vector<Facet> &);
+    void incrementBuilder(Mesh_polyhedron &, PointVector &, std::vector<std::vector<std::size_t> > &);
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
     
 };
@@ -220,6 +241,47 @@ public:
                 }
                 B.end_facet();
             }
+            } catch (std::exception e) {
+                std::cerr << e.what() << std::endl;
+            }
+        }
+        
+        // finish up the surface
+        B.end_surface();
+    }
+};
+
+// A modifier creating a triangle with the incremental builder.
+template<class Mesh_hds>
+class mesh_polyhedron_builder : public CGAL::Modifier_base<Mesh_hds> {
+public:
+    CGALProcessing::PointVector             &coords;
+    std::vector<std::vector<std::size_t> >  &faces;
+    
+    mesh_polyhedron_builder( CGALProcessing::PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), faces(_tris) {
+        
+    }
+    
+    void operator()(Mesh_hds & hds) {
+        
+        // create a cgal incremental builder
+        CGAL::Polyhedron_incremental_builder_3<Mesh_hds> B( hds, true);
+        B.begin_surface( coords.size(), faces.size());
+        
+        // add the polyhedron vertices
+        for( CGALProcessing::Point_3 i : coords ){
+            B.add_vertex(i);
+        }
+        // add the polyhedron triangles
+        for (std::vector<size_t> i: faces) {
+            try {
+                if (B.test_facet(i.begin(), i.end())) {
+                    B.begin_facet();
+                    for (size_t j: i) {
+                        B.add_vertex_to_facet(j);
+                    }
+                    B.end_facet();
+                }
             } catch (std::exception e) {
                 std::cerr << e.what() << std::endl;
             }

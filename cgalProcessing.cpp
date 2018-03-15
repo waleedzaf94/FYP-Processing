@@ -8,6 +8,12 @@ void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std:
 }
 
 inline
+void CGALProcessing::incrementBuilder(Mesh_polyhedron &P, PointVector &points, std::vector<std::vector<std::size_t> > &faces) {
+    mesh_polyhedron_builder<Mesh_hds> builder(points, faces);
+    P.delegate(builder);
+}
+
+inline
 void CGALProcessing::incrementBuilder(Polyhedron_3 &P, Pwn_vector &points, std::vector<Facet> &faces) {
     PointVector p;
     std::vector<std::vector<std::size_t> > f;
@@ -76,9 +82,40 @@ void CGALProcessing::polyhedronProcessing(std::string filename) {
     this->readPlyToPwn(filename, points);
     this->advancingFrontSurfaceReconstruction(points, poly);
     this->printPolyhedronInfo(poly);
+    Polyhedron_3 out;
+    this->surfaceMeshGeneration(poly, out);
+    this->printPolyhedronInfo(out);
 }
 
 void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & output) {
+    
+    Mesh_polyhedron polyhedron;
+    modelInfo model;
+    this->polyhedronToModelInfo(input, model);
+    PointVector points;
+    std::vector<std::vector<std::size_t> > faces;
+    this->readModelInfo(model, points, faces);
+    incrementBuilder(polyhedron, points, faces);
+    
+    if (!CGAL::is_triangle_mesh(polyhedron)){
+        std::cerr << "Input geometry is not triangulated." << std::endl;
+        return;
+    }
+    // Create domain
+    Mesh_domain domain(polyhedron);
+    
+    // Get sharp features
+    domain.detect_features();
+    // Mesh criteria
+    Mesh_criteria criteria(CGAL::parameters::edge_size = 0.025,
+                           CGAL::parameters::facet_angle = 25, CGAL::parameters::facet_size = 0.05, CGAL::parameters::facet_distance = 0.005,
+                           CGAL::parameters::cell_radius_edge_ratio = 3, CGAL::parameters::cell_size = 0.05);
+    
+    // Mesh generation
+    C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
+    // Output
+    std::ofstream medit_file("out.mesh");
+    c3t3.output_to_medit(medit_file);
     
 }
 
