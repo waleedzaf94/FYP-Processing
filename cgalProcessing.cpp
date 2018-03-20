@@ -10,7 +10,7 @@ void CGALProcessing::inputTest(std::string filename) {
     modelInfo model = readObjFile(filename);
     PointVector points;
     FacetVector faces;
-    readModelInfo(model, points, faces);
+    modelInfoToPointAndFacetVectors(model, points, faces);
     Polyhedron_3 p;
     incrementBuilder(p, points, faces);
     std::cout << "Polyhedron: Vertices: " << p.size_of_vertices() << " Faces: " << p.size_of_facets() << std::endl;
@@ -187,12 +187,13 @@ void CGALProcessing::pointSetShapeDetection(){
 void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & output) {
     // Follows example from https://doc.cgal.org/latest/Mesh_3/index.html#Mesh_33DPolyhedralDomains
     // Takes a Polyhedron_3 as input
+    
     Mesh_polyhedron polyhedron;
     modelInfo model;
     this->polyhedronToModelInfo(input, model);
     PointVector points;
     FacetVector faces;
-    this->readModelInfo(model, points, faces);
+    this->modelInfoToPointAndFacetVectors(model, points, faces);
     incrementBuilder(polyhedron, points, faces);
     
     if (!CGAL::is_triangle_mesh(polyhedron)){
@@ -235,6 +236,11 @@ void CGALProcessing::readPlyToPwn(std::string fname, Pwn_vector & points) {
     std::cout << points.size() << " points originally." << std::endl;
 }
 
+void CGALProcessing::readPlyToPolyhedron(std::string fname, Polyhedron_3 & poly) {
+    modelInfo model = readPlyFile(fname);
+    modelInfoToPolyhedron(model, poly);
+}
+
 inline
 bool CGALProcessing::writePlyPointsAndNormals (Pwn_vector points, std::string fname) {
     std::ofstream out(fname);
@@ -264,6 +270,12 @@ bool CGALProcessing::writePlyPointsAndNormals (Pwn_vector points, std::string fn
     }
     
     return true;
+}
+
+bool CGALProcessing::writePolyhedronToPly(std::string fname, Polyhedron_3 & poly) {
+    modelInfo model;
+    polyhedronToModelInfo(poly, model);
+    writePlyFile(fname, model);
 }
 
 inline
@@ -334,6 +346,27 @@ void CGALProcessing::incrementBuilder(Polyhedron_3 &P, Pwn_vector &points, std::
     P.delegate(builder);
 }
 
+inline
+void CGALProcessing::modelInfoToPointAndFacetVectors(modelInfo model, PointVector & points, FacetVector &faces) {
+    for (vertexInfo v: model.vertices) {
+        points.push_back(Point_3(static_cast<double>(v.x), static_cast<double>(v.y), static_cast<double>(v.z)));
+    }
+    for (faceInfo f: model.faces) {
+        FacetIndices indices;
+        for (int i: f.vertexIndices) {
+            indices.push_back(i);
+        }
+        faces.push_back(indices);
+    }
+}
+
+void CGALProcessing::modelInfoToPolyhedron(modelInfo & model, Polyhedron_3 & poly) {
+    PointVector points;
+    FacetVector faces;
+    modelInfoToPointAndFacetVectors(model, points, faces);
+    incrementBuilder(poly, points, faces);
+}
+
 void CGALProcessing::polyhedronToModelInfo(Polyhedron_3 & P, modelInfo & model) {
     for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
         Point_3 point = it->point();
@@ -382,18 +415,6 @@ void CGALProcessing::pwnToPointVector(Pwn_vector & input, PointVector & output) 
     }
 }
 
-inline
-void CGALProcessing::readModelInfo(modelInfo model, PointVector & points, FacetVector &faces) {
-    for (vertexInfo v: model.vertices) {
-        points.push_back(Point_3(static_cast<double>(v.x), static_cast<double>(v.y), static_cast<double>(v.z)));
-    }
-    for (faceInfo f: model.faces) {
-        FacetIndices indices;
-        for (int i: f.vertexIndices) {
-            indices.push_back(i);
-        }
-        faces.push_back(indices);
-    }
-}
+
 
 

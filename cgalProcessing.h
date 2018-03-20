@@ -59,10 +59,14 @@ class CGALProcessing {
     #ifdef amanDev
     std::string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
     std::string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";
+    std::string offFolder = "/home/aman/Desktop/FYP-Processing/models/OFF/";
+    std::string modelsFolder = "/home/aman/Desktop/FYP-Processing/models/";
     std::string fname = "/home/aman/Desktop/FYP-Processing/335.obj";
     #else
     std::string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
     std::string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
+    std::string offFolder = "/Users/waleedzafar/projects/fyp/one/models/OFF/";
+    std::string modelsFolder = "/Users/waleedzafar/projects/fyp/one/models/";
     std::string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
     #endif
     
@@ -191,19 +195,22 @@ class CGALProcessing {
     
     // IO
     void readPlyToPwn(std::string, Pwn_vector &);
-    bool writePlyPointsAndNormals(std::vector<Point_with_normal>, std::string);
+    void readPlyToPolyhedron(std::string, Polyhedron_3 &);
+    bool writePlyPointsAndNormals(Pwn_vector, std::string);
+    bool writePolyhedronToPly(std::string, Polyhedron_3 &);
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
     
     // Helpers
-    void facetVectorToStd(std::vector<Facet> &, std::vector<std::vector<std::size_t> > &);
-    void incrementBuilder(Mesh_polyhedron &, PointVector &, std::vector<std::vector<std::size_t> > &);
-    void incrementBuilder(Polyhedron_3 &, PointVector &, std::vector<std::vector<std::size_t> > &);
+    void facetVectorToStd(std::vector<Facet> &, FacetVector &);
+    void incrementBuilder(Mesh_polyhedron &, PointVector &, FacetVector &);
+    void incrementBuilder(Polyhedron_3 &, PointVector &, FacetVector &);
     void incrementBuilder(Polyhedron_3 &, Pwn_vector &, std::vector<Facet> &);
+    void modelInfoToPointAndFacetVectors(modelInfo, PointVector &, FacetVector &);
+    void modelInfoToPolyhedron(modelInfo &, Polyhedron_3 &);
     void polyhedronToModelInfo(Polyhedron_3 &, modelInfo &);
     void polyhedronToPwnVector(Polyhedron_3 &, Pwn_vector &);
     void printPolyhedronInfo(Polyhedron_3 &);
     void pwnToPointVector(Pwn_vector &, PointVector &);
-    void readModelInfo(modelInfo, PointVector &, std::vector<std::vector<std::size_t> > &);
     
 };
 
