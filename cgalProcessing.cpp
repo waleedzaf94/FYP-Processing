@@ -1,79 +1,24 @@
 
 #include "cgalProcessing.h"
 
-inline 
-void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, std::vector<std::vector<std::size_t> > &faces) {
-    polyhedron_builder<HalfedgeDS> builder(points, faces);
-    P.delegate(builder);
-}
+/// Public functions
 
-inline
-void CGALProcessing::incrementBuilder(Mesh_polyhedron &P, PointVector &points, std::vector<std::vector<std::size_t> > &faces) {
-    mesh_polyhedron_builder<Mesh_hds> builder(points, faces);
-    P.delegate(builder);
-}
-
-inline
-void CGALProcessing::incrementBuilder(Polyhedron_3 &P, Pwn_vector &points, std::vector<Facet> &faces) {
-    PointVector p;
-    std::vector<std::vector<std::size_t> > f;
-    this->pwnToPointVector(points, p);
-    this->facetVectorToStd(faces, f);
-    polyhedron_builder<HalfedgeDS> builder(p, f);
-    P.delegate(builder);
-}
+// Control
 
 void CGALProcessing::inputTest(std::string filename) {
-//    modelInfo model = readPlyFile(filename);
+    //    modelInfo model = readPlyFile(filename);
     modelInfo model = readObjFile(filename);
     PointVector points;
-    std::vector<std::vector<std::size_t> > faces;
+    FacetVector faces;
     readModelInfo(model, points, faces);
     Polyhedron_3 p;
     incrementBuilder(p, points, faces);
     std::cout << "Polyhedron: Vertices: " << p.size_of_vertices() << " Faces: " << p.size_of_facets() << std::endl;
     this->polyhedronProcessing(p);
-//    modelInfo mm;
-//    this->polyhedronToModelInfo(p, mm);
-//    std::string outName = this->plyFolder + "custom.obj";
-//    writeObjFile(outName, mm);
-//    std::ofstream out(outName);
-//    write_off(out, p);
-//    std::cout << "Wrote from polyhedron: " << outName << std::endl;
-}
-
-void CGALProcessing::polyhedronToModelInfo(Polyhedron_3 & P, modelInfo & model) {
-    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
-        Point_3 point = it->point();
-        vertexInfo v;
-        v.x = point.cartesian(0);
-        v.y = point.cartesian(1);
-        v.z = point.cartesian(2);
-        model.vertices.push_back(v);
-    }
-    for (Facet_iterator it=P.facets_begin(); it != P.facets_end(); it++) {
-        Halfedge_facet_circulator j = it->facet_begin();
-        if (CGAL::circulator_size(j) >= 3) {
-            faceInfo face;
-            do {
-                face.vertexIndices.push_back(std::distance(P.vertices_begin(), j->vertex()));
-            } while ( ++j != it->facet_begin());
-            model.faces.push_back(face);
-        }
-        else {
-            std::cerr << "Invalid facet circulator size" << std::endl;
-        }
-    }
-}
-
-void CGALProcessing::printPolyhedronInfo(Polyhedron_3 & P) {
-    std::cout << "Polyhedron Vertices: " << P.size_of_vertices() << " Faces: " << P.size_of_facets() << std::endl;
 }
 
 void CGALProcessing::polyhedronProcessing(Polyhedron_3 & P) {
-    Pwn_vector points;
-    polyhedronToPwnVector(P, points);
-    cout << "READ\n";
+    
 }
 
 void CGALProcessing::polyhedronProcessing(std::string filename) {
@@ -87,58 +32,7 @@ void CGALProcessing::polyhedronProcessing(std::string filename) {
     this->printPolyhedronInfo(out);
 }
 
-void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & output) {
-    
-    Mesh_polyhedron polyhedron;
-    modelInfo model;
-    this->polyhedronToModelInfo(input, model);
-    PointVector points;
-    std::vector<std::vector<std::size_t> > faces;
-    this->readModelInfo(model, points, faces);
-    incrementBuilder(polyhedron, points, faces);
-    
-    if (!CGAL::is_triangle_mesh(polyhedron)){
-        std::cerr << "Input geometry is not triangulated." << std::endl;
-        return;
-    }
-    // Create domain
-    Mesh_domain domain(polyhedron);
-    
-    // Get sharp features
-    domain.detect_features();
-    // Mesh criteria
-    Mesh_criteria criteria(CGAL::parameters::edge_size = 0.025,
-                           CGAL::parameters::facet_angle = 25, CGAL::parameters::facet_size = 0.05, CGAL::parameters::facet_distance = 0.005,
-                           CGAL::parameters::cell_radius_edge_ratio = 3, CGAL::parameters::cell_size = 0.05);
-    
-    // Mesh generation
-    C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
-    // Output
-    std::ofstream medit_file("out.mesh");
-    c3t3.output_to_medit(medit_file);
-    
-}
-
-inline
-void CGALProcessing::pwnToPointVector(Pwn_vector & input, PointVector & output) {
-    output.clear();
-    for (Point_with_normal pwn: input) {
-        Point_3 point = pwn.first;
-        output.push_back(point);
-    }
-}
-
-inline
-void CGALProcessing::facetVectorToStd(std::vector<Facet> & input, std::vector<std::vector<std::size_t> > & output) {
-    output.clear();
-    for (Facet facet: input) {
-        std::vector<std::size_t> indices;
-        indices.push_back(facet[0]);
-        indices.push_back(facet[1]);
-        indices.push_back(facet[2]);
-        output.push_back(indices);
-    }
-}
+// Core processing
 
 void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, Polyhedron_3 & poly) {
     
@@ -162,7 +56,7 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, Po
     for (std::size_t i = 0; i < pss.size(); ++ i)
         structured_pts.push_back (pss[i]);
     std::cerr << "done\nAdvancing front...\n";
-    std::vector<std::size_t> point_indices(boost::counting_iterator<std::size_t>(0),
+    FacetIndices point_indices(boost::counting_iterator<std::size_t>(0),
                                            boost::counting_iterator<std::size_t>(structured_pts.size()));
     Triangulation_3 dt (boost::make_transform_iterator(point_indices.begin(), On_the_fly_pair(structured_pts)),
                         boost::make_transform_iterator(point_indices.end(), On_the_fly_pair(structured_pts)));
@@ -195,48 +89,12 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, Po
     f.close();
 }
 
-inline
-void CGALProcessing::polyhedronToPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
-    // Still need to extract normals from Polyhedron
-    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
-        Point_3 point  = it->point();
-        Vector_3 vec;
-        Point_with_normal pwn(point, vec);
-        points.push_back(pwn);
-    }
-}
-
-inline
-void CGALProcessing::readModelInfo(modelInfo model, PointVector & points, std::vector<std::vector<std::size_t> > &faces) {
-    for (vertexInfo v: model.vertices) {
-        points.push_back(Point_3(static_cast<double>(v.x), static_cast<double>(v.y), static_cast<double>(v.z)));
-    }
-    for (faceInfo f: model.faces) {
-        std::vector<std::size_t> indices;
-        for (int i: f.vertexIndices) {
-            indices.push_back(i);
-        }
-        faces.push_back(indices);
-    }
-}
-
-inline
-void CGALProcessing::readPlyToPwn(std::string fname, Pwn_vector & points) {
-    points.clear();
+void CGALProcessing::pointSetShapeDetection(){
+    // Reads a PLY file to a Pwn_vector
+    // Runs Efficient_ransac on the points and normals
+    // Detects planes and segments the point set according to planes
+    // Writes the detected shapes to individual PLY files
     
-    // loads point set from a file
-    // read_ply_points_and_normals takes an OutputIterator for storing the points
-    // and a property_map to store the normal vector with each point
-    std::ifstream stream(fname);
-    
-    if (!stream || !CGAL::read_ply_points_and_normals(stream, std::back_inserter(points), Point_map(), Normal_map())) {
-        std::cerr << "Error. Cannot read file." << std::endl;
-    }
-    
-    std::cout << points.size() << " points originally." << std::endl;
-}
-
-void CGALProcessing::shapeDetection(){
     // points with normals
     Pwn_vector points;
     CGAL::Timer timer;
@@ -247,10 +105,10 @@ void CGALProcessing::shapeDetection(){
     Efficient_ransac ransac;
     ransac.set_input(points);
     ransac.add_shape_factory<cgalPlane>();
-//    ransac.add_shape_factory<cgalSphere>();
-//    ransac.add_shape_factory<cgalCylinder>();
-//    ransac.add_shape_factory<cgalCone>();
-//    ransac.add_shape_factory<cgalTorus>();
+    //    ransac.add_shape_factory<cgalSphere>();
+    //    ransac.add_shape_factory<cgalCylinder>();
+    //    ransac.add_shape_factory<cgalCone>();
+    //    ransac.add_shape_factory<cgalTorus>();
     
     timer.start();
     ransac.preprocess();
@@ -290,7 +148,7 @@ void CGALProcessing::shapeDetection(){
         std::cout << (*it)->info() << std::endl;
         
         FT sumDistances = 0;
-        std::vector<std::size_t>::const_iterator indexIt = (*it)->indices_of_assigned_points().begin();
+        FacetIndices::const_iterator indexIt = (*it)->indices_of_assigned_points().begin();
         
         while (indexIt != (*it)->indices_of_assigned_points().end()) {
             const Point_with_normal &p = *(points.begin() + (*indexIt));
@@ -303,59 +161,78 @@ void CGALProcessing::shapeDetection(){
         it++;
     }
     
-//    ransac.detect();
+    //    ransac.detect();
     
-//    std::cout << ransac.shapes().end() - ransac.shapes().begin() << " shapes detected." << std::endl;
-//    std::cout << ransac.number_of_unassigned_points() << " unassigned points." << std::endl;
-//
-//    Efficient_ransac::Shape_range shapes = ransac.shapes();
-//    Efficient_ransac::Shape_range::iterator it = shapes.begin();
-//
-//    while (it != shapes.end()) {
-//        if (cgalPlane* plane = dynamic_cast<cgalPlane*>(it->get())) {
-//            Kernel::Vector_3 normal = plane->plane_normal();
-//            std::cout << "Plane with normal " << normal << std::endl;
-//            std::cout << "Kernel::Plane_3: " << static_cast<Kernel::Plane_3>(*plane) << std::endl;
-//            std::cout << "Info: " << plane->info() << std::endl;
-//        }
-//        else {
-//            std::cout << (*it)->info() << std::endl;
-//        }
-//        it++;
-//    }
+    //    std::cout << ransac.shapes().end() - ransac.shapes().begin() << " shapes detected." << std::endl;
+    //    std::cout << ransac.number_of_unassigned_points() << " unassigned points." << std::endl;
+    //
+    //    Efficient_ransac::Shape_range shapes = ransac.shapes();
+    //    Efficient_ransac::Shape_range::iterator it = shapes.begin();
+    //
+    //    while (it != shapes.end()) {
+    //        if (cgalPlane* plane = dynamic_cast<cgalPlane*>(it->get())) {
+    //            Kernel::Vector_3 normal = plane->plane_normal();
+    //            std::cout << "Plane with normal " << normal << std::endl;
+    //            std::cout << "Kernel::Plane_3: " << static_cast<Kernel::Plane_3>(*plane) << std::endl;
+    //            std::cout << "Info: " << plane->info() << std::endl;
+    //        }
+    //        else {
+    //            std::cout << (*it)->info() << std::endl;
+    //        }
+    //        it++;
+    //    }
     
 }
 
-inline
-void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes, Pwn_vector points) {
-    Efficient_ransac::Shape_range::iterator it = shapes.begin();
-    int shapeNum=0;
-    while (it != shapes.end()) {
-        std::vector<size_t> indices = it->get()->indices_of_assigned_points();
-        std::vector<size_t>::const_iterator iti = indices.begin();
-        Pwn_vector newPoints(1);
-        while (iti != indices.end()) {
-            Point_with_normal pw = *(points.begin() + (*iti));
-//            Kernel::Point_3 p = pw.first;
-//            Kernel::Vector_3 v = pw.second;
-//            CGAL::Epick::Direction_3 d = v.direction();
-//            printf("Point: %f, %f, %f \n", p.x(), p.y(), p.z());
-//            printf("Vector: %f, %f, %f, %d \n", v.x(), v.y(), v.z(), v.dimension());
-//            printf("Direction: %f, %f, %f \n", d.dx(), d.dy(), d.dz());
-            newPoints.push_back(pw);
-            iti++;
-        }
-        std::cout << "Shape with " << newPoints.size() << " points\n";
-        std::string outFile = this->plyFolder + "/CGAL/" + std::to_string(shapeNum) + ".ply";
-        if (this->writePlyPointsAndNormals(newPoints, outFile)) {
-            std::cerr << "Wrote file: " << outFile << std::endl;
-        }
-        else {
-            std::cerr << "Error writing file: " << outFile << std::endl;
-        }
-        shapeNum++;
-        it++;
+void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & output) {
+    // Follows example from https://doc.cgal.org/latest/Mesh_3/index.html#Mesh_33DPolyhedralDomains
+    // Takes a Polyhedron_3 as input
+    Mesh_polyhedron polyhedron;
+    modelInfo model;
+    this->polyhedronToModelInfo(input, model);
+    PointVector points;
+    FacetVector faces;
+    this->readModelInfo(model, points, faces);
+    incrementBuilder(polyhedron, points, faces);
+    
+    if (!CGAL::is_triangle_mesh(polyhedron)){
+        std::cerr << "Input geometry is not triangulated." << std::endl;
+        return;
     }
+    // Create domain
+    Mesh_domain domain(polyhedron);
+    
+    // Get sharp features
+    domain.detect_features();
+    // Mesh criteria
+    Mesh_criteria criteria(CGAL::parameters::edge_size = 0.025,
+                           CGAL::parameters::facet_angle = 25, CGAL::parameters::facet_size = 0.05, CGAL::parameters::facet_distance = 0.005,
+                           CGAL::parameters::cell_radius_edge_ratio = 3, CGAL::parameters::cell_size = 0.05);
+    
+    // Mesh generation
+    C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
+    // Output
+    std::ofstream medit_file("out.mesh");
+    c3t3.output_to_medit(medit_file);
+    
+}
+
+// IO
+
+inline
+void CGALProcessing::readPlyToPwn(std::string fname, Pwn_vector & points) {
+    points.clear();
+    
+    // loads point set from a file
+    // read_ply_points_and_normals takes an OutputIterator for storing the points
+    // and a property_map to store the normal vector with each point
+    std::ifstream stream(fname);
+    
+    if (!stream || !CGAL::read_ply_points_and_normals(stream, std::back_inserter(points), Point_map(), Normal_map())) {
+        std::cerr << "Error. Cannot read file." << std::endl;
+    }
+    
+    std::cout << points.size() << " points originally." << std::endl;
 }
 
 inline
@@ -378,8 +255,8 @@ bool CGALProcessing::writePlyPointsAndNormals (Pwn_vector points, std::string fn
     out << "end_header\n";
     
     //Vertices
-//    std::vector<Point_with_normal>::iterator it = points.begin();
-//    while (
+    //    std::vector<Point_with_normal>::iterator it = points.begin();
+    //    while (
     for (auto it = points.begin(); it != points.end(); it++) {
         Kernel::Point_3 point = it->first;
         Kernel::Vector_3 normal = it->second;
@@ -389,24 +266,134 @@ bool CGALProcessing::writePlyPointsAndNormals (Pwn_vector points, std::string fn
     return true;
 }
 
+inline
+void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes, Pwn_vector points) {
+    Efficient_ransac::Shape_range::iterator it = shapes.begin();
+    int shapeNum=0;
+    while (it != shapes.end()) {
+        FacetIndices indices = it->get()->indices_of_assigned_points();
+        FacetIndices::const_iterator iti = indices.begin();
+        Pwn_vector newPoints(1);
+        while (iti != indices.end()) {
+            Point_with_normal pw = *(points.begin() + (*iti));
+            //            Kernel::Point_3 p = pw.first;
+            //            Kernel::Vector_3 v = pw.second;
+            //            CGAL::Epick::Direction_3 d = v.direction();
+            //            printf("Point: %f, %f, %f \n", p.x(), p.y(), p.z());
+            //            printf("Vector: %f, %f, %f, %d \n", v.x(), v.y(), v.z(), v.dimension());
+            //            printf("Direction: %f, %f, %f \n", d.dx(), d.dy(), d.dz());
+            newPoints.push_back(pw);
+            iti++;
+        }
+        std::cout << "Shape with " << newPoints.size() << " points\n";
+        std::string outFile = this->plyFolder + "/CGAL/" + std::to_string(shapeNum) + ".ply";
+        if (this->writePlyPointsAndNormals(newPoints, outFile)) {
+            std::cerr << "Wrote file: " << outFile << std::endl;
+        }
+        else {
+            std::cerr << "Error writing file: " << outFile << std::endl;
+        }
+        shapeNum++;
+        it++;
+    }
+}
 
+// Helpers
 
+inline
+void CGALProcessing::facetVectorToStd(std::vector<Facet> & input, FacetVector & output) {
+    output.clear();
+    for (Facet facet: input) {
+        FacetIndices indices;
+        indices.push_back(facet[0]);
+        indices.push_back(facet[1]);
+        indices.push_back(facet[2]);
+        output.push_back(indices);
+    }
+}
 
+inline
+void CGALProcessing::incrementBuilder(Mesh_polyhedron &P, PointVector &points, FacetVector &faces) {
+    mesh_polyhedron_builder<Mesh_hds> builder(points, faces);
+    P.delegate(builder);
+}
 
+inline
+void CGALProcessing::incrementBuilder(Polyhedron_3 &P, PointVector &points, FacetVector &faces) {
+    polyhedron_builder<HalfedgeDS> builder(points, faces);
+    P.delegate(builder);
+}
 
+inline
+void CGALProcessing::incrementBuilder(Polyhedron_3 &P, Pwn_vector &points, std::vector<Facet> &faces) {
+    PointVector p;
+    FacetVector f;
+    this->pwnToPointVector(points, p);
+    this->facetVectorToStd(faces, f);
+    polyhedron_builder<HalfedgeDS> builder(p, f);
+    P.delegate(builder);
+}
 
+void CGALProcessing::polyhedronToModelInfo(Polyhedron_3 & P, modelInfo & model) {
+    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
+        Point_3 point = it->point();
+        vertexInfo v;
+        v.x = point.cartesian(0);
+        v.y = point.cartesian(1);
+        v.z = point.cartesian(2);
+        model.vertices.push_back(v);
+    }
+    for (Facet_iterator it=P.facets_begin(); it != P.facets_end(); it++) {
+        Halfedge_facet_circulator j = it->facet_begin();
+        if (CGAL::circulator_size(j) >= 3) {
+            faceInfo face;
+            do {
+                face.vertexIndices.push_back(std::distance(P.vertices_begin(), j->vertex()));
+            } while ( ++j != it->facet_begin());
+            model.faces.push_back(face);
+        }
+        else {
+            std::cerr << "Invalid facet circulator size" << std::endl;
+        }
+    }
+}
 
+inline
+void CGALProcessing::polyhedronToPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
+    // Still need to extract normals from Polyhedron
+    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
+        Point_3 point  = it->point();
+        Vector_3 vec;
+        Point_with_normal pwn(point, vec);
+        points.push_back(pwn);
+    }
+}
 
+void CGALProcessing::printPolyhedronInfo(Polyhedron_3 & P) {
+    std::cout << "Polyhedron Vertices: " << P.size_of_vertices() << " Faces: " << P.size_of_facets() << std::endl;
+}
 
+inline
+void CGALProcessing::pwnToPointVector(Pwn_vector & input, PointVector & output) {
+    output.clear();
+    for (Point_with_normal pwn: input) {
+        Point_3 point = pwn.first;
+        output.push_back(point);
+    }
+}
 
-
-
-
-
-
-
-
-
-
+inline
+void CGALProcessing::readModelInfo(modelInfo model, PointVector & points, FacetVector &faces) {
+    for (vertexInfo v: model.vertices) {
+        points.push_back(Point_3(static_cast<double>(v.x), static_cast<double>(v.y), static_cast<double>(v.z)));
+    }
+    for (faceInfo f: model.faces) {
+        FacetIndices indices;
+        for (int i: f.vertexIndices) {
+            indices.push_back(i);
+        }
+        faces.push_back(indices);
+    }
+}
 
 

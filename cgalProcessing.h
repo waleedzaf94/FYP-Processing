@@ -66,15 +66,6 @@ class CGALProcessing {
     std::string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
     #endif
     
-    struct float3 {
-        float x, y, z;
-    };
-    struct PlyFile {
-        std::vector<float3> vertices;
-        std::vector<float3> normals;
-        std::vector<std::vector<int> > faces;
-    };
-    
     typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
     typedef Kernel::FT                                          FT;
     typedef CGAL::Polyhedron_3<Kernel>                          Polyhedron_3;
@@ -85,6 +76,8 @@ class CGALProcessing {
     typedef Polyhedron_3::Halfedge_around_facet_circulator      Halfedge_facet_circulator;
     typedef Polyhedron_3::HalfedgeDS                            HalfedgeDS;
     typedef std::vector<Point_3>                                PointVector;
+    typedef std::vector<std::size_t>                            FacetIndices;
+    typedef std::vector<FacetIndices>                           FacetVector;
     
     // Shape Detection 3 type definitions
     typedef std::pair<Point_3, Vector_3>                            Point_with_normal;
@@ -184,29 +177,33 @@ class CGALProcessing {
     
     typedef CGAL::Advancing_front_surface_reconstruction<Triangulation_3, Priority_with_structure_coherence<Structure> > Reconstruction;
     
-    // Public functions
-    void testOBJ();
-    void shapeDetection();
-    bool writePlyPointsAndNormals(std::vector<Point_with_normal>, std::string);
-    void readModelInfo(modelInfo, PointVector &, std::vector<std::vector<std::size_t> > &);
+    /// Public functions
+    
+    // Control
     void inputTest(std::string);
     void polyhedronProcessing(Polyhedron_3 &);
     void polyhedronProcessing(std::string);
-    void polyhedronToModelInfo(Polyhedron_3 &, modelInfo &);
-    void poissonSurfaceReconstruction(Polyhedron_3 &);
-    void advancingFrontSurfaceReconstruction(Pwn_vector &, Polyhedron_3 &);
-    void polyhedronToPwnVector(Polyhedron_3 &, Pwn_vector &);
-    void readPlyToPwn(std::string, Pwn_vector &);
-    void printPolyhedronInfo(Polyhedron_3 &);
-    void surfaceMeshGeneration(Polyhedron_3 &, Polyhedron_3 &);
-    void pwnToPointVector(Pwn_vector &, PointVector &);
-    void facetVectorToStd(std::vector<Facet> &, std::vector<std::vector<std::size_t> > &);
     
-    void outputWriter(std::string, Polyhedron_3 &);
+    // Core processing
+    void advancingFrontSurfaceReconstruction(Pwn_vector &, Polyhedron_3 &);
+    void pointSetShapeDetection();
+    void surfaceMeshGeneration(Polyhedron_3 &, Polyhedron_3 &);
+    
+    // IO
+    void readPlyToPwn(std::string, Pwn_vector &);
+    bool writePlyPointsAndNormals(std::vector<Point_with_normal>, std::string);
+    void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
+    
+    // Helpers
+    void facetVectorToStd(std::vector<Facet> &, std::vector<std::vector<std::size_t> > &);
+    void incrementBuilder(Mesh_polyhedron &, PointVector &, std::vector<std::vector<std::size_t> > &);
     void incrementBuilder(Polyhedron_3 &, PointVector &, std::vector<std::vector<std::size_t> > &);
     void incrementBuilder(Polyhedron_3 &, Pwn_vector &, std::vector<Facet> &);
-    void incrementBuilder(Mesh_polyhedron &, PointVector &, std::vector<std::vector<std::size_t> > &);
-    void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
+    void polyhedronToModelInfo(Polyhedron_3 &, modelInfo &);
+    void polyhedronToPwnVector(Polyhedron_3 &, Pwn_vector &);
+    void printPolyhedronInfo(Polyhedron_3 &);
+    void pwnToPointVector(Pwn_vector &, PointVector &);
+    void readModelInfo(modelInfo, PointVector &, std::vector<std::vector<std::size_t> > &);
     
 };
 
@@ -276,6 +273,8 @@ public:
         for (std::vector<size_t> i: faces) {
             try {
                 if (B.test_facet(i.begin(), i.end())) {
+                    if (i.size() != 3)
+                        continue;
                     B.begin_facet();
                     for (size_t j: i) {
                         B.add_vertex_to_facet(j);
