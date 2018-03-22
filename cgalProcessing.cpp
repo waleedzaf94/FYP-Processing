@@ -195,6 +195,7 @@ void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & 
     FacetVector faces;
     this->modelInfoToPointAndFacetVectors(model, points, faces);
     incrementBuilder(polyhedron, points, faces);
+    std::cout << "Finished Builder with faces: " << polyhedron.size_of_facets() << endl;
     
     if (!CGAL::is_triangle_mesh(polyhedron)){
         std::cerr << "Input geometry is not triangulated." << std::endl;
@@ -202,16 +203,21 @@ void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & 
     }
     // Create domain
     Mesh_domain domain(polyhedron);
-    
+    std::cout << "Initialized domain" << std::endl;
+
     // Get sharp features
-    domain.detect_features();
+    // domain.detect_features();
+    // std::cout << "Sharp Features" << endl;
+
     // Mesh criteria
     Mesh_criteria criteria(CGAL::parameters::edge_size = 0.025,
                            CGAL::parameters::facet_angle = 25, CGAL::parameters::facet_size = 0.05, CGAL::parameters::facet_distance = 0.005,
                            CGAL::parameters::cell_radius_edge_ratio = 3, CGAL::parameters::cell_size = 0.05);
-    
+    std::cout << "Set Criteria" << endl;
+
     // Mesh generation
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
+    std::cout << "Finished Mesh Maks" << endl;
     // Output
     std::ofstream medit_file("out.mesh");
     c3t3.output_to_medit(medit_file);
