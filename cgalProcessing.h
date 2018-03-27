@@ -6,6 +6,7 @@
 #undef BOOST_PARAMETER_MAX_ARITY
 #endif
 #define BOOST_PARAMETER_MAX_ARITY 12
+//#define CGAL_NDEBUG
 
 
 #include <stdio.h>
@@ -71,6 +72,7 @@ class CGALProcessing {
     #endif
     
     typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+//    typedef CGAL::Exact_predicates_exact_constructions_kernel   Kernel;
     typedef Kernel::FT                                          FT;
     typedef CGAL::Polyhedron_3<Kernel>                          Polyhedron_3;
     typedef Kernel::Point_3                                     Point_3;
@@ -112,11 +114,11 @@ class CGALProcessing {
     typedef CGAL::Polyhedral_mesh_domain_with_features_3<Kernel>    Mesh_domain;
     typedef CGAL::HalfedgeDS_default<CGAL::Epick, CGAL::I_Polyhedron_derived_items_3<CGAL::Mesh_3::Mesh_polyhedron_items<int> >, allocator<int> > Mesh_hds;
     
-#ifdef CGAL_CONCURRENT_MESH_3
+//#ifdef CGAL_CONCURRENT_MESH_3
     typedef CGAL::Parallel_tag      Concurrency_tag;
-#else
-    typedef CGAL::Sequential_tag    Concurrency_tag;
-#endif
+//#else/
+//    typedef CGAL::Sequential_tag    Concurrency_tag;
+//#endif
     
     // Triangulation
     typedef CGAL::Mesh_triangulation_3<Mesh_domain, CGAL::Default, Concurrency_tag>::type Tr;

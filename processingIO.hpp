@@ -52,9 +52,11 @@ struct plyHeader {
 
 modelInfo readPlyFile(std::string);
 modelInfo readObjFile(std::string);
+modelInfo readOffFile(std::string);
 plyHeader readPlyHeader(vector<string>);
-void writePlyFile(std::string, modelInfo);
-void writeObjFile(std::string, modelInfo);
+void writePlyFile(std::string, modelInfo &);
+void writeObjFile(std::string, modelInfo &);
+void writeOffFile(std::string, modelInfo &);
 void writePlyHeader(std::ofstream&, modelInfo);
 
 

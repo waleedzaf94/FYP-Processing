@@ -9,6 +9,54 @@
 
 using namespace std;
 
+modelInfo readOffFile(string filename) {
+    std::ifstream file;
+    file.open(filename, ios::in);
+    vector<string> lines;
+    face_vector faces;
+    vertex_vector verts;
+    modelInfo model;
+    if (file.is_open()) {
+        string l;
+        while (getline(file, l))
+            lines.push_back(l);
+        int i=0;
+        int numVertices=0, numFaces=0;
+        vector<string> words;
+        for (i=0; i<lines.size(); i++) {
+            l = lines[i];
+            boost::trim(l);
+            if (l == "OFF") continue;
+            if (l[0] == '#') continue;
+            boost::split(words, l, boost::is_any_of(" "));
+            numVertices = stoi(words[0].c_str());
+            numFaces = stoi(words[1].c_str());
+            break;
+        }
+        for (int j=i; j<(numVertices+i); j++) {
+            l = lines[i];
+            boost::trim(l);
+            boost::split(words, l, boost::is_any_of(" "));
+            vertexInfo v;
+            v.x = stoi(words[0].c_str());
+            v.y = stoi(words[1].c_str());
+            v.z = stoi(words[2].c_str());
+            i = j;
+        }
+        for (int j=i; j<(numFaces+i); j++) {
+            l = lines[i];
+            boost::trim(l);
+            boost::split(words, l, boost::is_any_of(" " ));
+            faceInfo f;
+            for (int k=1; k<words.size(); k++) {
+                f.vertexIndices.push_back(stoi(words[i].c_str()));
+            }
+        }
+    }
+    file.close();
+    return model;
+}
+
 modelInfo readObjFile(string filename) {
     std::ifstream file;
     file.open(filename, ios::in);
@@ -192,7 +240,8 @@ plyHeader readPlyHeader(vector<string> lines) {
     }
     return header;
 }
-void writeObjFile(string filename, modelInfo model) {
+
+void writeObjFile(string filename, modelInfo & model) {
     ofstream out(filename);
     if (out.is_open()) {
         out << "# " << model.vertices.size() << " vertices" << endl;
@@ -217,7 +266,7 @@ void writeObjFile(string filename, modelInfo model) {
         cout << "Error opening file: " << filename << endl;
     }
 }
-void writePlyFile(string filename, modelInfo model) {
+void writePlyFile(string filename, modelInfo & model) {
     ofstream out(filename);
     if (out.is_open()) {
         //write header
@@ -253,6 +302,23 @@ void writePlyFile(string filename, modelInfo model) {
     else {
         cout << "Error opening out file: " << filename << endl;
     }
+}
+
+void writeOffFile(string filename, modelInfo & model) {
+    ofstream out(filename);
+    out << "OFF\n";
+    out << model.vertices.size() << " " << model.faces.size() << " 0\n";
+    for (vertexInfo v: model.vertices) {
+        out << v.x << " " << v.y << " " << v.z << endl;
+    }
+    for (faceInfo f: model.faces) {
+        out << f.vertexIndices.size();
+        for (int i: f.vertexIndices) {
+            out << " " << i;
+        }
+        out << endl;
+    }
+    out.close();
 }
 
 void writePlyHeader(ofstream &out, modelInfo model) {

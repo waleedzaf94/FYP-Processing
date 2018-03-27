@@ -23,13 +23,15 @@ void CGALProcessing::polyhedronProcessing(Polyhedron_3 & P) {
 
 void CGALProcessing::polyhedronProcessing(std::string filename) {
     Polyhedron_3 poly;
-    Pwn_vector points;
-    this->readPlyToPwn(filename, points);
-    this->advancingFrontSurfaceReconstruction(points, poly);
-    this->printPolyhedronInfo(poly);
+//    Pwn_vector points;
+//    this->readPlyToPwn(filename, points);
+//    this->advancingFrontSurfaceReconstruction(points, poly);
+//    this->printPolyhedronInfo(poly);
+    modelInfo model = readPlyFile(filename);
+    modelInfoToPolyhedron(model, poly);
     Polyhedron_3 out;
-    this->surfaceMeshGeneration(poly, out);
-    this->printPolyhedronInfo(out);
+    surfaceMeshGeneration(poly, out);
+    printPolyhedronInfo(out);
 }
 
 // Core processing
@@ -189,13 +191,23 @@ void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & 
     // Takes a Polyhedron_3 as input
     
     Mesh_polyhedron polyhedron;
+    std::string fname = this->offFolder + "temp.off";
     modelInfo model;
-    this->polyhedronToModelInfo(input, model);
-    PointVector points;
-    FacetVector faces;
-    this->modelInfoToPointAndFacetVectors(model, points, faces);
-    incrementBuilder(polyhedron, points, faces);
-    std::cout << "Finished Builder with faces: " << polyhedron.size_of_facets() << endl;
+    polyhedronToModelInfo(input, model);
+    writeOffFile(fname, model);
+//    std::ofstream fout(fname);
+//    fout << input;
+//    CGAL::write_off(fout, input);
+    std::ifstream fin(fname);
+//    fin >> polyhedron;
+    CGAL::read_off(fin, polyhedron);
+//    modelInfo model;
+//    this->polyhedronToModelInfo(input, model);
+//    PointVector points;
+//    FacetVector faces;
+//    this->modelInfoToPointAndFacetVectors(model, points, faces);
+//    incrementBuilder(polyhedron, points, faces);
+//    std::cout << "Finished Builder with faces: " << polyhedron.size_of_facets() << endl;
     
     if (!CGAL::is_triangle_mesh(polyhedron)){
         std::cerr << "Input geometry is not triangulated." << std::endl;
@@ -206,18 +218,18 @@ void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & 
     std::cout << "Initialized domain" << std::endl;
 
     // Get sharp features
-    // domain.detect_features();
-    // std::cout << "Sharp Features" << endl;
+     domain.detect_features();
+     std::cout << "Sharp Features" << endl;
 
     // Mesh criteria
-    Mesh_criteria criteria(CGAL::parameters::edge_size = 0.025,
-                           CGAL::parameters::facet_angle = 25, CGAL::parameters::facet_size = 0.05, CGAL::parameters::facet_distance = 0.005,
-                           CGAL::parameters::cell_radius_edge_ratio = 3, CGAL::parameters::cell_size = 0.05);
+//    Mesh_criteria criteria(CGAL::parameters::edge_size = 0.025, CGAL::parameters::facet_angle = 25, CGAL::parameters::facet_size = 0.05, CGAL::parameters::facet_distance = 0.005, CGAL::parameters::cell_radius_edge_ratio = 3, CGAL::parameters::cell_size = 0.05);
+//    Mesh_criteria criteria(CGAL::parameters::facet_angle = 1);
+    Mesh_criteria criteria(CGAL::parameters::facet_angle = 30);
     std::cout << "Set Criteria" << endl;
 
     // Mesh generation
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
-    std::cout << "Finished Mesh Maks" << endl;
+    std::cout << "Finished Mesh Make" << endl;
     // Output
     std::ofstream medit_file("out.mesh");
     c3t3.output_to_medit(medit_file);
@@ -282,6 +294,7 @@ bool CGALProcessing::writePolyhedronToPly(std::string fname, Polyhedron_3 & poly
     modelInfo model;
     polyhedronToModelInfo(poly, model);
     writePlyFile(fname, model);
+    return true;
 }
 
 inline
