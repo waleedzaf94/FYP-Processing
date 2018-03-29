@@ -194,20 +194,20 @@ void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & 
     std::string fname = this->offFolder + "temp.off";
     modelInfo model;
     polyhedronToModelInfo(input, model);
-    writeOffFile(fname, model);
+//    writeOffFile(fname, model);
 //    std::ofstream fout(fname);
 //    fout << input;
 //    CGAL::write_off(fout, input);
-    std::ifstream fin(fname);
+//    std::ifstream fin(fname);
 //    fin >> polyhedron;
-    CGAL::read_off(fin, polyhedron);
+//    CGAL::read_off(fin, polyhedron);
 //    modelInfo model;
 //    this->polyhedronToModelInfo(input, model);
-//    PointVector points;
-//    FacetVector faces;
-//    this->modelInfoToPointAndFacetVectors(model, points, faces);
-//    incrementBuilder(polyhedron, points, faces);
-//    std::cout << "Finished Builder with faces: " << polyhedron.size_of_facets() << endl;
+    PointVector points;
+    FacetVector faces;
+    this->modelInfoToPointAndFacetVectors(model, points, faces);
+    incrementBuilder(polyhedron, points, faces);
+    std::cout << "Finished Builder with faces: " << polyhedron.size_of_facets() << endl;
     
     if (!CGAL::is_triangle_mesh(polyhedron)){
         std::cerr << "Input geometry is not triangulated." << std::endl;
@@ -230,10 +230,40 @@ void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & 
     // Mesh generation
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
     std::cout << "Finished Mesh Make" << endl;
+    
     // Output
     std::ofstream medit_file("out.mesh");
     c3t3.output_to_medit(medit_file);
     
+}
+
+void CGALProcessing::surfaceMeshGeneration(std::string inFile, std::string outFile) {
+    Mesh_polyhedron polyhedron;
+    std::ifstream fin(inFile);
+    CGAL::read_off(fin, polyhedron);
+    std::cout << "Read file: " << inFile << std::endl;
+    std::cout << "Vertices: " << polyhedron.size_of_vertices() << " Faces: " << polyhedron.size_of_facets() << std::endl;
+    CGAL::convex_hull_3(polyhedron.points_begin(), polyhedron.points_end(), polyhedron);
+    std::cout << "Generated convex hull: Vertices: " << polyhedron.size_of_vertices() << " Faces: " << polyhedron.size_of_facets() << std::endl;
+//    if (polyhedron.points_begin() != polyhedron.points_end()) {
+//        Kernel::Iso_cuboid_3 cube = CGAL::bounding_box(polyhedron.points_begin(), polyhedron.points_end());
+//        CGAL::Bbox_3 bbox = cube.bbox();
+//    }
+//    else {
+//        std::cerr << "Polyhedron points begin == points end\n";
+//        return;
+//    }
+    Mesh_domain domain(polyhedron);
+    std::cout << "Constructed domain\n";
+    domain.detect_features();
+    std::cout << "Detected sharp features\n";
+    Mesh_criteria criteria(CGAL::parameters::facet_angle = 30);
+    std::cout << "Set criteria\n";
+    C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
+    std::cout << "Created mesh\n";
+    std::ofstream medit_file(outFile);
+    c3t3.output_to_medit(medit_file);
+    std::cout << "Wrote output: " << outFile << std::endl;
 }
 
 // IO

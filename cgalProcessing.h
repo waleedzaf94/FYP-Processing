@@ -53,6 +53,8 @@
 #include <CGAL/Mesh_criteria_3.h>
 #include <CGAL/Polyhedral_mesh_domain_with_features_3.h>
 #include <CGAL/make_mesh_3.h>
+#include <CGAL/bounding_box.h>
+#include <CGAL/Bbox_3.h>
 
 class CGALProcessing {
 
@@ -114,11 +116,11 @@ class CGALProcessing {
     typedef CGAL::Polyhedral_mesh_domain_with_features_3<Kernel>    Mesh_domain;
     typedef CGAL::HalfedgeDS_default<CGAL::Epick, CGAL::I_Polyhedron_derived_items_3<CGAL::Mesh_3::Mesh_polyhedron_items<int> >, allocator<int> > Mesh_hds;
     
-//#ifdef CGAL_CONCURRENT_MESH_3
+#ifdef CGAL_CONCURRENT_MESH_3
     typedef CGAL::Parallel_tag      Concurrency_tag;
-//#else/
-//    typedef CGAL::Sequential_tag    Concurrency_tag;
-//#endif
+#else
+    typedef CGAL::Sequential_tag    Concurrency_tag;
+#endif
     
     // Triangulation
     typedef CGAL::Mesh_triangulation_3<Mesh_domain, CGAL::Default, Concurrency_tag>::type Tr;
@@ -194,6 +196,7 @@ class CGALProcessing {
     void advancingFrontSurfaceReconstruction(Pwn_vector &, Polyhedron_3 &);
     void pointSetShapeDetection();
     void surfaceMeshGeneration(Polyhedron_3 &, Polyhedron_3 &);
+    void surfaceMeshGeneration(std::string, std::string);
     
     // IO
     void readPlyToPwn(std::string, Pwn_vector &);

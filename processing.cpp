@@ -3,9 +3,9 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
     #ifndef amanDev
-        string fname = "/Users/waleedzafar/projects/fyp/one/models/PLY/335AF.ply";
+        string fname = "/Users/waleedzafar/projects/fyp/one/models/OFF/335AF.off";
     #else
         string fname = "/home/aman/Desktop/FYP-Processing/models/335_Blob.ply";
     #endif
@@ -15,6 +15,7 @@ int main() {
 }
 
 void ProcessXYZ::processModel(string filename) {
+    string out = "/Users/waleedzafar/projects/fyp/one/models/PLY/335SMG.mesh";
 //      this->vcgProcessor.importOBJAsMesh(filename);
 //      this->vcgProcessor.performProcess();
 //    this->holeFillTrivialEar(this->mesh);
@@ -31,7 +32,8 @@ void ProcessXYZ::processModel(string filename) {
     
 //    this->cgalProcessor.inputTest(filename);
 //    this->cgalProcessor.advancingFrontSurfaceReconstruction(filename);
-    this->cgalProcessor.polyhedronProcessing(filename);
+//    this->cgalProcessor.polyhedronProcessing(filename);
+    this->cgalProcessor.surfaceMeshGeneration(filename, out);
     
 //    this->viewModel();
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudPtr = this->cloud.makeShared();
