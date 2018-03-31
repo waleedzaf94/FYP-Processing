@@ -114,7 +114,7 @@ class CGALProcessing {
     // Surface mesh generation types
     typedef CGAL::Mesh_polyhedron_3<Kernel>::type                   Mesh_polyhedron;
     typedef CGAL::Polyhedral_mesh_domain_with_features_3<Kernel>    Mesh_domain;
-    typedef CGAL::HalfedgeDS_default<CGAL::Epick, CGAL::I_Polyhedron_derived_items_3<CGAL::Mesh_3::Mesh_polyhedron_items<int> >, allocator<int> > Mesh_hds;
+    typedef CGAL::HalfedgeDS_default<CGAL::Epick, CGAL::I_Polyhedron_derived_items_3<CGAL::Mesh_3::Mesh_polyhedron_items<int> >, std::allocator<int> > Mesh_hds;
     
 #ifdef CGAL_CONCURRENT_MESH_3
     typedef CGAL::Parallel_tag      Concurrency_tag;
