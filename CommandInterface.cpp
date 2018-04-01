@@ -122,7 +122,8 @@ void ProcessXYZ::ProcessModel()
     {
         //  call cgalProcessAll
         std::cout << "running all functions" << std::endl;
-        cgalProcessor.advancingFrontWrapper();
+        cgalProcessor.AdvancingFrontWrapper();
+        cgalProcessor.ShapeDetectionWrapper();
     }
     if (this->auxiliaryCalls)
     {
@@ -143,7 +144,8 @@ void ProcessXYZ::ProcessModel()
 
 void ProcessXYZ::SaveFinalModel()
 {
-    // call cgalSave with OutputFileName and Path;
+    std::string filePath = this->outputFilePath + "/" + this->outputFileName;
+    cgalProcessor.outputPolyhedron(filePath, this->fileType);
 }
 
 int main(int argc, char **argv)

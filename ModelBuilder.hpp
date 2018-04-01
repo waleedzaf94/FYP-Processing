@@ -47,13 +47,14 @@ class ModelBuilder {
     modelInfo modelinf;
     modelInfo outputModel;
     Pwn_vector points;
-    void readFile(string filpath, string filetype);
-    void writeFile(string filepath, string filetype);
+    void readFile(string, string);
+    void writeFile(string, string);
     void ToPointAndFacetVectors(PointVector & points, FacetVector &faces);
     void ToPolyhedron(Polyhedron_3 &);
     void SetOutputModel(modelInfo &);
     bool writePlyPointsAndNormals (Pwn_vector&, std::string);
     bool writePlyPointsAndNormals (std::string);
+    void PrintModelInfo(ModelBuilder::modelInfo &);
 
     private:
     modelInfo readOffFile(string filpath);
@@ -63,6 +64,8 @@ class ModelBuilder {
     void writePlyFile(string filename, modelInfo & model);
     void writeOffFile(string filename, modelInfo & model);
     void writePlyHeader(ofstream &out, modelInfo model);
+    void writePlyHeader(ofstream &out, Pwn_vector& points);
+
     plyHeader readPlyHeader(vector<string> lines);
     Pwn_vector readPlyToPwn(std::string) ;
 };

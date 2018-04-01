@@ -1,25 +1,24 @@
 #ifndef CGAL_PROCESSING_H
 #define CGAL_PROCESSING_H
-#include "PolyhedronBuilder.hpp"
 #include "ModelBuilder.hpp"
 #include "Definitions.hpp"
 
 class CGALProcessing {
 
     public:
-    #ifdef amanDev
-    std::string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
-    std::string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";
-    std::string offFolder = "/home/aman/Desktop/FYP-Processing/models/OFF/";
-    std::string modelsFolder = "/home/aman/Desktop/FYP-Processing/models/";
-    std::string fname = "/home/aman/Desktop/FYP-Processing/335.obj";
-    #else
-    std::string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
-    std::string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
-    std::string offFolder = "/Users/waleedzafar/projects/fyp/one/models/OFF/";
-    std::string modelsFolder = "/Users/waleedzafar/projects/fyp/one/models/";
-    std::string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
-    #endif
+    // #ifdef amanDev
+    // std::string plyFolder = "/home/aman/Desktop/FYP-Processing/models/PLY";
+    // std::string objFolder = "/home/aman/Desktop/FYP-Processing/models/OBJ";
+    // std::string offFolder = "/home/aman/Desktop/FYP-Processing/models/OFF/";
+    // std::string modelsFolder = "/home/aman/Desktop/FYP-Processing/models/";
+    // std::string fname = "/home/aman/Desktop/FYP-Processing/335.obj";
+    // #else
+    // std::string plyFolder = "/Users/waleedzafar/projects/fyp/one/models/PLY/";
+    // std::string objFolder = "/Users/waleedzafar/projects/fyp/one/models/OBJ/";
+    // std::string offFolder = "/Users/waleedzafar/projects/fyp/one/models/OFF/";
+    // std::string modelsFolder = "/Users/waleedzafar/projects/fyp/one/models/";
+    // std::string fname = "/Users/waleedzafar/projects/fyp/one/models/Chi_11.ply";
+    // #endif
     
     
     // Functor to init the advancing front algorithm with indexed points
@@ -90,32 +89,37 @@ class CGALProcessing {
     void polyhedronProcessing(std::string);
     
     // AlgorithmWrappers
-    void advancingFrontWrapper();
-    void pointSetShapeDetection(Pwn_vector &);
+    void AdvancingFrontWrapper();
+    void ShapeDetectionWrapper();
     void surfaceMeshGeneration(Polyhedron_3 &, Polyhedron_3 &);
     void surfaceMeshGeneration(std::string);
-   
+
     private:
     Polyhedron_3 polyhedron3;
     Mesh_polyhedron meshPolyhedron;
-    PolyhedronBuilder polyhedronbuilder;
     ModelBuilder modelbuilder;
     Pwn_vector pwn_points;
     std::string inputFileType;
 
     // Algorithms
-    void advancingFrontSurfaceReconstruction(Pwn_vector &, Polyhedron_3 &);
+    void advancingFrontSurfaceReconstruction(Pwn_vector &);
+    void pointSetShapeDetection(Pwn_vector &);
 
     // IO
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
+    
     template <class T>
     void PrintInfo(T &); 
+    
     // Helpers
     void facetVectorToStd(std::vector<Facet> &, FacetVector &);
     void incrementBuilder(Mesh_polyhedron &, PointVector &, FacetVector &);
     void incrementBuilder(Polyhedron_3 &, PointVector &, FacetVector &);
     void incrementBuilder(Polyhedron_3 &, Pwn_vector &, std::vector<Facet> &);
     void pwnToPointVector(Pwn_vector &, PointVector &);
+    void ToModelInfo(Polyhedron_3 &, ModelBuilder::modelInfo & );
+    void ToPwnVector(Polyhedron_3 &, Pwn_vector & ) ;
+
 };
 
 // A modifier creating a triangle with the incremental builder.

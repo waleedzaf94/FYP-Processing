@@ -5,6 +5,16 @@ void ModelBuilder::SetOutputModel(ModelBuilder::modelInfo & model)
     outputModel = model;
 }
 
+void ModelBuilder::PrintModelInfo(ModelBuilder::modelInfo & model)
+{
+    vertex_vector vertices = model.vertices;
+    face_vector faces = model.faces;
+    normal_vector normals = model.normals;
+    long vc = vertices.size(), fc = faces.size(), nc = normals.size();
+    std::cout << "Vertices " << vc << std::endl;
+    std::cout << "Faces " << fc << std::endl;
+    std::cout << "Normals " << nc << std::endl;
+}
 // This is the interface for the readFiles
 //  File Path 
 //  File Type ["obj", "off", "ply"]
@@ -28,6 +38,43 @@ void ModelBuilder::readFile(string filpath, string filetype)
     }
 }
 
+
+//  This is the interface for the writeFiles
+//  File Path - output filepath
+//  File Type ["obj", "off", "ply"]
+void ModelBuilder::writeFile(string filepath, string filetype)
+{
+    if (filetype == "off")
+    {
+        std::cout << "Writing off file" << std::endl;
+        writeOffFile(filepath, outputModel);
+        return;
+    }
+    else if (filetype == "obj")
+    {
+        std::cout << "Writing obj file" << std::endl;
+        writeObjFile(filepath, outputModel);
+        return;
+    }
+    else if (filetype == "ply")
+    {
+        std::cout << "Writing ply file" << std:: endl;
+        if (points.empty())
+        {
+            std::cout << "Writing Ply File from ModelInfo" <<std::endl;
+            writePlyFile(filepath, outputModel); // Working
+        }
+        else 
+        {
+            std::cout << "Writing Ply File from ModelInfo" <<std::endl;
+            writePlyPointsAndNormals(filepath);     // Working
+        }
+        return;
+    }
+}
+
+
+// Throwing stoi exception!
 ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
     std::ifstream file;
     file.open(filename, ios::in);
@@ -77,7 +124,7 @@ ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
     file.close();
     return model;
 }
-
+// Throwing stoi exception!
 ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
     std::ifstream file;
     file.open(filename, ios::in);
@@ -281,31 +328,6 @@ Pwn_vector ModelBuilder::readPlyToPwn(std::string fname) {
     return points;
 }
 
-//  This is the interface for the writeFiles
-//  File Path - output filepath
-//  File Type ["obj", "off", "ply"]
-void ModelBuilder::writeFile(string filepath, string filetype)
-{
-    if (filetype == "off")
-    {
-        writeOffFile(filepath, this->modelinf);
-        return;
-    }
-    else if (filetype == "obj")
-    {
-        writeObjFile(filepath, this->modelinf);
-        return;
-    }
-    else if (filetype == "ply")
-    {
-        if (points.empty())
-            writePlyFile(filepath, this->modelinf);
-        else 
-            writePlyPointsAndNormals(filepath);
-        return;
-    }
-}
-
 void ModelBuilder::writeObjFile(string filename, modelInfo & model) {
     ofstream out(filename);
     if (out.is_open()) {
@@ -331,6 +353,7 @@ void ModelBuilder::writeObjFile(string filename, modelInfo & model) {
         cout << "Error opening file: " << filename << endl;
     }
 }
+
 void ModelBuilder::writePlyFile(string filename, modelInfo & model) {
     ofstream out(filename);
     if (out.is_open()) {
@@ -411,13 +434,7 @@ void ModelBuilder::writePlyHeader(ofstream &out, modelInfo model) {
     out << "end_header\n";
 }
 
-bool ModelBuilder::writePlyPointsAndNormals (Pwn_vector& points, std::string fname) {
-    std::ofstream out(fname);
-    if (!out) {
-        std::cerr << "Error writing file: " << fname << std::endl;
-        return false;
-    }
-    // PLY Header
+void ModelBuilder::writePlyHeader(ofstream &out, Pwn_vector& points) {
     out << "ply\n";
     out << "format ascii 1.0\n";
     out << "element vertex " << std::distance(points.begin(), points.end()) << std::endl;
@@ -428,7 +445,16 @@ bool ModelBuilder::writePlyPointsAndNormals (Pwn_vector& points, std::string fna
     out << "property double ny\n";
     out << "property double nz\n";
     out << "end_header\n";
-    
+}
+
+bool ModelBuilder::writePlyPointsAndNormals (Pwn_vector& points, std::string fname) {
+    std::ofstream out(fname);
+    if (!out) {
+        std::cerr << "Error writing file: " << fname << std::endl;
+        return false;
+    }
+    // WTF - This does not follow the convention of the other writePlyHeader 
+    writePlyHeader(out, points);    
     //Vertices
     //    std::vector<Point_with_normal>::iterator it = points.begin();
     //    while (
@@ -448,17 +474,8 @@ bool ModelBuilder::writePlyPointsAndNormals (std::string fname) {
         return false;
     }
     // PLY Header
-    out << "ply\n";
-    out << "format ascii 1.0\n";
-    out << "element vertex " << std::distance(points.begin(), points.end()) << std::endl;
-    out << "property double x\n";
-    out << "property double y\n";
-    out << "property double z\n";
-    out << "property double nx\n";
-    out << "property double ny\n";
-    out << "property double nz\n";
-    out << "end_header\n";
-    
+    writePlyHeader(out, points);    
+
     //Vertices
     //    std::vector<Point_with_normal>::iterator it = points.begin();
     //    while (

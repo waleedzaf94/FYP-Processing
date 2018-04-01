@@ -11,7 +11,7 @@ void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype)
     if (filetype=="obj")
     {
         std::cout << "Reading in OBJ File " << std::endl;
-        modelbuilder.readFile(filePath, filetype);
+        modelbuilder.readFile(filePath, filetype);  // Throwing STOI exception
         PointVector points;
         FacetVector faces;
         // ALL OK UNTIL HERE
@@ -19,18 +19,16 @@ void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype)
         modelbuilder.ToPointAndFacetVectors(points, faces);
         std::cout << "Read File... Starting Increment Builder";
         this->incrementBuilder(this->polyhedron3, points, faces);
-        // this->polyhedronbuilder.PrintInfo(polyhedron3);
         PrintInfo(polyhedron3);
         // std::cout << "Polyhedron3: Vertices: " << this->polyhedron3.size_of_vertices() << " Faces: " << this->polyhedron3.size_of_facets() << std::endl;
         return;
     }
     if (filetype == "off"){
         std::ifstream fin(filePath);
-        std::cout << "Reading in OFF File " << std::endl;
+        // modelbuilder.readFile(filePath, filetype); // Throwing STOI exception
         CGAL::read_off(fin, this->meshPolyhedron);
         std::cout << "Read file: " << filePath << std::endl;
         // std::cout << "MeshPolyhedron Vertices: " << this->meshPolyhedron.size_of_vertices() << " Faces: " << this->meshPolyhedron.size_of_facets() << std::endl;
-        // this->polyhedronbuilder.PrintInfo(meshPolyhedron);
         PrintInfo(meshPolyhedron);
         return;
     }
@@ -38,36 +36,94 @@ void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype)
     {
         modelbuilder.readFile(filePath, filetype);
         modelbuilder.ToPolyhedron(polyhedron3);
-        // this->polyhedronbuilder.PrintInfo(polyhedron3);
         PrintInfo(polyhedron3);
         return;
     }
 }
  
+
+void CGALProcessing::outputPolyhedron(std::string filePath, std::string filetype)
+{
+    std::cout << "Saving to " << filePath << std::endl;
+    if (filetype == "ply")
+    {
+        ModelBuilder::modelInfo model;
+        PrintInfo(polyhedron3);
+        ToModelInfo(polyhedron3, model);
+        modelbuilder.PrintModelInfo(model);
+        modelbuilder.SetOutputModel(model);
+        modelbuilder.writeFile(filePath, filetype); 
+    }
+    else if (filetype == "off")
+    {
+        ModelBuilder::modelInfo model;
+        ToModelInfo(polyhedron3, model);
+        modelbuilder.SetOutputModel(model);
+        modelbuilder.writeFile(filePath, filetype);  
+    }
+    else    // Case of off and ply
+    {
+        modelbuilder.writeFile(filePath, filetype); 
+    }
+} 
+
+// The wrappers should initialize an instance of the Polyhedron3 -> Get Info -> ProcessImpl -> Set Polyhedron3 
+void CGALProcessing::AdvancingFrontWrapper()
+{
+    if (inputFileType == "ply")
+        advancingFrontSurfaceReconstruction(modelbuilder.points);
+    return;
+}
+// This is reading the original PWD_Vectors as Advancing Front Does Not Set Points 
+// Maybe we need a Polyhedron_3->Pwd_Method 
+void CGALProcessing::ShapeDetectionWrapper()
+{
+    if (inputFileType == "ply")
+        pointSetShapeDetection(modelbuilder.points);
+    return;
+}
+
 template<class T>
 void CGALProcessing::PrintInfo(T & P)
 {
     std::cout << "Polyhedron Vertices: " << P.size_of_vertices() << " Faces: " << P.size_of_facets() << std::endl;
 }
 
-void CGALProcessing::outputPolyhedron(std::string filePath, std::string filetype)
+void CGALProcessing::ToModelInfo(Polyhedron_3 & P, ModelBuilder::modelInfo & model)
 {
-    if (filetype == "obj")
-    {
-        return;
+    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
+        Point_3 point = it->point();
+        ModelBuilder::vertexInfo v;
+        v.x = point.cartesian(0);
+        v.y = point.cartesian(1);
+        v.z = point.cartesian(2);
+        model.vertices.push_back(v);
     }
-    if (filetype == "off")
-    {
-        return;
+    for (Facet_iterator it=P.facets_begin(); it != P.facets_end(); it++) {
+        Halfedge_facet_circulator j = it->facet_begin();
+        if (CGAL::circulator_size(j) >= 3) {
+            ModelBuilder::faceInfo face;
+            do {
+                face.vertexIndices.push_back(std::distance(P.vertices_begin(), j->vertex()));
+            } while ( ++j != it->facet_begin());
+            model.faces.push_back(face);
+        }
+        else {
+            std::cerr << "Invalid facet circulator size" << std::endl;
+        }
     }
-    if (filetype == "ply")
-    {
-        ModelBuilder::modelInfo model;
-        polyhedronbuilder.ToModelInfo(polyhedron3, model);
-        modelbuilder.SetOutputModel(model);
-        modelbuilder.writeFile(fname, filetype); 
+}
+
+void CGALProcessing::ToPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
+    // Still need to extract normals from Polyhedron
+    for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
+        Point_3 point  = it->point();
+        Vector_3 vec;
+        Point_with_normal pwn(point, vec);
+        points.push_back(pwn);
     }
-} 
+}
+
 
 
 // TODO
@@ -82,17 +138,11 @@ void CGALProcessing::polyhedronProcessing() {
     // modelInfoToPolyhedron(model, poly);
     Polyhedron_3 out;
     surfaceMeshGeneration(polyhedron3, out);
-    // this->polyhedronbuilder.PrintInfo(out);
+    PrintInfo(out);
 }
 
-void CGALProcessing::advancingFrontWrapper()
-{
-    if (inputFileType == "ply")
-        advancingFrontSurfaceReconstruction(modelbuilder.points, polyhedron3);
-    return;
-}
 
-void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, Polyhedron_3 & poly) {
+void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points) {
     std::cerr << "Shape detection...\n";
     Efficient_ransac ransac;
     ransac.set_input(points);
@@ -129,9 +179,12 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, Po
                                                fit->vertex(1)->vertex_3()->id(),
                                                fit->vertex(2)->vertex_3()->id()));
     
-    this->incrementBuilder(poly, structured_pts, output);
+    this->incrementBuilder(polyhedron3, structured_pts, output);
     std::cout << "Info after advancing front" <<std::endl;
-    PrintInfo(poly);
+    PrintInfo(polyhedron3);
+    // TODO - Maybe add structured_pts to the modelbuilder.points
+
+
     // TODO - Fix this outfile 
     // FUCK YOU WALEED
     // std::string outname = this->plyFolder + "advancing3.off";
@@ -194,30 +247,30 @@ void CGALProcessing::pointSetShapeDetection(Pwn_vector & points){
         }
     }
     
-    this->writeShapesToFiles(shapes, points);
+    writeShapesToFiles(shapes, points);
     
     return;
     
-    // WTF
-    Efficient_ransac::Shape_range::iterator it = shapes.begin();
+    // WTF - Assuming this is never run
+    // Efficient_ransac::Shape_range::iterator it = shapes.begin();
     
-    while (it != shapes.end()) {
-        boost::shared_ptr<Efficient_ransac::Shape> shape = *it;
-        std::cout << (*it)->info() << std::endl;
+    // while (it != shapes.end()) {
+    //     boost::shared_ptr<Efficient_ransac::Shape> shape = *it;
+    //     std::cout << (*it)->info() << std::endl;
         
-        FT sumDistances = 0;
-        FacetIndices::const_iterator indexIt = (*it)->indices_of_assigned_points().begin();
+    //     FT sumDistances = 0;
+    //     FacetIndices::const_iterator indexIt = (*it)->indices_of_assigned_points().begin();
         
-        while (indexIt != (*it)->indices_of_assigned_points().end()) {
-            const Point_with_normal &p = *(points.begin() + (*indexIt));
-            sumDistances += CGAL::sqrt((*it)->squared_distance(p.first));
-            indexIt++;
-        }
+    //     while (indexIt != (*it)->indices_of_assigned_points().end()) {
+    //         const Point_with_normal &p = *(points.begin() + (*indexIt));
+    //         sumDistances += CGAL::sqrt((*it)->squared_distance(p.first));
+    //         indexIt++;
+    //     }
         
-        FT averageDistance = sumDistances / shape->indices_of_assigned_points().size();
-        std::cout << " average distance: " << averageDistance << std::endl;
-        it++;
-    }
+    //     FT averageDistance = sumDistances / shape->indices_of_assigned_points().size();
+    //     std::cout << " average distance: " << averageDistance << std::endl;
+    //     it++;
+    // }
     
     //    ransac.detect();
     
@@ -292,7 +345,6 @@ void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & 
     // Output
     std::ofstream medit_file("out.mesh");
     c3t3.output_to_medit(medit_file);
-    
 }
 
 void CGALProcessing::surfaceMeshGeneration(std::string outFile) {
@@ -345,7 +397,9 @@ void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes, Pw
             iti++;
         }
         std::cout << "Shape with " << newPoints.size() << " points\n";
-        std::string outFile = this->plyFolder + "/CGAL/" + std::to_string(shapeNum) + ".ply";
+        // std::string outFile = this->plyFolder + "/CGAL/" + std::to_string(shapeNum) + ".ply";
+        std::string outFile = "../models/CGAL/" + std::to_string(shapeNum) + ".ply";
+        // IS THERE ANY WAY WE CAN WRITE ALL OF THE SHAPES INTO ONE FILE
         if (modelbuilder.writePlyPointsAndNormals(newPoints, outFile)) {
             std::cerr << "Wrote file: " << outFile << std::endl;
         }
