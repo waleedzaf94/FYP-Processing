@@ -346,13 +346,3 @@ void writePlyHeader(ofstream &out, modelInfo model) {
     out << "end_header\n";
 }
 
-
-
-
-
-
-
-
-
-
-
