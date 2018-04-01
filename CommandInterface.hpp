@@ -1,5 +1,8 @@
-#include "Flags.hh"
+#ifndef CommandInterface_hpp
+#define CommandInterface_hpp
+#include "cgalProcessing.h"
 
+#include "Flags.hh"
 #include <cstdint>
 #include <iostream>
 #include <sys/stat.h>
@@ -8,14 +11,10 @@
 #include <vector>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
-#include "cgalProcessing.h"
-#include "processingIO.hpp"
 #include <stdexcept>
 
 
-
 class ProcessXYZ {
-
 private:
     std::string inputFilePath;
     std::string inputFileName;
@@ -25,6 +24,7 @@ private:
     std::vector<std::string> functionList;
     bool auxiliaryCalls;
     CGALProcessing cgalProcessor;
+    std::string fileType;
 
 public:
     ProcessXYZ() {
@@ -49,3 +49,5 @@ public:
     std::string ofp;
     bool runAllFlag;
 };
+
+#endif
