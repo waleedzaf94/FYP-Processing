@@ -1,0 +1,30 @@
+﻿{
+  "proxies": {
+    "proxy1": {
+      "backendUri": "https://fyp-webportal.azurewebsites.net",
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/"
+      }
+    },
+    "getOBJfile": {
+      "backendUri": "https://hkufyp17010.blob.core.windows.net/{container-name}/{blob-name}",
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/blobs/{container-name}/{blob-name}"
+      }
+    },
+    "getOBJlist": {
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/blobs/{container-name}"
+      },
+      "backendUri": "https://localhost/api/RESTFunctions",
+      "requestOverrides": {
+        "backend.request.method": "GET",
+        "backend.request.querystring.name": "{container-name}",
+        "backend.request.headers.<HeaderName>": ""
+      }
+    }
+  }
+}
