@@ -22,6 +22,7 @@ private:
     std::string outputFileName;
     const static std::string DEFAULT_PATH;
     std::vector<std::string> functionList;
+    std::vector<double> afArgList;
     bool auxiliaryCalls;
     CGALProcessing cgalProcessor;
     std::string fileType;
@@ -36,17 +37,18 @@ public:
     std::string getOutputFileName();
     std::string getInputFilePath();
     std::string getOutputFilePath();
-//    std::string getFileName();
     void setFileName();
     void setOutputFilePath();
     void parseFunctions();
     void processModel();
     void saveFinalModel();
+    void parseAFArguments();
 
     std::string inputFile;
     std::string functions;
     std::string outputFile;
     std::string ofp;
+    std::string afArgs;
     bool runAllFlag;
 };
 

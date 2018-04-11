@@ -7,7 +7,6 @@
 #define BOOST_PARAMETER_MAX_ARITY 12
 //#define CGAL_NDEBUG
 
-
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -20,7 +19,6 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
-
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
@@ -100,7 +98,6 @@ typedef CGAL::Triangulation_data_structure_3<LVb, LCb>                      Tds;
 typedef CGAL::Delaunay_triangulation_3<Kernel, Tds>             Triangulation_3;
 typedef Triangulation_3::Vertex_handle                          Vertex_handle;
 typedef CGAL::cpp11::array<std::size_t, 3>                      Facet;
-
 
 // Surface mesh generation types
 typedef CGAL::Mesh_polyhedron_3<Kernel>::type                   Mesh_polyhedron;

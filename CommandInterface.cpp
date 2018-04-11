@@ -113,6 +113,17 @@ void ProcessXYZ::parseFunctions()
     } 
 }
 
+void ProcessXYZ::parseAFArguments() {
+    if (!this->afArgs.empty()) {
+        std::vector<std::string> args;
+        boost::split(args, this->afArgs, boost::is_any_of("_"));
+        if (args.size() != 5) return;
+        for (std::string arg: args) {
+            this->afArgList.push_back(stod(arg));
+        }
+    }
+}
+
 void ProcessXYZ::processModel()
 {
     // input fileinto cgal
@@ -124,8 +135,8 @@ void ProcessXYZ::processModel()
     {
         //  call cgalProcessAll
         std::cout << "running all functions" << std::endl;
-//        cgalProcessor.advancingFrontWrapper();
-//        cgalProcessor.shapeDetectionWrapper();
+        cgalProcessor.advancingFrontWrapper();
+        cgalProcessor.shapeDetectionWrapper();
         cgalProcessor.poissonReconstructionWrapper();
     }
     if (this->auxiliaryCalls)
@@ -155,10 +166,6 @@ int main(int argc, char **argv)
 {
     bool help;
     ProcessXYZ processor;
-
-    for (int i=0; i<argc; i++) {
-        cout << argv[i] << endl;
-    }
     
     Flags flags;
     flags.Var(processor.inputFile, 'f', "inputPath", std::string(""), "Path to the input file", "File");
@@ -167,6 +174,7 @@ int main(int argc, char **argv)
     flags.Var(processor.functions, 't', "transform", std::string(""), "Run specific transformations on the input file submit in order (separated by '_'). Options Include Advancing Front (AF), Pointset Shape Detection (PSP)... etc usage example: -t AF_PSP. With the -a flag, transformations will run after all the preconfigured mesh operations finish", "Functions");
     flags.Bool(processor.runAllFlag, 'a', "all", "Run the entire mesh generation process", "Functions");
     flags.Bool(help, 'h', "help", "show this help and exit", "Help");
+    flags.Var(processor.afArgs, 'b', "advancingFrontArguments", std::string(""), "Parameters for Advancing Front. Probability (0.05), Minimum Points (100), Epsilon (0.005), Cluster Epsilon (0.05), Minimum Threshold (0.8). Input values separated by '_' in order). Usage example: -b 0.05_100_0.005_0.05_0.8.", "FunctionArguments");
 
     if (!flags.Parse(argc, argv))
     {
@@ -181,6 +189,7 @@ int main(int argc, char **argv)
     processor.setInput();
     processor.setOutput();
     processor.parseFunctions();
+    processor.parseAFArguments();
     processor.processModel();
     processor.saveFinalModel();
     return 0;

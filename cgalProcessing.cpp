@@ -12,47 +12,14 @@ void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype)
     this->modelbuilder.readFile(filePath, filetype);
     this->modelbuilder.toPolyhedron(this->polyhedron3);
     this->modelbuilder.toPwnVector(this->pwn_points);
-    printf("Read file");
-    return;
-    
-    
-    if (filetype=="obj")
-    {
-        std::cout << "Reading in OBJ File " << std::endl;
-        modelbuilder.readFile(filePath, filetype);  // Throwing STOI exception
-        PointVector points;
-        FacetVector faces;
-        // ALL OK UNTIL HERE
-        std::cout << "To Points and Faces...";
-        modelbuilder.toPointAndFacetVectors(points, faces);
-        std::cout << "Read File... Starting Increment Builder";
-        this->incrementBuilder(this->polyhedron3, points, faces);
-        printInfo(polyhedron3);
-        // std::cout << "Polyhedron3: Vertices: " << this->polyhedron3.size_of_vertices() << " Faces: " << this->polyhedron3.size_of_facets() << std::endl;
-        return;
-    }
-    if (filetype == "off"){
-        std::ifstream fin(filePath);
-        // modelbuilder.readFile(filePath, filetype); // Throwing STOI exception
-//        CGAL::read_off(fin, this->meshPolyhedron); // This works. Is it required?
-        CGAL::read_off(fin, this->polyhedron3);
-        std::cout << "Read file: " << filePath << std::endl;
-        printInfo(this->polyhedron3);
-        return;
-    }
-    if (filetype == "ply")
-    {
-        modelbuilder.readFile(filePath, filetype);
-        modelbuilder.toPolyhedron(polyhedron3);
-        printInfo(polyhedron3);
-        return;
-    }
+    printf("Read file: %s\n", filePath.c_str());
 }
  
 
 void CGALProcessing::outputPolyhedron(std::string filePath, std::string filetype)
 {
     std::cout << "Saving to " << filePath << std::endl;
+    
     if (filetype == "ply")
     {
         ModelBuilder::modelInfo model;
@@ -76,25 +43,25 @@ void CGALProcessing::outputPolyhedron(std::string filePath, std::string filetype
 } 
 
 // The wrappers should initialize an instance of the Polyhedron3 -> Get Info -> ProcessImpl -> Set Polyhedron3 
-void CGALProcessing::advancingFrontWrapper()
+void CGALProcessing::advancingFrontWrapper(std::vector<double> args)
 {
-    if (inputFileType == "ply")
-        advancingFrontSurfaceReconstruction(modelbuilder.points);
-    return;
+    if (args.size() == 0) {
+        advancingFrontSurfaceReconstruction(this->modelbuilder.points);
+    }
+    else {
+        advancingFrontSurfaceReconstruction(this->modelbuilder.points, args[0], (int)args[1], args[2], args[3], args[4]);
+    }
 }
-// This is reading the original PWD_Vectors as Advancing Front Does Not Set Points
-// Maybe we need a Polyhedron_3->Pwd_Method 
+
 void CGALProcessing::shapeDetectionWrapper()
 {
-    if (inputFileType == "ply")
-        pointSetShapeDetection(modelbuilder.points);
+//    if (inputFileType == "ply")
+        pointSetShapeDetection(this->modelbuilder.points);
     return;
 }
 
 void CGALProcessing::poissonReconstructionWrapper() {
-    Polyhedron_3 output;
-    poissonSurfaceReconstruction(this->pwn_points, output);
-    this->polyhedron3 = output;
+    poissonSurfaceReconstruction(this->pwn_points, this->polyhedron3);
 }
 
 void CGALProcessing::surfaceMeshGenerationWrapper() {
@@ -182,7 +149,7 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, do
                                                fit->vertex(1)->vertex_3()->id(),
                                                fit->vertex(2)->vertex_3()->id()));
     
-    this->incrementBuilder(polyhedron3, structured_pts, output);
+    this->incrementBuilder(this->polyhedron3, structured_pts, output);
     std::cout << "Info after advancing front" <<std::endl;
     printInfo(polyhedron3);
 }

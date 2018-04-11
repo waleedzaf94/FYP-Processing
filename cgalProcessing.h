@@ -73,7 +73,7 @@ class CGALProcessing {
     void outputPolyhedron(std::string, std::string);
     
     // Algorithm Wrappers
-    void advancingFrontWrapper();
+    void advancingFrontWrapper(const std::vector<double> args = std::vector<double>());
     void shapeDetectionWrapper();
     void poissonReconstructionWrapper();
     void surfaceMeshGenerationWrapper();
