@@ -6,6 +6,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include "Definitions.hpp"
+#include "polyhedronBuilders.h"
 
 using namespace std;
 
@@ -71,9 +72,6 @@ class ModelBuilder {
     modelInfo readObjFile(string filpath);
 
     private:
-   
-    
-
     plyHeader readPlyHeader(vector<string> lines);
     Pwn_vector readPlyToPwn(std::string) ;
 };

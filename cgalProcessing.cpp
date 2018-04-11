@@ -97,6 +97,10 @@ void CGALProcessing::poissonReconstructionWrapper() {
     this->polyhedron3 = output;
 }
 
+void CGALProcessing::surfaceMeshGenerationWrapper() {
+    
+}
+
 template<class T>
 void CGALProcessing::printInfo(T & P)
 {
@@ -138,36 +142,21 @@ void CGALProcessing::toPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
     }
 }
 
-
-
 // TODO
 // Core processing
-void CGALProcessing::polyhedronProcessing() {
-    // Polyhedron_3 poly;
-    //    Pwn_vector points;
-    //    this->readPlyToPwn(filename, points);
-    //    this->advancingFrontSurfaceReconstruction(points, poly);
-    //    this->printPolyhedronInfo(poly);
-    // modelInfo model = readPlyFile(filename);
-    // modelInfoToPolyhedron(model, poly);
-    Polyhedron_3 out;
-    surfaceMeshGeneration(polyhedron3, out);
-    printInfo(out);
-}
 
-
-void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points) {
+void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, double probability, int min_points, double epsilon, double cluster_epsilon, double normal_threshold) {
     std::cerr << "Shape detection...\n";
     Efficient_ransac ransac;
     ransac.set_input(points);
     ransac.add_shape_factory<cgalPlane>(); // Only planes are useful for stucturing
     // Default RANSAC parameters
     Efficient_ransac::Parameters op;
-    op.probability = 0.05;
-    op.min_points = 100;
-    op.epsilon = 0.005;
-    op.cluster_epsilon = 0.05;
-    op.normal_threshold = 0.8;
+    op.probability = probability;
+    op.min_points = min_points;
+    op.epsilon = epsilon;
+    op.cluster_epsilon = cluster_epsilon;
+    op.normal_threshold = normal_threshold;
     ransac.detect(op); // Plane detection
     std::cerr << "done\nPoint set structuring...\n";
     Pwn_vector structured_pts;
@@ -196,23 +185,6 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points) {
     this->incrementBuilder(polyhedron3, structured_pts, output);
     std::cout << "Info after advancing front" <<std::endl;
     printInfo(polyhedron3);
-    // TODO - Maybe add structured_pts to the modelbuilder.points
-
-
-    // TODO - Fix this outfile 
-    // FUCK YOU WALEED
-    // std::string outname = this->plyFolder + "advancing3.off";
-    // std::ofstream f (outname.c_str());
-    // f << "OFF\n" << structured_pts.size () << " " << output.size() << " 0\n"; // Header
-    // for (std::size_t i = 0; i < structured_pts.size (); ++ i)
-    //     f << structured_pts[i].first << std::endl;
-    // for (std::size_t i = 0; i < output.size (); ++ i)
-    //     f << "3 "
-    //     << output[i][0] << " "
-    //     << output[i][1] << " "
-    //     << output[i][2] << std::endl;
-    // std::cerr << "all done\n" << std::endl;
-    // f.close();
 }
 
 void CGALProcessing::pointSetShapeDetection(Pwn_vector & points){
@@ -264,49 +236,6 @@ void CGALProcessing::pointSetShapeDetection(Pwn_vector & points){
     writeShapesToFiles(shapes, points);
     
     return;
-    
-    // WTF - Assuming this is never run
-    // Efficient_ransac::Shape_range::iterator it = shapes.begin();
-    
-    // while (it != shapes.end()) {
-    //     boost::shared_ptr<Efficient_ransac::Shape> shape = *it;
-    //     std::cout << (*it)->info() << std::endl;
-        
-    //     FT sumDistances = 0;
-    //     FacetIndices::const_iterator indexIt = (*it)->indices_of_assigned_points().begin();
-        
-    //     while (indexIt != (*it)->indices_of_assigned_points().end()) {
-    //         const Point_with_normal &p = *(points.begin() + (*indexIt));
-    //         sumDistances += CGAL::sqrt((*it)->squared_distance(p.first));
-    //         indexIt++;
-    //     }
-        
-    //     FT averageDistance = sumDistances / shape->indices_of_assigned_points().size();
-    //     std::cout << " average distance: " << averageDistance << std::endl;
-    //     it++;
-    // }
-    
-    //    ransac.detect();
-    
-    //    std::cout << ransac.shapes().end() - ransac.shapes().begin() << " shapes detected." << std::endl;
-    //    std::cout << ransac.number_of_unassigned_points() << " unassigned points." << std::endl;
-    //
-    //    Efficient_ransac::Shape_range shapes = ransac.shapes();
-    //    Efficient_ransac::Shape_range::iterator it = shapes.begin();
-    //
-    //    while (it != shapes.end()) {
-    //        if (cgalPlane* plane = dynamic_cast<cgalPlane*>(it->get())) {
-    //            Kernel::Vector_3 normal = plane->plane_normal();
-    //            std::cout << "Plane with normal " << normal << std::endl;
-    //            std::cout << "Kernel::Plane_3: " << static_cast<Kernel::Plane_3>(*plane) << std::endl;
-    //            std::cout << "Info: " << plane->info() << std::endl;
-    //        }
-    //        else {
-    //            std::cout << (*it)->info() << std::endl;
-    //        }
-    //        it++;
-    //    }
-    
 }
 
 void CGALProcessing::poissonSurfaceReconstruction(Pwn_vector & points, Polyhedron_3 & output) {
@@ -316,65 +245,65 @@ void CGALProcessing::poissonSurfaceReconstruction(Pwn_vector & points, Polyhedro
 }
 
 void CGALProcessing::poissonSurfaceReconstruction(Pwn_vector & points) {
-    // Poisson options
-    FT sm_angle = 20.0; // Min triangle angle in degrees.
-    FT sm_radius = 30; // Max triangle size w.r.t. point set average spacing.
-    FT sm_distance = 0.375; // Surface Approximation error w.r.t. point set average spacing.
-    // Reads the point set file in points[].
-    // Note: read_xyz_points_and_normals() requires an iterator over points
-    // + property maps to access each point's position and normal.
-    // The position property map can be omitted here as we use iterators over Point_3 elements.
-//    PointList points;
-    
-    // Creates implicit function from the read points using the default solver.
-    // Note: this method requires an iterator over points
-    // + property maps to access each point's position and normal.
-    // The position property map can be omitted here as we use iterators over Point_3 elements.
-    Poisson_reconstruction_function function(points.begin(), points.end(),
-                                             CGAL::make_normal_of_point_with_normal_pmap(Pwn_vector::value_type()) );
-    // Computes the Poisson indicator function f()
-    // at each vertex of the triangulation.
-    if ( ! function.compute_implicit_function() )
-        return;
-    // Computes average spacing
-//    FT average_spacing = CGAL::compute_average_spacing<CGAL::Sequential_tag>(points.begin(), points.end(), 6 /* knn = 1 ring */);
-    FT average_spacing = 2;
-    // Gets one point inside the implicit surface
-    // and computes implicit function bounding sphere radius.
-    Point_3 inner_point = function.get_inner_point();
-    Sphere_3 bsphere = function.bounding_sphere();
-    FT radius = std::sqrt(bsphere.squared_radius());
-    // Defines the implicit surface: requires defining a
-    // conservative bounding sphere centered at inner point.
-    FT sm_sphere_radius = 5.0 * radius;
-    FT sm_dichotomy_error = sm_distance*average_spacing/1000.0; // Dichotomy error must be << sm_distance
-    Surface_3 surface(function,
-                      Sphere_3(inner_point,sm_sphere_radius*sm_sphere_radius),
-                      sm_dichotomy_error/sm_sphere_radius);
-    // Defines surface mesh generation criteria
-    CGAL::Surface_mesh_default_criteria_3<STr> criteria(sm_angle,  // Min triangle angle (degrees)
-                                                        sm_radius*average_spacing,  // Max triangle size
-                                                        sm_distance*average_spacing); // Approximation error
-    // Generates surface mesh with manifold option
-    STr tr; // 3D Delaunay triangulation for surface mesh generation
-    C2t3 c2t3(tr); // 2D complex in 3D Delaunay triangulation
-    CGAL::make_surface_mesh(c2t3,                                 // reconstructed mesh
-                            surface,                              // implicit surface
-                            criteria,                             // meshing criteria
-                            CGAL::Manifold_with_boundary_tag());  // require manifold mesh
-    if(tr.number_of_vertices() == 0)
-        return;
-    // saves reconstructed surface mesh
-    std::ofstream out("335Poisson.off");
-    Polyhedron_3 output_mesh;
-    CGAL::output_surface_facets_to_polyhedron(c2t3, output_mesh);
-    out << output_mesh;
-    // computes the approximation error of the reconstruction
-    double max_dist =
-    CGAL::Polygon_mesh_processing::approximate_max_distance_to_point_set(output_mesh,
-                                                                         points,
-                                                                         4000);
-    std::cout << "Max distance to point_set: " << max_dist << std::endl;
+//    // Poisson options
+//    FT sm_angle = 20.0; // Min triangle angle in degrees.
+//    FT sm_radius = 30; // Max triangle size w.r.t. point set average spacing.
+//    FT sm_distance = 0.375; // Surface Approximation error w.r.t. point set average spacing.
+//    // Reads the point set file in points[].
+//    // Note: read_xyz_points_and_normals() requires an iterator over points
+//    // + property maps to access each point's position and normal.
+//    // The position property map can be omitted here as we use iterators over Point_3 elements.
+////    PointList points;
+//
+//    // Creates implicit function from the read points using the default solver.
+//    // Note: this method requires an iterator over points
+//    // + property maps to access each point's position and normal.
+//    // The position property map can be omitted here as we use iterators over Point_3 elements.
+//    Poisson_reconstruction_function function(points.begin(), points.end(),
+//                                             CGAL::make_normal_of_point_with_normal_pmap(Pwn_vector::value_type()) );
+//    // Computes the Poisson indicator function f()
+//    // at each vertex of the triangulation.
+//    if ( ! function.compute_implicit_function() )
+//        return;
+//    // Computes average spacing
+////    FT average_spacing = CGAL::compute_average_spacing<CGAL::Sequential_tag>(points.begin(), points.end(), 6 /* knn = 1 ring */);
+//    FT average_spacing = 2;
+//    // Gets one point inside the implicit surface
+//    // and computes implicit function bounding sphere radius.
+//    Point_3 inner_point = function.get_inner_point();
+//    Sphere_3 bsphere = function.bounding_sphere();
+//    FT radius = std::sqrt(bsphere.squared_radius());
+//    // Defines the implicit surface: requires defining a
+//    // conservative bounding sphere centered at inner point.
+//    FT sm_sphere_radius = 5.0 * radius;
+//    FT sm_dichotomy_error = sm_distance*average_spacing/1000.0; // Dichotomy error must be << sm_distance
+//    Surface_3 surface(function,
+//                      Sphere_3(inner_point,sm_sphere_radius*sm_sphere_radius),
+//                      sm_dichotomy_error/sm_sphere_radius);
+//    // Defines surface mesh generation criteria
+//    CGAL::Surface_mesh_default_criteria_3<STr> criteria(sm_angle,  // Min triangle angle (degrees)
+//                                                        sm_radius*average_spacing,  // Max triangle size
+//                                                        sm_distance*average_spacing); // Approximation error
+//    // Generates surface mesh with manifold option
+//    STr tr; // 3D Delaunay triangulation for surface mesh generation
+//    C2t3 c2t3(tr); // 2D complex in 3D Delaunay triangulation
+//    CGAL::make_surface_mesh(c2t3,                                 // reconstructed mesh
+//                            surface,                              // implicit surface
+//                            criteria,                             // meshing criteria
+//                            CGAL::Manifold_with_boundary_tag());  // require manifold mesh
+//    if(tr.number_of_vertices() == 0)
+//        return;
+//    // saves reconstructed surface mesh
+//    std::ofstream out("335Poisson.off");
+//    Polyhedron_3 output_mesh;
+//    CGAL::output_surface_facets_to_polyhedron(c2t3, output_mesh);
+//    out << output_mesh;
+//    // computes the approximation error of the reconstruction
+//    double max_dist =
+//    CGAL::Polygon_mesh_processing::approximate_max_distance_to_point_set(output_mesh,
+//                                                                         points,
+//                                                                         4000);
+//    std::cout << "Max distance to point_set: " << max_dist << std::endl;
 }
 
 void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & output) {

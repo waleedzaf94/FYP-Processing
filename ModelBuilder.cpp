@@ -121,6 +121,7 @@ ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
             v.y = stod(words[1].c_str());
             v.z = stod(words[2].c_str());
             i = j;
+            model.vertices.push_back(v);
         }
         for (int j=i; j<(numFaces+i); j++) {
             l = lines[i];
@@ -132,6 +133,7 @@ ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
                 f.vertexIndices.push_back((size_t)stoi(words[k].c_str()));
             }
             i = j;
+            model.faces.push_back(f);
         }
     }
     file.close();
@@ -518,7 +520,7 @@ void ModelBuilder::toPolyhedron(Polyhedron_3 & poly) {
     PointVector points;
     FacetVector faces;
     toPointAndFacetVectors(points, faces);
-    // TODO
-    // incrementBuilder(poly, points, faces);
+    polyhedron_builder<HalfedgeDS> builder(points, faces);
+    poly.delegate(builder);
 }
 
