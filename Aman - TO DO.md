@@ -8,6 +8,7 @@
     [x] Advancing Front - Need to fix output
     [x] Point Shape Detection - Need to merge output
     [ ] Surface Mesh Generation
+    [ ] Poisson surface reconstruction
 
 [ ] Test PrintFile 
     [x] PLY - Working with writePlyPointsAndNormals 

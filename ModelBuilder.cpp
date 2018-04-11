@@ -1,43 +1,55 @@
 #include "ModelBuilder.hpp"
 
-void ModelBuilder::SetOutputModel(ModelBuilder::modelInfo & model)
-{
-    outputModel = model;
+void ModelBuilder::setOutputModel(ModelBuilder::modelInfo & model) {
+    this->outputModel = model;
 }
 
-void ModelBuilder::PrintModelInfo(ModelBuilder::modelInfo & model)
-{
-    vertex_vector vertices = model.vertices;
-    face_vector faces = model.faces;
-    normal_vector normals = model.normals;
-    long vc = vertices.size(), fc = faces.size(), nc = normals.size();
-    std::cout << "Vertices " << vc << std::endl;
-    std::cout << "Faces " << fc << std::endl;
-    std::cout << "Normals " << nc << std::endl;
+void ModelBuilder::printModelInfo(ModelBuilder::modelInfo & model) {
+    std::cout << "Vertices: " << model.vertices.size() << std::endl;
+    std::cout << "Faces: " << model.faces.size() << std::endl;
+    std::cout << "Normals: " << model.normals.size() << std::endl;
 }
+
 // This is the interface for the readFiles
 //  File Path 
 //  File Type ["obj", "off", "ply"]
-void ModelBuilder::readFile(string filpath, string filetype)
+void ModelBuilder::readFile(string filepath, string filetype)
 {
     if (filetype == "off")
     {
-        modelinf = readOffFile(filpath);
+        this->model = readOffFile(filepath);
         return;
     }
     else if (filetype == "obj")
     {
-        cout << "Inside Model Builder Reader";
-        modelinf = readObjFile(filpath);
+//        cout << "Inside Model Builder Reader";
+        this->model = readObjFile(filepath);
         return;
     }
     else if (filetype == "ply")
     {
-        modelinf = readPlyFile(filpath);
+        this->model = readPlyFile(filepath);
         return;
     }
 }
 
+void ModelBuilder::toPwnVector(Pwn_vector & points) {
+    if (this->model.vertices.size() != this->model.normals.size()) {
+        std::cerr << "Vertices and Normals should be the same in number\n";
+        return;
+    }
+    vertex_vector vertices = this->model.vertices;
+    normal_vector normals = this->model.normals;
+    for (int i=0; i<vertices.size(); i++) {
+        vertexInfo v = vertices[i];
+        normalInfo n = normals[i];
+        Point_3 p (v.x, v.y, v.z);
+        Vector_3 vn (n.nx, n.ny, n.nz);
+        Point_with_normal pwn (p, vn);
+        points.push_back(pwn);
+    }
+    
+}
 
 //  This is the interface for the writeFiles
 //  File Path - output filepath
@@ -73,13 +85,10 @@ void ModelBuilder::writeFile(string filepath, string filetype)
     }
 }
 
-
-// Throwing stoi exception!
 ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
     std::ifstream file;
     file.open(filename, ios::in);
     
-    // WTF
     vector<string> lines;
     face_vector faces;
     vertex_vector verts;
@@ -89,7 +98,7 @@ ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
         while (getline(file, l))
             lines.push_back(l);
         int i=0;
-        int numVertices=0, numFaces=0;
+        long numVertices=0, numFaces=0;
         vector<string> words;
         for (i=0; i<lines.size(); i++) {
             l = lines[i];
@@ -97,28 +106,32 @@ ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
             if (l == "OFF") continue;
             if (l[0] == '#') continue;
             boost::split(words, l, boost::is_any_of(" "));
-            numVertices = stoi(words[0].c_str());
-            numFaces = stoi(words[1].c_str());
+            numVertices = stof(words[0].c_str());
+            numFaces = stof(words[1].c_str());
             break;
         }
         for (int j=i; j<(numVertices+i); j++) {
             l = lines[i];
             boost::trim(l);
+            if (l == "") continue;
             boost::split(words, l, boost::is_any_of(" "));
+            if (words.size() != 3) continue;
             vertexInfo v;
-            v.x = stoi(words[0].c_str());
-            v.y = stoi(words[1].c_str());
-            v.z = stoi(words[2].c_str());
+            v.x = stod(words[0].c_str());
+            v.y = stod(words[1].c_str());
+            v.z = stod(words[2].c_str());
             i = j;
         }
         for (int j=i; j<(numFaces+i); j++) {
             l = lines[i];
             boost::trim(l);
-            boost::split(words, l, boost::is_any_of(" " ));
+            if (l == "") continue;
+            boost::split(words, l, boost::is_any_of(" "));
             faceInfo f;
             for (int k=1; k<words.size(); k++) {
-                f.vertexIndices.push_back(stoi(words[i].c_str()));
+                f.vertexIndices.push_back((size_t)stoi(words[k].c_str()));
             }
+            i = j;
         }
     }
     file.close();
@@ -142,16 +155,16 @@ ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
             boost::split(words, line, boost::is_any_of(" "));
             if (words[0] == "v") {
                 vertexInfo v;
-                v.x = atof(words[1].c_str());
-                v.y = atof(words[2].c_str());
-                v.z = atof(words[3].c_str());
+                v.x = stod(words[1].c_str());
+                v.y = stod(words[2].c_str());
+                v.z = stod(words[3].c_str());
                 verts.push_back(v);
             }
             else if (words[0] == "vn") {
                 normalInfo n;
-                n.nx = atof(words[1].c_str());
-                n.ny = atof(words[2].c_str());
-                n.nz = atof(words[3].c_str());
+                n.nx = stod(words[1].c_str());
+                n.ny = stod(words[2].c_str());
+                n.nz = stod(words[3].c_str());
                 normals.push_back(n);
             }
             else if (words[0] == "f") {
@@ -160,7 +173,7 @@ ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
                 for (int i=1; i<4; i++) {
                     vector<string> w2;
                     boost::split(w2, words[i], boost::is_any_of("/"));
-                    f.vertexIndices.push_back(atoi(w2[0].c_str()));
+                    f.vertexIndices.push_back((size_t)atoi(w2[0].c_str()));
                 }
                 faces.push_back(f);
             }
@@ -183,7 +196,7 @@ ModelBuilder::modelInfo ModelBuilder::readPlyFile(string filename) {
     normal_vector normals;
     vertex_vector verts;
     modelInfo model;
-    int vcount=0, fcount = 0;
+    long vcount=0, fcount = 0;
     bool n = false;
     if (file.is_open()) {
         string line;
@@ -488,11 +501,11 @@ bool ModelBuilder::writePlyPointsAndNormals (std::string fname) {
 }
 
 // Converters
-void ModelBuilder::ToPointAndFacetVectors(PointVector & points, FacetVector &faces) {
-    for (ModelBuilder::vertexInfo v: modelinf.vertices) {
+void ModelBuilder::toPointAndFacetVectors(PointVector & points, FacetVector &faces) {
+    for (ModelBuilder::vertexInfo v: model.vertices) {
         points.push_back(Point_3(static_cast<double>(v.x), static_cast<double>(v.y), static_cast<double>(v.z)));
     }
-    for (ModelBuilder::faceInfo f: modelinf.faces) {
+    for (ModelBuilder::faceInfo f: model.faces) {
         FacetIndices indices;
         for (int i: f.vertexIndices) {
             indices.push_back(i);
@@ -501,10 +514,10 @@ void ModelBuilder::ToPointAndFacetVectors(PointVector & points, FacetVector &fac
     }
 }
 
-void ModelBuilder::ToPolyhedron(Polyhedron_3 & poly) {
+void ModelBuilder::toPolyhedron(Polyhedron_3 & poly) {
     PointVector points;
     FacetVector faces;
-    ToPointAndFacetVectors(points, faces);
+    toPointAndFacetVectors(points, faces);
     // TODO
     // incrementBuilder(poly, points, faces);
 }

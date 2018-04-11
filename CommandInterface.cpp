@@ -35,7 +35,8 @@ static std::string getFileDirectory(const std::string filePath)
 }
 
 const std::string ProcessXYZ::DEFAULT_PATH = "./";
-void ProcessXYZ::SetInput()
+
+void ProcessXYZ::setInput()
 {
     if (file_exists(this->inputFile))
     {
@@ -64,34 +65,34 @@ void ProcessXYZ::SetInput()
     throw std::invalid_argument( "Invalid File" );
 }
 
-void ProcessXYZ::SetOutput()
+void ProcessXYZ::setOutput()
 {
     this->outputFilePath = this->ofp.empty() ? DEFAULT_PATH : this->ofp;
     this->outputFileName = this->outputFile.empty() ? this->inputFileName : this->outputFile;
 }
 
-std::string ProcessXYZ::GetInputFileName()
+std::string ProcessXYZ::getInputFileName()
 {
    return this->inputFileName;   
 }
 
 
-std::string ProcessXYZ::GetInputFilePath()
+std::string ProcessXYZ::getInputFilePath()
 {
    return this->inputFilePath;   
 }
 
-std::string ProcessXYZ::GetOutputFilePath()
+std::string ProcessXYZ::getOutputFilePath()
 {
    return this->outputFilePath;   
 }
 
-std::string ProcessXYZ::GetOutputFileName()
+std::string ProcessXYZ::getOutputFileName()
 {
    return this->outputFileName;   
 }
 
-void ProcessXYZ::ParseFunctions()
+void ProcessXYZ::parseFunctions()
 {    
     // Using std library
     // std::stringstream functionsStream(this->functions);
@@ -112,18 +113,20 @@ void ProcessXYZ::ParseFunctions()
     } 
 }
 
-void ProcessXYZ::ProcessModel()
+void ProcessXYZ::processModel()
 {
     // input fileinto cgal
     std::string filePath = this->inputFilePath + "/" + this->inputFileName;
     std::cout << filePath <<std::endl;
     cgalProcessor.inputPolyhedron(filePath, this->fileType);
+    
     if (this->runAllFlag)
     {
         //  call cgalProcessAll
         std::cout << "running all functions" << std::endl;
-        cgalProcessor.AdvancingFrontWrapper();
-        cgalProcessor.ShapeDetectionWrapper();
+//        cgalProcessor.advancingFrontWrapper();
+//        cgalProcessor.shapeDetectionWrapper();
+        cgalProcessor.poissonReconstructionWrapper();
     }
     if (this->auxiliaryCalls)
     {
@@ -142,7 +145,7 @@ void ProcessXYZ::ProcessModel()
     return;
 }
 
-void ProcessXYZ::SaveFinalModel()
+void ProcessXYZ::saveFinalModel()
 {
     std::string filePath = this->outputFilePath + "/" + this->outputFileName;
     cgalProcessor.outputPolyhedron(filePath, this->fileType);
@@ -153,11 +156,15 @@ int main(int argc, char **argv)
     bool help;
     ProcessXYZ processor;
 
+    for (int i=0; i<argc; i++) {
+        cout << argv[i] << endl;
+    }
+    
     Flags flags;
     flags.Var(processor.inputFile, 'f', "inputPath", std::string(""), "Path to the input file", "File");
     flags.Var(processor.outputFile, 'o', "outputFile", std::string(""), "Output File Name", "File");
     flags.Var(processor.ofp, 'p', "outputFilePath", std::string(""), "Output file directory", "File");
-    flags.Var(processor.functions, 't', "transform", std::string(""), "Run specific transfomrations on the input file submit in order (separated by '_'). Options Include Advancing Front (AF), Pointset Shape Detection (PSP)... etc usage example: -t AF_PSP. With the -a flag, transformations will run after all the preconfigured mesh operations finish", "Functions");
+    flags.Var(processor.functions, 't', "transform", std::string(""), "Run specific transformations on the input file submit in order (separated by '_'). Options Include Advancing Front (AF), Pointset Shape Detection (PSP)... etc usage example: -t AF_PSP. With the -a flag, transformations will run after all the preconfigured mesh operations finish", "Functions");
     flags.Bool(processor.runAllFlag, 'a', "all", "Run the entire mesh generation process", "Functions");
     flags.Bool(help, 'h', "help", "show this help and exit", "Help");
 
@@ -171,12 +178,10 @@ int main(int argc, char **argv)
         flags.PrintHelp(argv[0]);
         return 0;
     }
-    processor.SetInput();
-    // std::cout << processor.GetInputFileName() << std::endl;
-    // std::cout << processor.GetInputFilePath() << std::endl;
-    processor.SetOutput();
-    processor.ParseFunctions();
-    processor.ProcessModel();
-    processor.SaveFinalModel();
+    processor.setInput();
+    processor.setOutput();
+    processor.parseFunctions();
+    processor.processModel();
+    processor.saveFinalModel();
     return 0;
 }

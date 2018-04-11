@@ -8,6 +8,14 @@
 void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype) {
     //    modelInfo model = readPlyFile(filename);
     inputFileType = filetype;
+    printf("Reading in %s file\n", filetype.c_str());
+    this->modelbuilder.readFile(filePath, filetype);
+    this->modelbuilder.toPolyhedron(this->polyhedron3);
+    this->modelbuilder.toPwnVector(this->pwn_points);
+    printf("Read file");
+    return;
+    
+    
     if (filetype=="obj")
     {
         std::cout << "Reading in OBJ File " << std::endl;
@@ -16,27 +24,27 @@ void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype)
         FacetVector faces;
         // ALL OK UNTIL HERE
         std::cout << "To Points and Faces...";
-        modelbuilder.ToPointAndFacetVectors(points, faces);
+        modelbuilder.toPointAndFacetVectors(points, faces);
         std::cout << "Read File... Starting Increment Builder";
         this->incrementBuilder(this->polyhedron3, points, faces);
-        PrintInfo(polyhedron3);
+        printInfo(polyhedron3);
         // std::cout << "Polyhedron3: Vertices: " << this->polyhedron3.size_of_vertices() << " Faces: " << this->polyhedron3.size_of_facets() << std::endl;
         return;
     }
     if (filetype == "off"){
         std::ifstream fin(filePath);
         // modelbuilder.readFile(filePath, filetype); // Throwing STOI exception
-        CGAL::read_off(fin, this->meshPolyhedron);
+//        CGAL::read_off(fin, this->meshPolyhedron); // This works. Is it required?
+        CGAL::read_off(fin, this->polyhedron3);
         std::cout << "Read file: " << filePath << std::endl;
-        // std::cout << "MeshPolyhedron Vertices: " << this->meshPolyhedron.size_of_vertices() << " Faces: " << this->meshPolyhedron.size_of_facets() << std::endl;
-        PrintInfo(meshPolyhedron);
+        printInfo(this->polyhedron3);
         return;
     }
     if (filetype == "ply")
     {
         modelbuilder.readFile(filePath, filetype);
-        modelbuilder.ToPolyhedron(polyhedron3);
-        PrintInfo(polyhedron3);
+        modelbuilder.toPolyhedron(polyhedron3);
+        printInfo(polyhedron3);
         return;
     }
 }
@@ -48,17 +56,17 @@ void CGALProcessing::outputPolyhedron(std::string filePath, std::string filetype
     if (filetype == "ply")
     {
         ModelBuilder::modelInfo model;
-        PrintInfo(polyhedron3);
-        ToModelInfo(polyhedron3, model);
-        modelbuilder.PrintModelInfo(model);
-        modelbuilder.SetOutputModel(model);
+        printInfo(polyhedron3);
+        toModelInfo(polyhedron3, model);
+        modelbuilder.printModelInfo(model);
+        modelbuilder.setOutputModel(model);
         modelbuilder.writeFile(filePath, filetype); 
     }
     else if (filetype == "off")
     {
         ModelBuilder::modelInfo model;
-        ToModelInfo(polyhedron3, model);
-        modelbuilder.SetOutputModel(model);
+        toModelInfo(polyhedron3, model);
+        modelbuilder.setOutputModel(model);
         modelbuilder.writeFile(filePath, filetype);  
     }
     else    // Case of off and ply
@@ -68,28 +76,34 @@ void CGALProcessing::outputPolyhedron(std::string filePath, std::string filetype
 } 
 
 // The wrappers should initialize an instance of the Polyhedron3 -> Get Info -> ProcessImpl -> Set Polyhedron3 
-void CGALProcessing::AdvancingFrontWrapper()
+void CGALProcessing::advancingFrontWrapper()
 {
     if (inputFileType == "ply")
         advancingFrontSurfaceReconstruction(modelbuilder.points);
     return;
 }
-// This is reading the original PWD_Vectors as Advancing Front Does Not Set Points 
+// This is reading the original PWD_Vectors as Advancing Front Does Not Set Points
 // Maybe we need a Polyhedron_3->Pwd_Method 
-void CGALProcessing::ShapeDetectionWrapper()
+void CGALProcessing::shapeDetectionWrapper()
 {
     if (inputFileType == "ply")
         pointSetShapeDetection(modelbuilder.points);
     return;
 }
 
+void CGALProcessing::poissonReconstructionWrapper() {
+    Polyhedron_3 output;
+    poissonSurfaceReconstruction(this->pwn_points, output);
+    this->polyhedron3 = output;
+}
+
 template<class T>
-void CGALProcessing::PrintInfo(T & P)
+void CGALProcessing::printInfo(T & P)
 {
     std::cout << "Polyhedron Vertices: " << P.size_of_vertices() << " Faces: " << P.size_of_facets() << std::endl;
 }
 
-void CGALProcessing::ToModelInfo(Polyhedron_3 & P, ModelBuilder::modelInfo & model)
+void CGALProcessing::toModelInfo(Polyhedron_3 & P, ModelBuilder::modelInfo & model)
 {
     for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
         Point_3 point = it->point();
@@ -114,7 +128,7 @@ void CGALProcessing::ToModelInfo(Polyhedron_3 & P, ModelBuilder::modelInfo & mod
     }
 }
 
-void CGALProcessing::ToPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
+void CGALProcessing::toPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
     // Still need to extract normals from Polyhedron
     for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
         Point_3 point  = it->point();
@@ -138,7 +152,7 @@ void CGALProcessing::polyhedronProcessing() {
     // modelInfoToPolyhedron(model, poly);
     Polyhedron_3 out;
     surfaceMeshGeneration(polyhedron3, out);
-    PrintInfo(out);
+    printInfo(out);
 }
 
 
@@ -181,7 +195,7 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points) {
     
     this->incrementBuilder(polyhedron3, structured_pts, output);
     std::cout << "Info after advancing front" <<std::endl;
-    PrintInfo(polyhedron3);
+    printInfo(polyhedron3);
     // TODO - Maybe add structured_pts to the modelbuilder.points
 
 
@@ -293,6 +307,74 @@ void CGALProcessing::pointSetShapeDetection(Pwn_vector & points){
     //        it++;
     //    }
     
+}
+
+void CGALProcessing::poissonSurfaceReconstruction(Pwn_vector & points, Polyhedron_3 & output) {
+    double average_spacing = CGAL::compute_average_spacing<CGAL::Sequential_tag>(points.begin(), points.end(), CGAL::First_of_pair_property_map<Point_with_normal>(), 6);
+    
+    CGAL::poisson_surface_reconstruction_delaunay(points.begin(), points.end(), CGAL::First_of_pair_property_map<Point_with_normal>(), CGAL::Second_of_pair_property_map<Point_with_normal>(), output, average_spacing);
+}
+
+void CGALProcessing::poissonSurfaceReconstruction(Pwn_vector & points) {
+    // Poisson options
+    FT sm_angle = 20.0; // Min triangle angle in degrees.
+    FT sm_radius = 30; // Max triangle size w.r.t. point set average spacing.
+    FT sm_distance = 0.375; // Surface Approximation error w.r.t. point set average spacing.
+    // Reads the point set file in points[].
+    // Note: read_xyz_points_and_normals() requires an iterator over points
+    // + property maps to access each point's position and normal.
+    // The position property map can be omitted here as we use iterators over Point_3 elements.
+//    PointList points;
+    
+    // Creates implicit function from the read points using the default solver.
+    // Note: this method requires an iterator over points
+    // + property maps to access each point's position and normal.
+    // The position property map can be omitted here as we use iterators over Point_3 elements.
+    Poisson_reconstruction_function function(points.begin(), points.end(),
+                                             CGAL::make_normal_of_point_with_normal_pmap(Pwn_vector::value_type()) );
+    // Computes the Poisson indicator function f()
+    // at each vertex of the triangulation.
+    if ( ! function.compute_implicit_function() )
+        return;
+    // Computes average spacing
+//    FT average_spacing = CGAL::compute_average_spacing<CGAL::Sequential_tag>(points.begin(), points.end(), 6 /* knn = 1 ring */);
+    FT average_spacing = 2;
+    // Gets one point inside the implicit surface
+    // and computes implicit function bounding sphere radius.
+    Point_3 inner_point = function.get_inner_point();
+    Sphere_3 bsphere = function.bounding_sphere();
+    FT radius = std::sqrt(bsphere.squared_radius());
+    // Defines the implicit surface: requires defining a
+    // conservative bounding sphere centered at inner point.
+    FT sm_sphere_radius = 5.0 * radius;
+    FT sm_dichotomy_error = sm_distance*average_spacing/1000.0; // Dichotomy error must be << sm_distance
+    Surface_3 surface(function,
+                      Sphere_3(inner_point,sm_sphere_radius*sm_sphere_radius),
+                      sm_dichotomy_error/sm_sphere_radius);
+    // Defines surface mesh generation criteria
+    CGAL::Surface_mesh_default_criteria_3<STr> criteria(sm_angle,  // Min triangle angle (degrees)
+                                                        sm_radius*average_spacing,  // Max triangle size
+                                                        sm_distance*average_spacing); // Approximation error
+    // Generates surface mesh with manifold option
+    STr tr; // 3D Delaunay triangulation for surface mesh generation
+    C2t3 c2t3(tr); // 2D complex in 3D Delaunay triangulation
+    CGAL::make_surface_mesh(c2t3,                                 // reconstructed mesh
+                            surface,                              // implicit surface
+                            criteria,                             // meshing criteria
+                            CGAL::Manifold_with_boundary_tag());  // require manifold mesh
+    if(tr.number_of_vertices() == 0)
+        return;
+    // saves reconstructed surface mesh
+    std::ofstream out("335Poisson.off");
+    Polyhedron_3 output_mesh;
+    CGAL::output_surface_facets_to_polyhedron(c2t3, output_mesh);
+    out << output_mesh;
+    // computes the approximation error of the reconstruction
+    double max_dist =
+    CGAL::Polygon_mesh_processing::approximate_max_distance_to_point_set(output_mesh,
+                                                                         points,
+                                                                         4000);
+    std::cout << "Max distance to point_set: " << max_dist << std::endl;
 }
 
 void CGALProcessing::surfaceMeshGeneration(Polyhedron_3 & input, Polyhedron_3 & output) {

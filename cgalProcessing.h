@@ -88,9 +88,10 @@ class CGALProcessing {
     void polyhedronProcessing();
     void polyhedronProcessing(std::string);
     
-    // AlgorithmWrappers
-    void AdvancingFrontWrapper();
-    void ShapeDetectionWrapper();
+    // Algorithm Wrappers
+    void advancingFrontWrapper();
+    void shapeDetectionWrapper();
+    void poissonReconstructionWrapper();
     void surfaceMeshGeneration(Polyhedron_3 &, Polyhedron_3 &);
     void surfaceMeshGeneration(std::string);
 
@@ -100,16 +101,21 @@ class CGALProcessing {
     ModelBuilder modelbuilder;
     Pwn_vector pwn_points;
     std::string inputFileType;
+    
+    Polyhedron_vector polyhedrons;
+    Pwn_vector_vector pwnSets;
 
     // Algorithms
     void advancingFrontSurfaceReconstruction(Pwn_vector &);
     void pointSetShapeDetection(Pwn_vector &);
+    void poissonSurfaceReconstruction(Pwn_vector &, Polyhedron_3 &);
+    void poissonSurfaceReconstruction(Pwn_vector &);
 
     // IO
     void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
     
     template <class T>
-    void PrintInfo(T &); 
+    void printInfo(T &);
     
     // Helpers
     void facetVectorToStd(std::vector<Facet> &, FacetVector &);
@@ -117,8 +123,8 @@ class CGALProcessing {
     void incrementBuilder(Polyhedron_3 &, PointVector &, FacetVector &);
     void incrementBuilder(Polyhedron_3 &, Pwn_vector &, std::vector<Facet> &);
     void pwnToPointVector(Pwn_vector &, PointVector &);
-    void ToModelInfo(Polyhedron_3 &, ModelBuilder::modelInfo & );
-    void ToPwnVector(Polyhedron_3 &, Pwn_vector & ) ;
+    void toModelInfo(Polyhedron_3 &, ModelBuilder::modelInfo & );
+    void toPwnVector(Polyhedron_3 &, Pwn_vector & ) ;
 
 };
 

@@ -30,18 +30,18 @@ public:
     ProcessXYZ() {
         auxiliaryCalls = false;
     };
-    void SetInput();
-    void SetOutput();
-    std::string GetInputFileName();
-    std::string GetOutputFileName();
-    std::string GetInputFilePath();    
-    std::string GetOutputFilePath();
-    std::string GetFileName();
-    void SetFileName();
-    void SetOutputFilePath();
-    void ParseFunctions();
-    void ProcessModel();
-    void SaveFinalModel();
+    void setInput();
+    void setOutput();
+    std::string getInputFileName();
+    std::string getOutputFileName();
+    std::string getInputFilePath();
+    std::string getOutputFilePath();
+//    std::string getFileName();
+    void setFileName();
+    void setOutputFilePath();
+    void parseFunctions();
+    void processModel();
+    void saveFinalModel();
 
     std::string inputFile;
     std::string functions;

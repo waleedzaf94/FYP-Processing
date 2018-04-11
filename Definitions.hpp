@@ -54,11 +54,17 @@
 #include <CGAL/bounding_box.h>
 #include <CGAL/Bbox_3.h>
 
-
-
+// Poisson surface reconstruction
+#include <CGAL/trace.h>
+#include <CGAL/Surface_mesh_default_triangulation_3.h>
+#include <CGAL/make_surface_mesh.h>
+#include <CGAL/Implicit_surface_3.h>
+#include <CGAL/IO/output_surface_facets_to_polyhedron.h>
+#include <CGAL/Poisson_reconstruction_function.h>
+#include <CGAL/compute_average_spacing.h>
+#include <CGAL/Polygon_mesh_processing/distance.h>
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
-//    typedef CGAL::Exact_predicates_exact_constructions_kernel   Kernel;
 typedef Kernel::FT                                          FT;
 typedef CGAL::Polyhedron_3<Kernel>                          Polyhedron_3;
 typedef Kernel::Point_3                                     Point_3;
@@ -95,6 +101,7 @@ typedef CGAL::Delaunay_triangulation_3<Kernel, Tds>             Triangulation_3;
 typedef Triangulation_3::Vertex_handle                          Vertex_handle;
 typedef CGAL::cpp11::array<std::size_t, 3>                      Facet;
 
+
 // Surface mesh generation types
 typedef CGAL::Mesh_polyhedron_3<Kernel>::type                   Mesh_polyhedron;
 typedef CGAL::Polyhedral_mesh_domain_with_features_3<Kernel>    Mesh_domain;
@@ -106,14 +113,23 @@ typedef CGAL::HalfedgeDS_default<CGAL::Epick, CGAL::I_Polyhedron_derived_items_3
     typedef CGAL::Sequential_tag    Concurrency_tag;
 #endif
     
-    // Triangulation
-    typedef CGAL::Mesh_triangulation_3<Mesh_domain, CGAL::Default, Concurrency_tag>::type Tr;
-    typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr, Mesh_domain::Corner_index, Mesh_domain::Curve_segment_index> C3t3;
-    //Criteria
-    typedef CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
-    
+// Triangulation
+typedef CGAL::Mesh_triangulation_3<Mesh_domain, CGAL::Default, Concurrency_tag>::type Tr;
+typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr, Mesh_domain::Corner_index, Mesh_domain::Curve_segment_index> C3t3;
+// Criteria
+typedef CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
 
-#endif
+typedef std::vector<Polyhedron_3>   Polyhedron_vector;
+typedef std::vector<Pwn_vector>     Pwn_vector_vector;
+
+// Poisson surface reconstruction
+typedef Kernel::Sphere_3                                                    Sphere_3;
+typedef CGAL::Poisson_reconstruction_function<Kernel>                       Poisson_reconstruction_function;
+typedef CGAL::Surface_mesh_default_triangulation_3                          STr;
+typedef CGAL::Surface_mesh_complex_2_in_triangulation_3<STr>                C2t3;
+typedef CGAL::Implicit_surface_3<Kernel, Poisson_reconstruction_function>   Surface_3;
+
+#endif // DEFINITIONS_HPP
 
 
 // // Custom Builders
