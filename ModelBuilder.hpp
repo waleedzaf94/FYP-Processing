@@ -62,6 +62,7 @@ class ModelBuilder {
     bool writePlyPointsAndNormals (Pwn_vector&, std::string);
     bool writePlyPointsAndNormals (std::string);
     void printModelInfo(ModelBuilder::modelInfo &);
+    void printModelInfo();
     void writeObjFile(string filename, modelInfo & model);
     void writePlyFile(string filename, modelInfo & model);
     void writeOffFile(string filename, modelInfo & model);

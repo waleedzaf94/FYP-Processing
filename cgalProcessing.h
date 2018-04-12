@@ -77,7 +77,6 @@ class CGALProcessing {
     void shapeDetectionWrapper();
     void poissonReconstructionWrapper();
     void surfaceMeshGenerationWrapper();
-    
 
     private:
     Polyhedron_3 polyhedron3;
@@ -85,6 +84,7 @@ class CGALProcessing {
     ModelBuilder modelbuilder;
     Pwn_vector pwn_points;
     std::string inputFileType;
+    std::string lastUpdated; // polyhedron3, meshPolyhedron, pwn_points, modelbuilder
     
     Polyhedron_vector polyhedrons;
     Pwn_vector_vector pwnSets;

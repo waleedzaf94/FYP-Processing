@@ -10,9 +10,10 @@ void ModelBuilder::printModelInfo(ModelBuilder::modelInfo & model) {
     std::cout << "Normals: " << model.normals.size() << std::endl;
 }
 
-// This is the interface for the readFiles
-//  File Path 
-//  File Type ["obj", "off", "ply"]
+void ModelBuilder::printModelInfo() {
+    this->printModelInfo(this->model);
+}
+
 void ModelBuilder::readFile(string filepath, string filetype)
 {
     if (filetype == "off")
@@ -22,7 +23,6 @@ void ModelBuilder::readFile(string filepath, string filetype)
     }
     else if (filetype == "obj")
     {
-//        cout << "Inside Model Builder Reader";
         this->model = readObjFile(filepath);
         return;
     }
@@ -38,6 +38,7 @@ void ModelBuilder::toPwnVector(Pwn_vector & points) {
         std::cerr << "Vertices and Normals should be the same in number\n";
         return;
     }
+    points.clear();
     vertex_vector vertices = this->model.vertices;
     normal_vector normals = this->model.normals;
     for (int i=0; i<vertices.size(); i++) {
@@ -51,9 +52,6 @@ void ModelBuilder::toPwnVector(Pwn_vector & points) {
     
 }
 
-//  This is the interface for the writeFiles
-//  File Path - output filepath
-//  File Type ["obj", "off", "ply"]
 void ModelBuilder::writeFile(string filepath, string filetype)
 {
     if (filetype == "off")
@@ -86,6 +84,7 @@ void ModelBuilder::writeFile(string filepath, string filetype)
 }
 
 ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
+    // TODO: Read normals
     std::ifstream file;
     file.open(filename, ios::in);
     
@@ -139,7 +138,7 @@ ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
     file.close();
     return model;
 }
-// Throwing stoi exception!
+
 ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
     std::ifstream file;
     file.open(filename, ios::in);
@@ -175,7 +174,7 @@ ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
                 for (int i=1; i<4; i++) {
                     vector<string> w2;
                     boost::split(w2, words[i], boost::is_any_of("/"));
-                    f.vertexIndices.push_back((size_t)atoi(w2[0].c_str()));
+                    f.vertexIndices.push_back((size_t)stoi(w2[0].c_str()));
                 }
                 faces.push_back(f);
             }
@@ -189,7 +188,7 @@ ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
 }
 
 ModelBuilder::modelInfo ModelBuilder::readPlyFile(string filename) {    
-    points = readPlyToPwn(filename);
+//    points = readPlyToPwn(filename);
 
     std::ifstream file;
     file.open(filename, ios::in);
@@ -233,15 +232,15 @@ ModelBuilder::modelInfo ModelBuilder::readPlyFile(string filename) {
                 vertexInfo v;
                 vector<string> words;
                 boost::split(words, lines[i], boost::is_any_of(" "));
-                v.x = atof(words[0].c_str());
-                v.y = atof(words[1].c_str());
-                v.z = atof(words[2].c_str());
+                v.x = stod(words[0].c_str());
+                v.y = stod(words[1].c_str());
+                v.z = stod(words[2].c_str());
                 if (n) {
                     // Assume nx ny nz immediately follow x y z
                     normalInfo norm;
-                    norm.nx = atof(words[3].c_str());
-                    norm.ny = atof(words[4].c_str());
-                    norm.nz = atof(words[5].c_str());
+                    norm.nx = stod(words[3].c_str());
+                    norm.ny = stod(words[4].c_str());
+                    norm.nz = stod(words[5].c_str());
                     normals.push_back(norm);
                 }
                 verts.push_back(v);
@@ -253,7 +252,7 @@ ModelBuilder::modelInfo ModelBuilder::readPlyFile(string filename) {
                 vector<string> words;
                 boost::split(words, lines[i], boost::is_any_of(" "));
                 for (int i=1; i<=stol(words[0]); i++) {
-                    f.vertexIndices.push_back(atoi(words[i].c_str()));
+                    f.vertexIndices.push_back((size_t)stoi(words[i].c_str()));
                 }
                 faces.push_back(f);
                 fc--;
@@ -408,6 +407,7 @@ void ModelBuilder::writePlyFile(string filename, modelInfo & model) {
 }
 
 void ModelBuilder::writeOffFile(string filename, modelInfo & model) {
+    // TODO: Write normals
     ofstream out(filename);
     out << "OFF\n";
     out << model.vertices.size() << " " << model.faces.size() << " 0\n";
@@ -433,13 +433,13 @@ void ModelBuilder::writePlyHeader(ofstream &out, modelInfo model) {
     long vc = vertices.size(), fc = faces.size(), nc = normals.size();
     if (vc > 0) {
         out << "element vertex " << vc << endl;
-        out << "property float x\n";
-        out << "property float y\n";
-        out << "property float z\n";
+        out << "property double x\n";
+        out << "property double y\n";
+        out << "property double z\n";
         if (nc > 0) {
-            out << "property float nx\n";
-            out << "property float ny\n";
-            out << "property float nz\n";
+            out << "property double nx\n";
+            out << "property double ny\n";
+            out << "property double nz\n";
         }
     }
     if (fc > 0) {
@@ -468,11 +468,7 @@ bool ModelBuilder::writePlyPointsAndNormals (Pwn_vector& points, std::string fna
         std::cerr << "Error writing file: " << fname << std::endl;
         return false;
     }
-    // WTF - This does not follow the convention of the other writePlyHeader 
-    writePlyHeader(out, points);    
-    //Vertices
-    //    std::vector<Point_with_normal>::iterator it = points.begin();
-    //    while (
+    writePlyHeader(out, points);
     for (auto it = points.begin(); it != points.end(); it++) {
         Kernel::Point_3 point = it->first;
         Kernel::Vector_3 normal = it->second;
@@ -481,7 +477,6 @@ bool ModelBuilder::writePlyPointsAndNormals (Pwn_vector& points, std::string fna
     return true;
 }
 
-// TODO - writePlyPointAndNormals was not declared in this scope 
 bool ModelBuilder::writePlyPointsAndNormals (std::string fname) {
     std::ofstream out(fname);
     if (!out) {
@@ -492,8 +487,6 @@ bool ModelBuilder::writePlyPointsAndNormals (std::string fname) {
     writePlyHeader(out, points);    
 
     //Vertices
-    //    std::vector<Point_with_normal>::iterator it = points.begin();
-    //    while (
     for (auto it = points.begin(); it != points.end(); it++) {
         Kernel::Point_3 point = it->first;
         Kernel::Vector_3 normal = it->second;
@@ -517,6 +510,7 @@ void ModelBuilder::toPointAndFacetVectors(PointVector & points, FacetVector &fac
 }
 
 void ModelBuilder::toPolyhedron(Polyhedron_3 & poly) {
+    // TODO: Preserve normal information in Polyhedron
     PointVector points;
     FacetVector faces;
     toPointAndFacetVectors(points, faces);

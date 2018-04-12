@@ -6,7 +6,6 @@
 // Control
 
 void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype) {
-    //    modelInfo model = readPlyFile(filename);
     inputFileType = filetype;
     printf("Reading in %s file\n", filetype.c_str());
     this->modelbuilder.readFile(filePath, filetype);
