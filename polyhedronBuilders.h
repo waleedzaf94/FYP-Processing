@@ -14,10 +14,10 @@
 template<class HDS>
 class polyhedron_builder : public CGAL::Modifier_base<HDS> {
 public:
-    PointVector             &coords;
-    std::vector<std::vector<std::size_t> >  &faces;
+    PointVector & coords;
+    FacetVector & faces;
     
-    polyhedron_builder(PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), faces(_tris) {
+    polyhedron_builder(PointVector &_coords, FacetVector &_tris ) : coords(_coords), faces(_tris) {
         
     }
     
@@ -32,7 +32,7 @@ public:
             B.add_vertex(i);
         }
         // add the polyhedron triangles
-        for (std::vector<size_t> i: faces) {
+        for (FacetIndices i: faces) {
             try {
                 if (B.test_facet(i.begin(), i.end())) {
                     B.begin_facet();
@@ -55,10 +55,10 @@ public:
 template<class Mesh_hds>
 class mesh_polyhedron_builder : public CGAL::Modifier_base<Mesh_hds> {
 public:
-    PointVector             &coords;
-    std::vector<std::vector<std::size_t> >  &faces;
+    PointVector & coords;
+    FacetVector & faces;
     
-    mesh_polyhedron_builder(PointVector &_coords, std::vector<std::vector<std::size_t> > &_tris ) : coords(_coords), faces(_tris) {
+    mesh_polyhedron_builder(PointVector &_coords, FacetVector &_tris ) : coords(_coords), faces(_tris) {
         
     }
     
@@ -73,7 +73,7 @@ public:
             B.add_vertex(i);
         }
         // add the polyhedron triangles
-        for (std::vector<size_t> i: faces) {
+        for (FacetIndices i: faces) {
             try {
                 if (B.test_facet(i.begin(), i.end())) {
                     if (i.size() != 3)

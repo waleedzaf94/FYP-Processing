@@ -44,7 +44,7 @@ class ModelBuilder {
         vertex_vector vertices;
         normal_vector normals;
     };
-
+    
     modelInfo model;
     modelInfo outputModel;
     Pwn_vector points;
@@ -73,6 +73,7 @@ class ModelBuilder {
     modelInfo readObjFile(string filpath);
 
     private:
+    
     plyHeader readPlyHeader(vector<string> lines);
     Pwn_vector readPlyToPwn(std::string) ;
 };

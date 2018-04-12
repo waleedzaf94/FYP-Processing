@@ -46,6 +46,7 @@ void ProcessXYZ::setInput()
         this->fileType = ftype;
         this->inputFileName = getFileName(this->inputFile);
         this->inputFilePath = getFileDirectory(this->inputFile).empty() ? DEFAULT_PATH : getFileDirectory(this->inputFile);
+        return;
     }
     std::string err = "Invalid File. File doesn't exist.";
     throw std::invalid_argument(err);
@@ -114,8 +115,8 @@ void ProcessXYZ::processModel()
         //  call cgalProcessAll
         std::cout << "running all functions" << std::endl;
         cgalProcessor.advancingFrontWrapper();
-        cgalProcessor.shapeDetectionWrapper();
-        cgalProcessor.poissonReconstructionWrapper();
+//        cgalProcessor.shapeDetectionWrapper();
+//        cgalProcessor.poissonReconstructionWrapper();
     }
     if (this->auxiliaryCalls)
     {
@@ -126,7 +127,7 @@ void ProcessXYZ::processModel()
             else if (fun == "PSD")
                 cgalProcessor.shapeDetectionWrapper();
             else if (fun == "PSR")
-                cgalProcessor.shapeDetectionWrapper();
+                cgalProcessor.poissonReconstructionWrapper();
             else {
                 std::cerr << "Invalid function name: " << fun << std::endl;
             }
