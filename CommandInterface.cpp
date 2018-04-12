@@ -40,29 +40,15 @@ void ProcessXYZ::setInput()
 {
     if (file_exists(this->inputFile))
     {
-        if (this->inputFile.substr(this->inputFile.length() - 3) == "obj")
-        {
-            this->fileType = "obj";
-            this->inputFileName = getFileName(this->inputFile);
-            this->inputFilePath = getFileDirectory(this->inputFile).empty() ? DEFAULT_PATH : getFileDirectory(this->inputFile);
-            return;
-        }
-        if (this->inputFile.substr(this->inputFile.length() - 3) == "off")
-        {
-            this->fileType = "off";
-            this->inputFileName = getFileName(this->inputFile);
-            this->inputFilePath = getFileDirectory(this->inputFile).empty() ? DEFAULT_PATH : getFileDirectory(this->inputFile);
-            return;
-        }
-            if (this->inputFile.substr(this->inputFile.length() - 3) == "ply")
-        {
-            this->fileType = "ply";
-            this->inputFileName = getFileName(this->inputFile);
-            this->inputFilePath = getFileDirectory(this->inputFile).empty() ? DEFAULT_PATH : getFileDirectory(this->inputFile);
-            return;
-        }
+        std::string ftype = this->inputFile.substr(this->inputFile.length() -3);
+        if (!((ftype == "obj") || (ftype == "off") || (ftype == "ply")))
+            throw std::invalid_argument("Invalid File Type. Only PLY, OBJ, OFF are supported.");
+        this->fileType = ftype;
+        this->inputFileName = getFileName(this->inputFile);
+        this->inputFilePath = getFileDirectory(this->inputFile).empty() ? DEFAULT_PATH : getFileDirectory(this->inputFile);
     }
-    throw std::invalid_argument( "Invalid File" );
+    std::string err = "Invalid File. File doesn't exist.";
+    throw std::invalid_argument(err);
 }
 
 void ProcessXYZ::setOutput()
@@ -93,15 +79,7 @@ std::string ProcessXYZ::getOutputFileName()
 }
 
 void ProcessXYZ::parseFunctions()
-{    
-    // Using std library
-    // std::stringstream functionsStream(this->functions);
-    // std::string segment;
-    // while (std::getline(functionsStream, segment, '_'))
-    // {
-    //     fList.push_back(segment);
-    // }
-    // Using boost library
+{
     if (!this->functions.empty())
     {
         this->auxiliaryCalls = true;
@@ -126,7 +104,7 @@ void ProcessXYZ::parseAFArguments() {
 
 void ProcessXYZ::processModel()
 {
-    // input fileinto cgal
+    // input file into cgal
     std::string filePath = this->inputFilePath + "/" + this->inputFileName;
     std::cout << filePath <<std::endl;
     cgalProcessor.inputPolyhedron(filePath, this->fileType);
@@ -141,19 +119,19 @@ void ProcessXYZ::processModel()
     }
     if (this->auxiliaryCalls)
     {
-        for (std::vector<std::string>::iterator it = this->functionList.begin(); it != this->functionList.end(); ++it)
-        {
-            std::cout << "Running function: " << *it << std::endl;
-            // Call each function separately
-            // switch(*it)
-            // {
-            //     default:
-
-            // }
+        for (std::string fun: this->functionList) {
+            printf("Running function: %s", fun.c_str());
+            if (fun == "AFR")
+                cgalProcessor.advancingFrontWrapper();
+            else if (fun == "PSD")
+                cgalProcessor.shapeDetectionWrapper();
+            else if (fun == "PSR")
+                cgalProcessor.shapeDetectionWrapper();
+            else {
+                std::cerr << "Invalid function name: " << fun << std::endl;
+            }
         }
-
     }
-    return;
 }
 
 void ProcessXYZ::saveFinalModel()
@@ -171,7 +149,7 @@ int main(int argc, char **argv)
     flags.Var(processor.inputFile, 'f', "inputPath", std::string(""), "Path to the input file", "File");
     flags.Var(processor.outputFile, 'o', "outputFile", std::string(""), "Output File Name", "File");
     flags.Var(processor.ofp, 'p', "outputFilePath", std::string(""), "Output file directory", "File");
-    flags.Var(processor.functions, 't', "transform", std::string(""), "Run specific transformations on the input file submit in order (separated by '_'). Options Include Advancing Front (AF), Pointset Shape Detection (PSP)... etc usage example: -t AF_PSP. With the -a flag, transformations will run after all the preconfigured mesh operations finish", "Functions");
+    flags.Var(processor.functions, 't', "transform", std::string(""), "Run specific transformations on the input file submit in order (separated by '_'). Options Include Advancing Front (AFR), Pointset Shape Detection (PSD), Poisson Surface Reconstruction (PSR)... etc usage example: -t AFR_PSD_PSR. With the -a flag, transformations will run after all the preconfigured mesh operations finish", "Functions");
     flags.Bool(processor.runAllFlag, 'a', "all", "Run the entire mesh generation process", "Functions");
     flags.Bool(help, 'h', "help", "show this help and exit", "Help");
     flags.Var(processor.afArgs, 'b', "advancingFrontArguments", std::string(""), "Parameters for Advancing Front. Probability (0.05), Minimum Points (100), Epsilon (0.005), Cluster Epsilon (0.05), Minimum Threshold (0.8). Input values separated by '_' in order). Usage example: -b 0.05_100_0.005_0.05_0.8.", "FunctionArguments");
