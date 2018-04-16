@@ -59,4 +59,10 @@ DerivedData/
 /CMakeCache.txt
 .vscode
 
+
+# Ignoring Models
 models/OBJ/*
+*.obj
+*.ply
+*.off
+*.DS_Store*

@@ -19,6 +19,8 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
+#include <math.h>
+#include <cmath>
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
@@ -29,6 +31,8 @@
 #include <CGAL/Surface_mesh.h>
 #include <CGAL/IO/Polyhedron_iostream.h>
 #include <CGAL/poisson_surface_reconstruction.h>
+#include <CGAL/Polyhedron_items_3.h>
+#include <CGAL/HalfedgeDS_list.h>
 
 // Point set shape detection imports
 #include <CGAL/IO/read_ply_points.h>

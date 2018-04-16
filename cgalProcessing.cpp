@@ -18,45 +18,66 @@ void CGALProcessing::inputPolyhedron(std::string filePath, std::string filetype)
 void CGALProcessing::outputPolyhedron(std::string filePath, std::string filetype)
 {
     std::cout << "Saving to " << filePath << std::endl;
-    
-    if (filetype == "ply")
-    {
+//    if (filetype == "off" || filetype == "obj") {
+//        std::ofstream out(filePath);
+//        CGAL::write_off(out, this->polyhedron3);
+//    } else {
+    printInfo(this->polyhedron3);
         ModelBuilder::modelInfo model;
-        printInfo(polyhedron3);
-        toModelInfo(polyhedron3, model);
-        modelbuilder.printModelInfo(model);
-        modelbuilder.setOutputModel(model);
-        modelbuilder.writeFile(filePath, filetype); 
-    }
-    else if (filetype == "off")
-    {
-        ModelBuilder::modelInfo model;
-        toModelInfo(polyhedron3, model);
-        modelbuilder.setOutputModel(model);
-        modelbuilder.writeFile(filePath, filetype);  
-    }
-    else    // Case of off and ply
-    {
-        modelbuilder.writeFile(filePath, filetype); 
-    }
-} 
+    std::cerr << "Converting polyhedron to modelInfo\n";
+        toModelInfo(this->polyhedron3, model);
+        this->modelbuilder.setOutputModel(model);
+    std::cerr << "Writing modelInfo to disk\n";
+        this->modelbuilder.writeFile(filePath, filetype);
+//    }
+}
 
 // The wrappers should initialize an instance of the Polyhedron3 -> Get Info -> ProcessImpl -> Set Polyhedron3 
 void CGALProcessing::advancingFrontWrapper(std::vector<double> args)
 {
     if (args.size() == 0) {
-        advancingFrontSurfaceReconstruction(this->modelbuilder.points);
+        std::vector<double> vals = computeAFArguments(this->pwn_points);
+        advancingFrontSurfaceReconstruction(this->pwn_points, vals[0], (int)vals[1], vals[2], vals[3], vals[4]);
     }
     else {
-        advancingFrontSurfaceReconstruction(this->modelbuilder.points, args[0], (int)args[1], args[2], args[3], args[4]);
+        advancingFrontSurfaceReconstruction(this->pwn_points, args[0], (int)args[1], args[2], args[3], args[4]);
     }
 }
 
-void CGALProcessing::shapeDetectionWrapper()
+std::vector<double> CGALProcessing::computeAFArguments(Pwn_vector & points) {
+    std::vector<double> vals;
+    PointVector np;
+    for (Point_with_normal pwn: points) {
+        Point_3 p  = pwn.first;
+        np.push_back(p);
+    }
+    // Probability to control search endurance. Default value: 5%.
+    vals.push_back(0.05);
+    // Minimum number of points of a shape. Default value: 1% of total number of input points.
+    vals.push_back(points.size() / 100);
+    // Epsilon - Maximum tolerance Euclidian distance from a point and a shape. Default value: 1% of bounding box diagonal.
+    CGAL::Bbox_3 box = bbox_3(np.begin(), np.end());
+    double diagonal = sqrt(pow((box.xmax() - box.xmin()), 2) + pow((box.ymax() - box.ymin()), 2) + pow((box.zmax() - box.zmin()), 2));
+    vals.push_back(diagonal / 100);
+    // Cluster epsilon - Maximum distance between points to be considered connected. Default value: 1% of bounding box diagonal.
+    vals.push_back(diagonal / 100);
+    // Normal threshold - Maximum tolerance normal deviation from a point's normal to the normal on shape at projected point. Default value: 0.9 (around 25 degrees).
+    vals.push_back(0.9);
+    return vals;
+}
+
+void CGALProcessing::shapeDetectionWrapper() {
+    Pwn_vector newPoints;
+    pointSetShapeDetection(this->pwn_points, newPoints);
+}
+
+void CGALProcessing::shapeDetectionWrapper(std::string outFile)
 {
-//    if (inputFileType == "ply")
-        pointSetShapeDetection(this->modelbuilder.points);
-    return;
+    Pwn_vector newPoints;
+    pointSetShapeDetection(this->pwn_points, newPoints);
+    PointVector points;
+    this->modelbuilder.writePlyPointsAndNormals(newPoints, outFile);
+    std::cout << "PSD: Wrote " << outFile << std::endl;
 }
 
 void CGALProcessing::poissonReconstructionWrapper() {
@@ -67,6 +88,8 @@ void CGALProcessing::surfaceMeshGenerationWrapper() {
     
 }
 
+
+
 template<class T>
 void CGALProcessing::printInfo(T & P)
 {
@@ -75,6 +98,9 @@ void CGALProcessing::printInfo(T & P)
 
 void CGALProcessing::toModelInfo(Polyhedron_3 & P, ModelBuilder::modelInfo & model)
 {
+//    ofstream out("/Users/waleedzafar/Projects/FYP/one/models/335Write.log");
+//    out << "V: " << P.size_of_vertices() << " F: " << P.size_of_facets() << std::endl;
+//    out << "VERTICES\n";
     for (Vertex_iterator it=P.vertices_begin(); it != P.vertices_end(); it++) {
         Point_3 point = it->point();
         ModelBuilder::vertexInfo v;
@@ -82,20 +108,42 @@ void CGALProcessing::toModelInfo(Polyhedron_3 & P, ModelBuilder::modelInfo & mod
         v.y = point.cartesian(1);
         v.z = point.cartesian(2);
         model.vertices.push_back(v);
+//        out << "v " << v.x << " " << v.y << " " << v.z << std::endl;
     }
+//    size_t nFacets = P.size_of_facets();
+//    size_t count = 0;
+//    out << "FACES\n";
+    size_t fnum = 0;
     for (Facet_iterator it=P.facets_begin(); it != P.facets_end(); it++) {
         Halfedge_facet_circulator j = it->facet_begin();
         if (CGAL::circulator_size(j) >= 3) {
             ModelBuilder::faceInfo face;
+//            int csize = CGAL::circulator_size(j);
+//            int c = 0;
+//            out << "f " << fnum << " " << csize << " ";
             do {
-                face.vertexIndices.push_back(std::distance(P.vertices_begin(), j->vertex()));
+//                c++;
+                size_t dist = std::distance(P.vertices_begin(), j->vertex());
+                face.vertexIndices.push_back(dist);
+//                out << dist << " ";
+//                face.vertexIndices.push_back(std::distance(P.vertices_begin(), j->vertex()));
+//                if (c > csize) break;
             } while ( ++j != it->facet_begin());
+//            count++;
             model.faces.push_back(face);
+            fnum++;
+            if (fnum % 1000 == 0)
+                std::cerr << "fnum: " << fnum << std::endl;
+//            out << std::endl;
+//            if (count >= nFacets) break;
         }
         else {
+//            count++;
             std::cerr << "Invalid facet circulator size" << std::endl;
+//            if (count > nFacets) break;
         }
     }
+//    out.close();
 }
 
 void CGALProcessing::toPwnVector(Polyhedron_3 & P, Pwn_vector & points) {
@@ -153,12 +201,11 @@ void CGALProcessing::advancingFrontSurfaceReconstruction(Pwn_vector & points, do
     printInfo(polyhedron3);
 }
 
-void CGALProcessing::pointSetShapeDetection(Pwn_vector & points){
-    // Reads a PLY file to a Pwn_vector
+void CGALProcessing::pointSetShapeDetection(Pwn_vector & points, Pwn_vector & newPoints){
+    
     // Runs Efficient_ransac on the points and normals
     // Detects planes and segments the point set according to planes
     // Writes the detected shapes to individual PLY files
-    
     CGAL::Timer timer;
     
     // modelbuilder.readPlyToPwn(this->fname, points);
@@ -178,6 +225,7 @@ void CGALProcessing::pointSetShapeDetection(Pwn_vector & points){
     std::cout << "Preprocessing time: " << timer.time() * 1000 << " ms\n";
     
     Efficient_ransac::Shape_range shapes = ransac.shapes();
+    shapes = ransac.shapes();
     FT bestCoverage = 0;
     
     for (size_t i = 0; i<3; i++) {
@@ -198,10 +246,8 @@ void CGALProcessing::pointSetShapeDetection(Pwn_vector & points){
             shapes = ransac.shapes();
         }
     }
-    
-    writeShapesToFiles(shapes, points);
-    
-    return;
+    writeShapesToFile(shapes, points, newPoints);
+//    writeShapesToFiles(shapes, points);
 }
 
 void CGALProcessing::poissonSurfaceReconstruction(Pwn_vector & points, Polyhedron_3 & output) {
@@ -384,6 +430,21 @@ void CGALProcessing::writeShapesToFiles(Efficient_ransac::Shape_range shapes, Pw
             std::cerr << "Error writing file: " << outFile << std::endl;
         }
         shapeNum++;
+        it++;
+    }
+}
+
+void CGALProcessing::writeShapesToFile(Efficient_ransac::Shape_range shapes, Pwn_vector & points, Pwn_vector & newPoints) {
+    Efficient_ransac::Shape_range::iterator it = shapes.begin();
+    newPoints.clear();
+    while (it != shapes.end()) {
+        FacetIndices indices = it->get()->indices_of_assigned_points();
+        FacetIndices::const_iterator iti = indices.begin();
+        while (iti != indices.end()) {
+            Point_with_normal pw = *(points.begin() + (*iti));
+            newPoints.push_back(pw);
+            iti++;
+        }
         it++;
     }
 }

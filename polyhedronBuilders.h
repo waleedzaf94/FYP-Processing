@@ -31,6 +31,7 @@ public:
         for( Point_3 i : coords ){
             B.add_vertex(i);
         }
+        
         // add the polyhedron triangles
         for (FacetIndices i: faces) {
             try {

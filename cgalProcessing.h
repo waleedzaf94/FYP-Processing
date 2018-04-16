@@ -3,6 +3,9 @@
 #include "ModelBuilder.hpp"
 #include "Definitions.hpp"
 #include "polyhedronBuilders.h"
+//#include "ComputeFacetNormal.h"
+//#include "ComputeVertexNormal.h"
+//#include "PropertyMap.h"
 
 class CGALProcessing {
 
@@ -62,6 +65,8 @@ class CGALProcessing {
         }
     };
     
+    
+    
     typedef CGAL::Advancing_front_surface_reconstruction<Triangulation_3, Priority_with_structure_coherence<Structure> > Reconstruction;
     
     /// Public functions
@@ -75,6 +80,7 @@ class CGALProcessing {
     // Algorithm Wrappers
     void advancingFrontWrapper(const std::vector<double> args = std::vector<double>());
     void shapeDetectionWrapper();
+    void shapeDetectionWrapper(std::string);
     void poissonReconstructionWrapper();
     void surfaceMeshGenerationWrapper();
 
@@ -90,16 +96,17 @@ class CGALProcessing {
     Pwn_vector_vector pwnSets;
 
     // Algorithms
-//    void advancingFrontSurfaceReconstruction(Pwn_vector &, double, int, double, double, double);
     void advancingFrontSurfaceReconstruction(Pwn_vector & points, double probability = 0.05, int min_points = 100, double epsilon = 0.005, double cluster_epsilon = 0.05, double normal_threshold = 0.8);
-    void pointSetShapeDetection(Pwn_vector &);
+    void pointSetShapeDetection(Pwn_vector &, Pwn_vector &);
     void poissonSurfaceReconstruction(Pwn_vector &, Polyhedron_3 &);
     void poissonSurfaceReconstruction(Pwn_vector &);
     void surfaceMeshGeneration(Polyhedron_3 &, Polyhedron_3 &);
     void surfaceMeshGeneration(std::string);
+    std::vector<double> computeAFArguments(Pwn_vector & points);
 
     // IO
-    void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, std::vector<Point_with_normal>);
+    void writeShapesToFiles(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, Pwn_vector);
+    void writeShapesToFile(CGAL::Shape_detection_3::Efficient_RANSAC<Traits>::Shape_range, Pwn_vector &, Pwn_vector &);
     
     template <class T>
     void printInfo(T &);

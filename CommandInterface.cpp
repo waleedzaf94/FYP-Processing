@@ -34,6 +34,7 @@ static std::string getFileDirectory(const std::string filePath)
    return("");
 }
 
+//TODO Maybe add ifdef _WIN32 for this too?
 const std::string ProcessXYZ::DEFAULT_PATH = "./";
 
 void ProcessXYZ::setInput()
@@ -115,17 +116,19 @@ void ProcessXYZ::processModel()
         //  call cgalProcessAll
         std::cout << "running all functions" << std::endl;
         cgalProcessor.advancingFrontWrapper();
-//        cgalProcessor.shapeDetectionWrapper();
-//        cgalProcessor.poissonReconstructionWrapper();
+        cgalProcessor.shapeDetectionWrapper();
+        cgalProcessor.poissonReconstructionWrapper();
     }
     if (this->auxiliaryCalls)
     {
         for (std::string fun: this->functionList) {
-            printf("Running function: %s", fun.c_str());
+            printf("Running function: %s\n", fun.c_str());
             if (fun == "AFR")
                 cgalProcessor.advancingFrontWrapper();
-            else if (fun == "PSD")
-                cgalProcessor.shapeDetectionWrapper();
+            else if (fun == "PSD") {
+                std::string f = this->inputFile.substr(0, this->inputFile.length() - 3);
+                cgalProcessor.shapeDetectionWrapper(this->ofp + "/" + f + "_PSD.ply");
+            }
             else if (fun == "PSR")
                 cgalProcessor.poissonReconstructionWrapper();
             else {
@@ -141,8 +144,42 @@ void ProcessXYZ::saveFinalModel()
     cgalProcessor.outputPolyhedron(filePath, this->fileType);
 }
 
+
+
+void runAll() {
+    string inputs[18] = {"310B_Info", "312BL", "312BR", "312TL", "312TR", "335 - Old", "335", "Chi_11", "CORD1", "CORD2", "CORDL1_N", "CORDL1", "CORDL2", "CORDM", "CORDR1", "CORDR1R2", "DotNet", "mesh_20180411T2315"};
+//    string inputs[2] = {"310B_Info", "mesh_20180411T2315"};
+    vector<string> ins, outs;
+    string fpath = "/Users/waleedzafar/Projects/FYP/one/models/";
+    string outPath = "/Users/waleedzafar/Projects/FYP/one/models/OBJ";
+    int len = sizeof(inputs) / sizeof(*inputs);
+    for (int i=0; i<len; i++) {
+        ins.push_back(fpath + inputs[i] + ".obj");
+        outs.push_back(inputs[i] + "_AFR.obj");
+}
+    for (int i=0; i<len; i++) {
+        ProcessXYZ processor;
+        printf("Starting %s.obj\n", inputs[i].c_str());
+        processor.inputFile = ins[i];
+        processor.outputFile = outs[i];
+        processor.ofp = outPath;
+        processor.runAllFlag = false;
+//        processor.functions = "PSD";
+        processor.functions = "AFR_PSD";
+        processor.setInput();
+        processor.setOutput();
+        processor.parseFunctions();
+        processor.parseAFArguments();
+        processor.processModel();
+        processor.saveFinalModel();
+        printf("Completed %s.obj\n", inputs[i].c_str());
+    }
+}
+
 int main(int argc, char **argv)
 {
+    runAll();
+    return 0;
     bool help;
     ProcessXYZ processor;
     

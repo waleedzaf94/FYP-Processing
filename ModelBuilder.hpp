@@ -36,6 +36,15 @@ class ModelBuilder {
     struct normalInfo {
         double nx=0, ny=0, nz=0;
     };
+    struct meshStats {
+        float totalSurfaceArea = 0;
+        float horizontalSurfaceArea = 0;
+        float upSurfaceArea = 0;
+        float downSurfaceArea = 0;
+        float wallSurfaceArea = 0;
+        float virtualCeilingSurfaceArea = 0;
+        float virtualWallSurfaceArea = 0;
+    };
     typedef vector<vertexInfo> vertex_vector;
     typedef vector<normalInfo> normal_vector;
     typedef vector<faceInfo> face_vector;
@@ -43,6 +52,7 @@ class ModelBuilder {
         face_vector faces;
         vertex_vector vertices;
         normal_vector normals;
+        meshStats stats;
     };
     
     modelInfo model;
@@ -68,6 +78,9 @@ class ModelBuilder {
     void writeOffFile(string filename, modelInfo & model);
     void writePlyHeader(ofstream &out, modelInfo model);
     void writePlyHeader(ofstream &out, Pwn_vector& points);
+    meshStats readMeshStats(vector<string>);
+    void writeMeshStats(ofstream &out, meshStats);
+    
     modelInfo readOffFile(string filpath);
     modelInfo readPlyFile(string filpath);
     modelInfo readObjFile(string filpath);

@@ -139,6 +139,47 @@ ModelBuilder::modelInfo ModelBuilder::readOffFile(string filename) {
     return model;
 }
 
+void ModelBuilder::writeMeshStats(ofstream & out, meshStats stats) {
+    out << "# ms" << endl;
+    out << "# tsa " << to_string(stats.totalSurfaceArea) << endl;
+    out << "# hsa " << to_string(stats.horizontalSurfaceArea) << endl;
+    out << "# usa " << to_string(stats.upSurfaceArea) << endl;
+    out << "# dsa " << to_string(stats.downSurfaceArea) << endl;
+    out << "# wsa " << to_string(stats.wallSurfaceArea) << endl;
+    out << "# vcs " << to_string(stats.virtualCeilingSurfaceArea) << endl;
+    out << "# vws " << to_string(stats.virtualWallSurfaceArea) << endl;
+    out << "# es" << endl;
+}
+
+ModelBuilder::meshStats ModelBuilder::readMeshStats(vector<string> lines) {
+    ModelBuilder::meshStats stats;
+    for (string line: lines) {
+        boost::trim(line);
+        if (line == "") continue;
+        vector<string> words;
+        boost::split(words, line, boost::is_any_of(" "));
+        if (words.size() < 2) continue;
+        string code = words[1];
+        boost::trim(code);
+        if (code == "es") break;
+        if (code == "tsa")
+            stats.totalSurfaceArea = stof(words[2]);
+        if (code == "hsa")
+            stats.horizontalSurfaceArea = stof(words[2]);
+        if (code == "usa")
+            stats.upSurfaceArea = stof(words[2]);
+        if (code == "dsa")
+            stats.downSurfaceArea = stof(words[2]);
+        if (code == "wsa")
+            stats.wallSurfaceArea = stof(words[2]);
+        if (code == "vws")
+            stats.virtualWallSurfaceArea = stof(words[2]);
+        if (code == "vcs")
+            stats.virtualCeilingSurfaceArea = stof(words[2]);
+    }
+    return stats;
+}
+
 ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
     std::ifstream file;
     file.open(filename, ios::in);
@@ -151,6 +192,7 @@ ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
         string l;
         while (getline(file, l))
             lines.push_back(l);
+        model.stats = readMeshStats(lines);
         for (string line: lines) {
             vector<string> words;
             boost::split(words, line, boost::is_any_of(" "));
@@ -174,7 +216,7 @@ ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
                 for (int i=1; i<4; i++) {
                     vector<string> w2;
                     boost::split(w2, words[i], boost::is_any_of("/"));
-                    f.vertexIndices.push_back((size_t)stoi(w2[0].c_str()));
+                    f.vertexIndices.push_back((size_t)(stoi(w2[0].c_str())-1));
                 }
                 faces.push_back(f);
             }
@@ -345,19 +387,20 @@ Pwn_vector ModelBuilder::readPlyToPwn(std::string fname) {
 void ModelBuilder::writeObjFile(string filename, modelInfo & model) {
     ofstream out(filename);
     if (out.is_open()) {
-        out << "# " << model.vertices.size() << " vertices" << endl;
+        writeMeshStats(out, model.stats);
+        out << "# "<< "vnm" << model.vertices.size() << endl;
+        out << "# " << "vnn" <<model.normals.size() << endl;
+        out << "# " << "fnm" <<model.faces.size() << endl;
         for (vertexInfo v: model.vertices) {
             out << "v " << v.x << " " << v.y << " " << v.z << endl;
         }
-        out << "# " << model.normals.size() << " vertex normals" << endl;
         for (normalInfo n: model.normals) {
             out << "vn " << n.nx << " " << n.ny << " " << n.nz << endl;
         }
-        out << "# " << model.faces.size() << " faces" << endl;
         for (faceInfo f: model.faces) {
             out << "f ";
             for (int i: f.vertexIndices) {
-                out << i << " ";
+                out << i << "/" << i << "/" << i << " ";
             }
             out << endl;
         }
@@ -502,10 +545,13 @@ void ModelBuilder::toPointAndFacetVectors(PointVector & points, FacetVector &fac
     }
     for (ModelBuilder::faceInfo f: model.faces) {
         FacetIndices indices;
+//        bool valid = true;
         for (int i: f.vertexIndices) {
+//            if (i > (model.vertices.size() -1)) valid = false;
             indices.push_back(i);
         }
-        faces.push_back(indices);
+//        if (valid)
+            faces.push_back(indices);
     }
 }
 
