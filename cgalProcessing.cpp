@@ -75,9 +75,10 @@ void CGALProcessing::shapeDetectionWrapper(std::string outFile)
 {
     Pwn_vector newPoints;
     pointSetShapeDetection(this->pwn_points, newPoints);
-    PointVector points;
-    this->modelbuilder.writePlyPointsAndNormals(newPoints, outFile);
-    std::cout << "PSD: Wrote " << outFile << std::endl;
+    this->pwn_points = newPoints;
+//    PointVector points;
+//    this->modelbuilder.writePlyPointsAndNormals(newPoints, outFile);
+//    std::cout << "PSD: Wrote " << outFile << std::endl;
 }
 
 void CGALProcessing::poissonReconstructionWrapper() {

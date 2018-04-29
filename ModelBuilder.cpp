@@ -217,6 +217,7 @@ ModelBuilder::modelInfo ModelBuilder::readObjFile(string filename) {
                     vector<string> w2;
                     boost::split(w2, words[i], boost::is_any_of("/"));
                     f.vertexIndices.push_back((size_t)(stoi(w2[0].c_str())-1));
+//                    f.vertexIndices.push_back((size_t)stoi(w2[0].c_str()));
                 }
                 faces.push_back(f);
             }
@@ -385,29 +386,97 @@ Pwn_vector ModelBuilder::readPlyToPwn(std::string fname) {
 }
 
 void ModelBuilder::writeObjFile(string filename, modelInfo & model) {
+    if (model.vertices.size() > 50000) {
+        vector<modelInfo> models;
+        splitModels(model, models, 50000);
+        writeMultipleToOBJ(filename, models, model.stats);
+    }
+    else {
+        ofstream out(filename);
+        if (out.is_open()) {
+            if (model.stats.totalSurfaceArea != 0) // Assume stats are useless if totalSurfaceArea is 0
+                writeMeshStats(out, model.stats);
+            out << "# "<< "vnm" << model.vertices.size() << endl;
+            out << "# " << "vnn" <<model.normals.size() << endl;
+            out << "# " << "fnm" <<model.faces.size() << endl;
+            for (vertexInfo v: model.vertices) {
+                out << "v " << v.x << " " << v.y << " " << v.z << endl;
+            }
+            for (normalInfo n: model.normals) {
+                out << "vn " << n.nx << " " << n.ny << " " << n.nz << endl;
+            }
+            for (faceInfo f: model.faces) {
+                out << "f ";
+                for (size_t ind: f.vertexIndices) {
+                    size_t i = ind+1;
+                    out << i << "// ";
+//                    out << i << "/" << i << "/" << i << " ";
+//                    out << i << "/" << i << "/" << i << " ";
+                }
+                out << endl;
+            }
+            out.close();
+        }
+        else {
+            cout << "Error opening file: " << filename << endl;
+        }
+    }
+}
+
+void ModelBuilder::writeMultipleToOBJ(string filename, vector<modelInfo> & models, meshStats & stats) {
     ofstream out(filename);
-    if (out.is_open()) {
-        writeMeshStats(out, model.stats);
-        out << "# "<< "vnm" << model.vertices.size() << endl;
-        out << "# " << "vnn" <<model.normals.size() << endl;
-        out << "# " << "fnm" <<model.faces.size() << endl;
-        for (vertexInfo v: model.vertices) {
+    if (stats.totalSurfaceArea != 0)
+        writeMeshStats(out, stats);
+    for (int i=0; i<models.size(); i++) {
+        if (models[i].vertices.size() == 0)
+            continue;
+        out << "o Object." << (i+1) << endl;
+        for (vertexInfo v: models[i].vertices) {
             out << "v " << v.x << " " << v.y << " " << v.z << endl;
         }
-        for (normalInfo n: model.normals) {
+        for (normalInfo n: models[i].normals) {
             out << "vn " << n.nx << " " << n.ny << " " << n.nz << endl;
         }
-        for (faceInfo f: model.faces) {
+        for (faceInfo f: models[i].faces) {
             out << "f ";
-            for (int i: f.vertexIndices) {
-                out << i << "/" << i << "/" << i << " ";
+            for (size_t ind: f.vertexIndices) {
+                size_t i = ind+1;
+//                out << ind << "/" << ind << "/" << ind << " ";
+//                out << i << "/" << i << "/" << i << " ";
+                out << i << "// ";
             }
             out << endl;
         }
-        out.close();
     }
-    else {
-        cout << "Error opening file: " << filename << endl;
+}
+
+void ModelBuilder::splitModels(modelInfo & model, vector<modelInfo> & models, int split) {
+    int nModels = (model.vertices.size() / split) + 1;
+    models.clear();
+    for (int i=0; i<nModels; i++) {
+        modelInfo m;
+        models.push_back(m);
+    }
+    for (int i = 0; i<model.vertices.size(); i++) {
+        models[i / split].vertices.push_back(model.vertices[i]);
+    }
+    for (int i=0; i<model.normals.size(); i++) {
+        models[i / split].normals.push_back(model.normals[i]);
+    }
+    for (int i=0; i<model.faces.size(); i++) {
+        faceInfo f = model.faces[i];
+        int testIndex = f.vertexIndices[0] / split;
+        bool valid = true;
+        for (size_t t: f.vertexIndices) {
+            int low = testIndex * split;
+            int high = (testIndex + 1) * split;
+            if ((t < low) || (t >= high)) {
+                valid = false;
+                break;
+            }
+        }
+        if (valid)
+            models[testIndex].faces.push_back(f);
     }
 }
 

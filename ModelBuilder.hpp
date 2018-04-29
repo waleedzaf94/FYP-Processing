@@ -80,6 +80,7 @@ class ModelBuilder {
     void writePlyHeader(ofstream &out, Pwn_vector& points);
     meshStats readMeshStats(vector<string>);
     void writeMeshStats(ofstream &out, meshStats);
+    void writeMultipleToOBJ(string, vector<modelInfo> &, meshStats &);
     
     modelInfo readOffFile(string filpath);
     modelInfo readPlyFile(string filpath);
@@ -89,6 +90,7 @@ class ModelBuilder {
     
     plyHeader readPlyHeader(vector<string> lines);
     Pwn_vector readPlyToPwn(std::string) ;
+    void splitModels(modelInfo &, vector<modelInfo> &, int);
 };
 
 #endif

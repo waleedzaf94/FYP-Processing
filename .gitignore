@@ -62,7 +62,11 @@ DerivedData/
 
 # Ignoring Models
 models/OBJ/*
+models_one/
 *.obj
 *.ply
 *.off
 *.DS_Store*
+
+# Ignore images
+*.png

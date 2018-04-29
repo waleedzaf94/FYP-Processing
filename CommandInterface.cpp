@@ -126,8 +126,8 @@ void ProcessXYZ::processModel()
             if (fun == "AFR")
                 cgalProcessor.advancingFrontWrapper();
             else if (fun == "PSD") {
-                std::string f = this->inputFile.substr(0, this->inputFile.length() - 3);
-                cgalProcessor.shapeDetectionWrapper(this->ofp + "/" + f + "_PSD.ply");
+                std::string f = this->inputFile.substr(0, this->inputFile.length() - 4);
+                cgalProcessor.shapeDetectionWrapper(f + "_PSD.ply");
             }
             else if (fun == "PSR")
                 cgalProcessor.poissonReconstructionWrapper();
@@ -165,7 +165,7 @@ void runAll() {
         processor.ofp = outPath;
         processor.runAllFlag = false;
 //        processor.functions = "PSD";
-        processor.functions = "AFR_PSD";
+        processor.functions = "PSD_PSR";
         processor.setInput();
         processor.setOutput();
         processor.parseFunctions();
@@ -176,10 +176,18 @@ void runAll() {
     }
 }
 
+void mbTest() {
+    ModelBuilder mb;
+    ModelBuilder::modelInfo model = mb.readObjFile("/Users/waleedzafar/Projects/FYP/one/models/335.obj");
+    mb.setOutputModel(model);
+    mb.writeObjFile("/Users/waleedzafar/Projects/FYP/one/models/OBJ/335_TEST.obj", model);
+}
+
 int main(int argc, char **argv)
 {
-    runAll();
-    return 0;
+//    mbTest();
+//    runAll();
+//    return 0;
     bool help;
     ProcessXYZ processor;
     
