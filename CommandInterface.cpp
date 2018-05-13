@@ -147,15 +147,16 @@ void ProcessXYZ::saveFinalModel()
 
 
 void runAll() {
-    string inputs[18] = {"310B_Info", "312BL", "312BR", "312TL", "312TR", "335 - Old", "335", "Chi_11", "CORD1", "CORD2", "CORDL1_N", "CORDL1", "CORDL2", "CORDM", "CORDR1", "CORDR1R2", "DotNet", "mesh_20180411T2315"};
+//    string inputs[18] = {"310B_Info", "312BL", "312BR", "312TL", "312TR", "335 - Old", "335", "Chi_11", "CORD1", "CORD2", "CORDL1_N", "CORDL1", "CORDL2", "CORDM", "CORDR1", "CORDR1R2", "DotNet", "mesh_20180411T2315"};
 //    string inputs[2] = {"310B_Info", "mesh_20180411T2315"};
+    string inputs[3] = {"Dirk", "335", "310B_Blob"};
     vector<string> ins, outs;
     string fpath = "/Users/waleedzafar/Projects/FYP/one/models/";
     string outPath = "/Users/waleedzafar/Projects/FYP/one/models/OBJ";
     int len = sizeof(inputs) / sizeof(*inputs);
     for (int i=0; i<len; i++) {
         ins.push_back(fpath + inputs[i] + ".obj");
-        outs.push_back(inputs[i] + "_AFR.obj");
+        outs.push_back(inputs[i] + "_PSD_AFR.obj");
 }
     for (int i=0; i<len; i++) {
         ProcessXYZ processor;
@@ -165,7 +166,7 @@ void runAll() {
         processor.ofp = outPath;
         processor.runAllFlag = false;
 //        processor.functions = "PSD";
-        processor.functions = "PSD_PSR";
+        processor.functions = "PSD_AFR";
         processor.setInput();
         processor.setOutput();
         processor.parseFunctions();
@@ -178,16 +179,19 @@ void runAll() {
 
 void mbTest() {
     ModelBuilder mb;
+    printf("Reading File\n");
     ModelBuilder::modelInfo model = mb.readObjFile("/Users/waleedzafar/Projects/FYP/one/models/335.obj");
+    printf("Read File\n");
     mb.setOutputModel(model);
     mb.writeObjFile("/Users/waleedzafar/Projects/FYP/one/models/OBJ/335_TEST.obj", model);
+    printf("Completed File Output\n");
 }
 
 int main(int argc, char **argv)
 {
-//    mbTest();
+    mbTest();
 //    runAll();
-//    return 0;
+    return 0;
     bool help;
     ProcessXYZ processor;
     
