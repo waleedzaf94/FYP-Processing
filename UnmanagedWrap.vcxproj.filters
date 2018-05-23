@@ -55,7 +55,4 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\AppData\Local\Temp\ksifpv3y.lim\Function1.cs" />
-  </ItemGroup>
 </Project>

@@ -46,7 +46,7 @@ namespace ManagedProcessing
         private void CallProcessor()
         {
             processor = new Processing.CommandWrap();
-            processor.Hello();
+            //processor.Hello();
             processor.SetInput(LocalPath);
             processor.SetOutput(OutputName, OutputFilePath);
             processor.ProcessModel(true, "");
@@ -63,7 +63,7 @@ namespace ManagedProcessing
                 CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(inputBlob);
                 string tempPath = Path.GetTempPath();
                 LocalPath = Path.Combine(tempPath, inputBlob);
-                Log.Info("Downloading blob to {0}", LocalPath);
+                Log.Info($"Downloading blob to {LocalPath}");
                 await cloudBlockBlob.DownloadToFileAsync(LocalPath, FileMode.Create);
             }
             catch (StorageException ex) {
@@ -84,7 +84,7 @@ namespace ManagedProcessing
             {
                 CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(outputName);
                 string sourceFile = Path.Combine(OutputFilePath, OutputName);
-                Log.Info("Uploading blob from {0}", sourceFile);
+                Log.Info($"Uploading blob from {sourceFile}");
                 await cloudBlockBlob.UploadFromFileAsync(sourceFile);
             }
             catch (StorageException ex)

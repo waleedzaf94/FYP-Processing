@@ -18,12 +18,12 @@
       "matchCondition": {
         "methods": [ "GET" ],
         "route": "/blobs/{container-name}"
-      },
-      "backendUri": "https://localhost/api/RESTFunctions",
-      "requestOverrides": {
-        "backend.request.method": "GET",
-        "backend.request.querystring.name": "{container-name}",
-        "backend.request.headers.<HeaderName>": ""
+      }
+    },
+    "processFunction": {
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/process"
       }
     }
   }

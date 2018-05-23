@@ -14,10 +14,15 @@ namespace ProcessingWrapper
 {
     public static class RESTFunctions
     {
+
+        //{"functions":[{"function":"af","probability":0.05,"clusterEpsilon":0.05,"normalThreshold":0.8,"epsilon":0.005,"minimumPoints":100},{"function":"ps"},{"function":"rps"}],"inputFile":"DotNet.obj","inputContainer":"recorded-objects","outputFile":"DotNet.obj"}
         [FunctionName("RESTFunctions")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequestMessage req, TraceWriter log)
+        public static HttpResponseMessage Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a request.");
+
+            log.Info(req.GetQueryNameValuePairs().ToString());
+            log.Info(req.ToString());
 
             // parse query parameter
             string containername = req.GetQueryNameValuePairs()
@@ -27,8 +32,7 @@ namespace ProcessingWrapper
             // Set name to query string or body data
 
             string connectionString = ConfigurationManager.AppSettings["AzureWebJobsDashboard"];
-            CloudStorageAccount storageAccount;
-            CloudStorageAccount.TryParse(connectionString, out storageAccount);
+            CloudStorageAccount.TryParse(connectionString, out CloudStorageAccount storageAccount);
             CloudBlobClient cloudBlobClient = StorageWrappers.CreateCloudBlobClient(storageAccount);
             CloudBlobContainer cloudBlobContainer = StorageWrappers.CreateContainerReference(cloudBlobClient, containername);
 

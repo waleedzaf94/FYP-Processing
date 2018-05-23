@@ -113,12 +113,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnmanagedWrap_Publish|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\Aman Gupta\Downloads\CGAL-4.10.2\CGAL-4.10.2\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnmanagedWrap_Publish|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\Aman Gupta\Downloads\CGAL-4.10.2\CGAL-4.10.2\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
